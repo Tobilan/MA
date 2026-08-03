@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "defaultBaseRef": "origin/main",
+  "thesisMain": "Abschlussarbeit.tex",
+  "build": {
+    "required": true,
+    "command": [
+      "latexmk",
+      "-pdf",
+      "-interaction=nonstopmode",
+      "-halt-on-error",
+      "Abschlussarbeit.tex"
+    ],
+    "logFile": "build/Abschlussarbeit.log"
+  },
+  "lintCommands": [
+    {
+      "name": "ChkTeX",
+      "required": false,
+      "command": [
+        "chktex",
+        "-q",
+        "Abschlussarbeit.tex"
+      ]
+    },
+    {
+      "name": "lacheck",
+      "required": false,
+      "command": [
+        "lacheck",
+        "Abschlussarbeit.tex"
+      ]
+    }
+  ],
+  "review": {
+    "schema": "docs/ai/REVIEW_SCHEMA.json",
+    "prompt": "docs/ai/CLAUDE_REVIEW_PROMPT.md",
+    "taskDirectory": ".ai/tasks",
+    "outputDirectory": ".ai/reviews",
+    "decisionDirectory": ".ai/decisions",
+    "language": "de",
+    "maximumDefaultFindings": 20,
+    "thesisPathPatterns": [
+      "*.tex",
+      "*.bib",
+      "*.sty",
+      "*.cls",
+      ".latexmkrc",
+      "inhalt/**/*.tex",
+      "lib/**/*.tex"
+    ],
+    "implementationPathPatterns": [
+      "code/**"
+    ]
+  },
+  "claude": {
+    "executable": "claude"
+  }
+}

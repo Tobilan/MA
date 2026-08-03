@@ -1,2 +1,6 @@
 ## LaTeX build output (see .latexmkrc)
 /build/
+
+## Python cache files
+__pycache__/
+*.py[cod]
