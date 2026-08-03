@@ -1,0 +1,301 @@
+\documentclass[12pt,a4paper,bibliography=totocnumbered,listof=totocnumbered]{scrartcl}
+% u.U. muss Koma-Skript Package ueber MikTeX deinstalliert und neu installiert werden
+% Hilft das nicht, so sollte statt scrartcl die Dokumentenklasse article verwendet werden
+\input{lib/includes}
+\input{lib/commands}
+\addbibresource{literatur.bib}
+
+
+\begin{document}
+
+
+% ----------------------------------------------------------------------------------------------------------
+% Titelseite
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\studierenderName}{Max Müller}
+\student{\studierenderName}		% Studierender
+{1234567}						% Matrikelnummer
+{Wirtschaftsinformatik}			% Studiengang
+
+\MyTitelseite{pics/mathcomm}	% Optionales Logo des extern betreuenden Unternehmens
+{1}								% Style der Titelseite (1 oder 2)
+{Bachelorarbeit}				% Typ der Abschlussarbeit (\in {Bachelorarbeit, Masterarbeit})
+{Thema der Arbeit}				% Thema der Arbeit						
+{Prof.\ Dr.\ Carsten Kern}		% Betreuer
+{Prof.\ Dr.\ Name des Zweitgutachters}	% Zweitgutachter
+{??.??.\the\year}				% Abgabedatum
+
+\thispagestyle{empty}
+~\pagebreak
+
+\setcounter{page}{1} 
+
+% ----------------------------------------------------------------------------------------------------------
+% Eigensctändigkeitserklaerung
+% ----------------------------------------------------------------------------------------------------------
+\include{inhalt/erklaerung}
+
+% ----------------------------------------------------------------------------------------------------------
+% Abstract
+% ----------------------------------------------------------------------------------------------------------
+\include{inhalt/abstract}
+
+
+% ----------------------------------------------------------------------------------------------------------
+% Inhaltsverzeichnis
+% ----------------------------------------------------------------------------------------------------------
+\tableofcontents
+\pagebreak
+
+% ----------------------------------------------------------------------------------------------------------
+% Abbildungsverzeichnis
+% ----------------------------------------------------------------------------------------------------------
+\lhead{}
+\rhead{Abbildungsverzeichnis}
+\listoffigures
+\pagebreak
+
+% ----------------------------------------------------------------------------------------------------------
+% Tabellenverzeichnis (optional)
+% ----------------------------------------------------------------------------------------------------------
+\lhead{}
+\rhead{Tabellenverzeichnis}
+\listoftables
+\pagebreak
+
+% ----------------------------------------------------------------------------------------------------------
+% Listingsverzeichnis (optional; Code nur, wenn wirklich sinnvoll und wichtig)
+% ----------------------------------------------------------------------------------------------------------
+%\lhead{}
+%\rhead{Quellcodeverzeichnis}
+%\lstlistoflistings
+%\pagebreak
+
+% ----------------------------------------------------------------------------------------------------------
+% Abkürzungsverzeichnis (optional)
+% ----------------------------------------------------------------------------------------------------------
+\lhead{}
+\rhead{Abkürzungsverzeichnis}
+%\listoftables
+\section{Abkürzungsverzeichnis}
+\begin{acronym}[KDE]
+\acro{BA}[BA]{Bachelorarbeit}
+\acro{MA}[MA]{Masterarbeit}
+\end{acronym}
+\pagebreak
+
+
+% ----------------------------------------------------------------------------------------------------------
+% Inhalt
+% ----------------------------------------------------------------------------------------------------------
+% Abstände Überschrift
+\RedeclareSectionCommand[beforeskip=12pt plus 4pt minus 2pt, afterskip=8pt plus 2pt minus 2pt]{section}
+\RedeclareSectionCommand[beforeskip=12pt plus 4pt minus 2pt, afterskip=6pt plus 2pt minus 2pt]{subsection}
+\RedeclareSectionCommand[beforeskip=12pt plus 4pt minus 2pt, afterskip=4pt plus 2pt minus 2pt]{subsubsection}
+
+% Kopfzeile
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+\renewcommand{\subsubsectionmark}[1]{}
+\lhead{Kapitel \thesection}
+\rhead{\rightmark}
+
+%\onehalfspacing
+\setstretch{1.15}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\theHsection}{\arabic{section}}
+\setcounter{section}{0}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ----------------------------------------------------------------------------------
+% Kapitel: Einleitung
+% ----------------------------------------------------------------------------------
+\section{Einleitung}
+Sie können dieses \LaTeX-Template als Vorlage für Ihre Abschlussarbeit (\ac{BA}, \ac{MA}) nutzen und auf Wunsch natürlich auch selbstständig erweitern. Auf den folgenden Seiten finden Sie einige Hinweise zu \LaTeX. Sollten Sie Fragen haben, wenden Sie sich gerne an mich unter: \url{carsten.kern@oth-regensburg.de} 
+
+
+
+\pagebreak
+% ----------------------------------------------------------------------------------
+% Kapitel: ???
+% ----------------------------------------------------------------------------------
+\section{???}
+\subsection{???}
+
+
+\pagebreak
+% ----------------------------------------------------------------------------------
+% Kapitel: Fazit und Ausblick
+% ----------------------------------------------------------------------------------
+\section{Fazit und Ausblick}
+
+
+
+\pagebreak
+% ----------------------------------------------------------------------------------
+% Kleine Einführung in LaTeX-Elemente
+% ----------------------------------------------------------------------------------
+\section{\LaTeX-Elemente}
+Dieser Abschnitt beinhaltet lediglich einige Informationen über \LaTeX-Distributionen, Editoren und \LaTeX-Elemente, die Ihnen beim Einstieg in das \LaTeX-Textsatzsystem helfen sollen.
+
+\subsection{\LaTeX-Distributionen nach Betriebssystemen}
+
+\subsubsection{\LaTeX-Distributionen}
+Folgende Haupt-\LaTeX-Distributionen stehen Ihnen zur Verfügung:
+\begin{itemize}
+  \item Windows:\quad \texttt{MiKTeX}\quad Webseite:\quad\url{http://www.miktex.org}
+  \item Linux/Unix:\quad \texttt{TeX Live}\quad Webseite:\quad\url{http://tug.org/texlive/}
+  \item Mac OS:\quad \texttt{MacTeX}\quad Webseite:\quad\url{http://www.tug.org/mactex/}
+\end{itemize}
+
+\subsubsection{\LaTeX-Editoren}
+Auf folgenden Webseiten können Sie einige hilfreiche \LaTeX-Editoren finden:
+\begin{itemize}
+  \item Windows/Linux/Mac OS: \url{http://www.xm1math.net/texmaker/}
+  \item Windiws: \url{http://www.texniccenter.org/}
+  \item Mac OS: \url{http://pages.uoregon.edu/koch/texshop/}
+\end{itemize}
+
+Falls bei den oben genannten Editoren kein passender vorhanden war, findet sich auf Wikipedia eine Zusammenstellung vieler weiterer \LaTeX-Editoren:\\[1em]
+\hspace*{3cm}\url{https://en.wikipedia.org/wiki/Comparison_of_TeX_editors}
+
+
+\subsection{Bilder}
+Zum Einfügen eines Bildes, siehe Abbildung \ref{fig:reversi01}, werden die \texttt{minipage}-Umgebung und der Befehl \texttt{$\backslash$includegraphics} genutzt, da die Bilder so gut positioniert und einfach integriert und skaliert werden können.
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=0.5\linewidth]{pics/gamefield01.png}
+	\captionof{figure}[Spielfeld 01]{Unbespieltes Spielfeld\footnotemark }
+	\label{fig:reversi01}
+\end{minipage}
+\footnotetext{Diesem Spielfeld wurden noch keine Spieler zugewiesen (daher die dunklen Spielsteine)}
+
+Nachdem das Spielt gestartet wurde und beide Spielphasen durchlaufen wurden, siegt schließlich der Spieler mit der Farbe rot.
+
+\vspace{1em}
+\begin{minipage}{\linewidth}
+	\centering
+	\includegraphics[width=0.5\linewidth]{pics/gamefield02.png}
+	\captionof{figure}[Spielfeld 02]{Finales Spielfeld\footnotemark }
+	\label{fig:reversi2}
+\end{minipage}
+\footnotetext{Das Spielfeld nach der Zug- und Bombenphase. Spieler rot gewinnt eindeutig.}
+
+\subsection{Tabellen}
+In diesem Abschnitt wird eine Tabelle (siehe Tabelle \ref{tab:beispiel}) dargestellt.
+
+\vspace{1em}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\textbf{Name} & \textbf{Name} & \textbf{Name}\\
+		\hline
+		1 & 2 & 3\\
+		\hline
+		4 & 5 & 6\\
+		\hline
+		7 & 8 & 9\\
+		\hline
+	\end{tabular}
+	\caption{Beispieltabelle}
+	\label{tab:beispiel}
+\end{table}
+
+
+\subsection{Auflistung}
+Für Auflistungen wird die \texttt{enumerate}- oder \texttt{itemize}-Umgebung genutzt.
+
+\begin{itemize}
+	\item Nur
+	\item ein
+	\item Beispiel.
+\end{itemize}
+
+\subsection{Listings}
+Zuletzt sehen Sie in Listing \ref{lst:maxTeilsumZweiD} ein Beispiel für das Einbinden von Quellcode mit Syntax-Highlighting.
+
+\vspace{1em}
+\lstinputlisting[caption=Brute Force-Ansatz für das MaxTeilsum2D-Problem, label=lst:maxTeilsumZweiD,basicstyle=\ttfamily\scriptsize]{code/maxTeilsum2DBruteForce.txt}
+
+\subsection{Selbstgestaltete Abbildungen}
+Mithilfe des Paketes \texttt{tikz} können sehr schöne Abbildungen (z.\,B.\ Automaten, Graphen etc.) direkt in \LaTeX generiert werden. Viele Beispiele dazu finden Sie auf folgender Webseite:\\[1em]
+\hspace*{3cm}\url{http://www.texample.net/tikz/}.
+
+\subsection{Tipps}
+Die Literaturreferenzen (Bücher, Paper und Journals) und Internetquellen (Webseiten, Blogs etc.) befinden sich in der Datei \textit{literatur.bib}. Eine Buch- und eine Online-Quelle sind beispielhaft eingefügt. [Vgl.\ \cite{buch}, \cite{mathcomm}]
+
+Literatur und Quellen werden in zwei getrennte Verzeichnisse aufgeteilt. Als Unterscheidungsmerkmal dient bei den Quellen der Zusatz: \texttt{keywords = \{online\}}.
+
+\pagebreak
+
+% ----------------------------------------------------------------------------------------------------------
+% Filter fuer Literatur und Quellen definieren
+% ----------------------------------------------------------------------------------------------------------
+
+\defbibheading{Literatur}{\section*{Literaturverzeichnis}} 
+\defbibheading{Quellen}{\section*{Quellenverzeichnis}} 
+  
+\defbibfilter{Literatur}{\not\keyword{online}} 
+\defbibfilter{Quellen}{\keyword{online}} 
+
+
+% ----------------------------------------------------------------------------------------------------------
+% Literatur
+% ----------------------------------------------------------------------------------------------------------
+\lhead{} 
+\rhead{Literaturverzeichnis} 
+
+\printbibliography[heading=Literatur,filter=Literatur] 
+
+\pagebreak
+
+
+% ---------------------------------------------------------------------------------------------------------- 
+% Quellen 
+% ---------------------------------------------------------------------------------------------------------- 
+\lhead{} 
+\rhead{Quellenverzeichnis} 
+
+\printbibliography[title = {Quellenverzeichnis}, heading=Quellen,filter=Quellen] 
+
+\pagebreak 
+
+% ----------------------------------------------------------------------------------------------------------
+% Anhang
+% ----------------------------------------------------------------------------------------------------------
+\pagenumbering{Roman}
+\setcounter{page}{1}
+\lhead{Anhang \thesection}
+
+\begin{appendix}
+\section*{Anhang}
+\phantomsection
+\addcontentsline{toc}{section}{Anhang}
+\addtocontents{toc}{\vspace{-0.5em}}
+
+Inhalt des beigefügten Datenträgers:
+\begin{itemize}
+  \item $\ldots$
+  \item $\ldots$
+\end{itemize}
+
+\section{Domändenmodell}
+Ein toller Anhang, der nicht nur als \glqq{}\emph{Müllhalde}\grqq{} genutzt wird, sondern in dem Bilder und Inhalte auch mit eigenen Worten erklärt werden und den man auch für sich alleine lesen kann. Es sollten auch Referenzen auf die zugehörige ausführliche Behandlung im Hauptteil inklusive Seitenangabe mit $\backslash$\texttt{pageref} gegeben werden.
+
+\subsection*{Screenshot}
+\label{app:screenshot}
+Unterkategorie, die nicht im Inhaltsverzeichnis auftaucht.
+
+\end{appendix}
+
+
+\pagebreak
+
+
+
+
+\end{document}

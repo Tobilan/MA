@@ -1,0 +1,81 @@
+% Kopf- und Fusszeile
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\leftmark}{\rightmark}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{\thesection\space\contentsname}
+\lfoot{}
+\cfoot{}
+\rfoot{\ \linebreak Seite \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Vorspann
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\theHsection}{\Roman{section}}
+\pagenumbering{Roman}
+
+\newcommand{\folgen}[1]{
+\ensuremath
+#1
+}
+
+\newcommandx{\student}[3][]{
+	\def\studentName{#1}%
+	\def\studentMatnr{#2}%
+	\def\studentStudiengang{#3}%
+}
+
+\newcommandx{\MyTitelseite}[8][]{
+\thispagestyle{empty}
+\includegraphics[scale=0.2]{pics/oth-logo.png}\hfill\includegraphics[scale=0.5]{#1}
+\begin{center}
+\ifthenelse{\equal{#2}{2}}{ % then
+	\vspace*{2cm}
+	\Large
+	\textbf{Ostbayerische Technische Hochschule Regensburg}\\
+	\textbf{Fakultät für Informatik und Mathematik}\\
+	\vspace*{2cm}
+	\Huge
+	\textbf{#3}\\[1em]
+	\large
+	Zur Erlangung des akademischen Grades des\\
+	\ifthenelse{\equal{#3}{Bachelorarbeit}}{Bachelor of Science (B.Sc.)}{Master of Science (M.Sc.)}\\
+	\vspace*{1cm}
+	\Large
+	\textbf{#4}\\
+}{ % else
+	\vspace*{1cm}
+	\Large
+	\textbf{#4}\\
+	\vspace*{2cm}
+	\large
+	An der Fakultät für Informatik und Mathematik der\\
+	Ostbayerischen Technischen Hochschule Regensburg\\
+	im Studiengang\\
+	\studentStudiengang\\[2em]
+	eingereichte\\
+	\vspace*{1cm}
+	\Large
+	\textbf{#3}\\[2em]
+	\large
+	zur Erlangung des akademischen Grades des\\
+	\ifthenelse{\equal{#3}{Bachelorarbeit}}{Bachelor of Science (B.Sc.)}{Master of Science (M.Sc.)}
+	\vspace*{1cm}
+	\Large
+}
+	\vfill
+	\normalsize
+	%\newcolumntype{x}[1]{>{\raggedleft\arraybackslash\hspace{0pt}}p{#1}}
+	\begin{tabular}{rl}%{6cm}p{7.5cm}}
+	    \rule{0mm}{1ex}\textbf{Vorgelegt von:} & \studentName \\
+		\rule{0mm}{1ex}\textbf{Matrikelnummer:} & \hspace*{-0.5em}\begin{tabular}[t]{r}\studentMatnr\end{tabular} \\ 
+		\ifthenelse{\equal{#2}{1}}{~\\}{\rule{0mm}{1ex}\textbf{Studiengang:} & \studentStudiengang \\[2em]}
+		\rule{0mm}{1ex}\textbf{Erstgutachter:} & #5 \\ 
+		\rule{0mm}{1ex}\textbf{Zweitgutachter:} & #6 \\[2em]
+		\rule{0mm}{1ex}\textbf{Abgabedatum:} & #7 \\ 
+	\end{tabular} 
+\end{center}
+\pagebreak
+}

@@ -1,0 +1,10 @@
+{
+    "latex-workshop.latex.rootFile.path": "%WORKSPACE_FOLDER%/Abschlussarbeit.tex",
+    "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/build",
+    "latex-workshop.latex.clean.fileTypes": [
+        "*.aux", "*.bbl", "*.blg", "*.idx", "*.ind", "*.lof", "*.lot",
+        "*.out", "*.toc", "*.acn", "*.acr", "*.alg", "*.glg", "*.glo",
+        "*.gls", "*.ist", "*.fls", "*.log", "*.fdb_latexmk", "*.synctex.gz",
+        "*-blx.bib", "*.run.xml"
+    ]
+}
