@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/codex-claude-thesis-review-1.1.json",
+  "title": "Strukturiertes Review einer deutschsprachigen Masterarbeit",
+  "description": "Alle menschenlesbaren Stringwerte müssen auf Deutsch verfasst sein; ausgenommen sind standardisierte Bezeichner, Eigennamen und unveränderte Zitate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reviewer",
+    "language",
+    "reviewedCommit",
+    "workingTreeIncluded",
+    "diffHash",
+    "packageHash",
+    "baseRef",
+    "verdict",
+    "summary",
+    "findings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "reviewer": {
+      "const": "claude"
+    },
+    "language": {
+      "const": "de"
+    },
+    "reviewedCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{7,40}$",
+      "description": "HEAD-Commit beim Erzeugen des Pakets; Arbeitsbaumanteile werden zusätzlich über workingTreeIncluded, diffHash und packageHash identifiziert."
+    },
+    "workingTreeIncluded": {
+      "type": "boolean"
+    },
+    "diffHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "packageHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "baseRef": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verdict": {
+      "enum": [
+        "approved",
+        "approved_with_comments",
+        "changes_requested"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Deutsche Zusammenfassung des Reviews."
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "severity",
+        "category",
+        "file",
+        "lineStart",
+        "lineEnd",
+        "statement",
+        "problem",
+        "evidence",
+        "requiredAction",
+        "confidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^CL-[0-9]{3,}$"
+        },
+        "severity": {
+          "enum": [
+            "blocking",
+            "major",
+            "minor",
+            "suggestion"
+          ]
+        },
+        "category": {
+          "enum": [
+            "implementation_mismatch",
+            "unsupported_claim",
+            "source_problem",
+            "reasoning_gap",
+            "missing_limitation",
+            "terminology",
+            "german_language",
+            "latex_structure",
+            "style",
+            "other"
+          ]
+        },
+        "file": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Repository-relativer Pfad mit Schrägstrichen."
+        },
+        "lineStart": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "lineEnd": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Betroffene Aussage oder präzise Beschreibung auf Deutsch."
+        },
+        "problem": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Begründung auf Deutsch."
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Vorhandener oder fehlender Nachweis auf Deutsch."
+        },
+        "requiredAction": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Konkrete Maßnahme auf Deutsch."
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        }
+      }
+    }
+  }
+}

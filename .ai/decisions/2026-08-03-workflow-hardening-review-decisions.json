@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "1.0",
+  "language": "de",
+  "taskName": "Review-Workflow nach erstem Testlauf härten",
+  "reviewFile": ".ai/reviews/20260803T220426Z-2026-08-03-workflow-hardening/attempt-01/review.json",
+  "reviewPackageHash": "055c8c8afe62dd5b94c1f95bd62f88e9d005de5701b834997c9e80074130a5e1",
+  "decisions": [
+    {
+      "findingId": "CL-001",
+      "status": "ACCEPTED",
+      "statusLabel": "angenommen",
+      "reviewerStatement": "Constraints an Typ-Arrays konnten im Transformationszweig still entfallen.",
+      "verification": "Der Typ-Array-Zweig wurde direkt geprüft; unbekannte und auf keinen beteiligten Typ anwendbare Schlüsselwörter wurden tatsächlich nicht abgewiesen.",
+      "checkedEvidence": [
+        "scripts/ai/review_schema.py",
+        "docs/ai/SCHEMA_COMPATIBILITY.md",
+        "tests/ai/test_review_workflow.py"
+      ],
+      "rationale": "Das Finding trifft zu und berührt die zugesicherte verlustarme Transformation.",
+      "resultingAction": "Strikte Schlüsselwortprüfung ergänzt, Enum-Semantik für null erhalten und Positiv- sowie Negativtests hinzugefügt.",
+      "files": [
+        "scripts/ai/review_schema.py",
+        "tests/ai/test_review_workflow.py"
+      ],
+      "checkCommand": "python -m unittest discover -s tests/ai -p test_*.py",
+      "residualRisk": "Die unterstützte JSON-Schema-Teilmenge bleibt bewusst begrenzt; neue Schlüsselwörter führen sicher zum Abbruch."
+    },
+    {
+      "findingId": "CL-002",
+      "status": "ACCEPTED",
+      "statusLabel": "angenommen",
+      "reviewerStatement": "Prompt und kanonisches Schema waren nicht als vollständige Paketeingaben eingefroren.",
+      "verification": "CORE_FILES und der Runner wurden verglichen; der Runner las beide Dateien nach der Paketerzeugung live aus dem Repository.",
+      "checkedEvidence": [
+        "scripts/ai/review_package.py",
+        "scripts/ai/prepare_review.py",
+        "scripts/ai/run_claude_review.py"
+      ],
+      "rationale": "Das Finding trifft zu; die Dokumentation behauptete eine stärkere Inhaltsbindung als die Implementierung lieferte.",
+      "resultingAction": "Schema und Prompt werden im Paket eingefroren, einzeln gehasht, in packageHash einbezogen und ausschließlich aus dem Paket gelesen.",
+      "files": [
+        "scripts/ai/review_package.py",
+        "scripts/ai/prepare_review.py",
+        "scripts/ai/run_claude_review.py",
+        "docs/ai/REVIEW_WORKFLOW.md"
+      ],
+      "checkCommand": "python -m unittest discover -s tests/ai -p test_*.py",
+      "residualRisk": "Die Claude-Binärdatei und Laufzeitumgebung werden weiterhin über Ausführungsmetadaten statt über packageHash identifiziert."
+    },
+    {
+      "findingId": "CL-003",
+      "status": "ACCEPTED",
+      "statusLabel": "angenommen",
+      "reviewerStatement": "Der Preflight verglich Dateiinhalte, aber nicht den Git-Index.",
+      "verification": "Die Preflight- und Runner-Implementierungen wurden nebeneinander geprüft; nur der Runner erfasste zuvor git status vor und nach Claude.",
+      "checkedEvidence": [
+        "scripts/ai/preflight.py",
+        "scripts/ai/run_claude_review.py"
+      ],
+      "rationale": "Eine reine Indexänderung wäre im Preflight unentdeckt geblieben und hätte die Read-only-Aussage abgeschwächt.",
+      "resultingAction": "Git-Statusvergleich analog zum Runner ergänzt; reine Index- oder Statusänderungen führen zum Abbruch.",
+      "files": [
+        "scripts/ai/preflight.py"
+      ],
+      "checkCommand": "python scripts/ai/preflight.py",
+      "residualRisk": "Änderungen außerhalb des Repositorys liegen weiterhin außerhalb der zugesicherten Read-only-Kontrolle."
+    },
+    {
+      "findingId": "CL-004",
+      "status": "ACCEPTED",
+      "statusLabel": "angenommen",
+      "reviewerStatement": "Entscheidungen waren nicht technisch an den paketweit markierten erfolgreichen Attempt gebunden.",
+      "verification": "validate_decisions.py las successful-attempt.json nicht; mehrere gültige Attempts könnten denselben packageHash tragen.",
+      "checkedEvidence": [
+        "scripts/ai/validate_decisions.py",
+        ".ai/reviews/README.md"
+      ],
+      "rationale": "Das Finding trifft zu und kann zur Entscheidung eines veralteten Reviews führen.",
+      "resultingAction": "Erfolgsmarkierung, exakter Review-Pfad und Paket-Hash werden nun gemeinsam validiert.",
+      "files": [
+        "scripts/ai/validate_decisions.py",
+        "docs/ai/REVIEW_WORKFLOW.md"
+      ],
+      "checkCommand": "python scripts/ai/validate_decisions.py .ai/reviews/20260803T220426Z-2026-08-03-workflow-hardening/attempt-01/review.json .ai/decisions/2026-08-03-workflow-hardening-review-decisions.json",
+      "residualRisk": "Eine bewusst manipulierte Erfolgsmarkierung wird erkannt, aber nicht kryptografisch signiert."
+    },
+    {
+      "findingId": "CL-005",
+      "status": "ACCEPTED",
+      "statusLabel": "angenommen",
+      "reviewerStatement": "Die Repository-Wurzel war über eine feste Verzeichnistiefe bestimmt.",
+      "verification": "Der direkte Vergleich mit den übrigen Skripten bestätigte die abweichende und unnötig fragile Pfadermittlung.",
+      "checkedEvidence": [
+        "scripts/ai/validate_decisions.py",
+        "scripts/ai/preflight.py"
+      ],
+      "rationale": "Die Änderung ist klein und verbessert Konsistenz sowie Fehlererkennung.",
+      "resultingAction": "Inhaltliche Repository-Suche anhand von .git und .ai/config.json ergänzt.",
+      "files": [
+        "scripts/ai/validate_decisions.py"
+      ],
+      "checkCommand": "python -m py_compile scripts/ai/validate_decisions.py",
+      "residualRisk": "Das Skript setzt weiterhin die projektspezifischen Marker .git und .ai/config.json voraus."
+    },
+    {
+      "findingId": "CL-006",
+      "status": "REJECTED",
+      "statusLabel": "abgelehnt",
+      "reviewerStatement": "Ein npm-.cmd-Shim könne unter Windows mit shell=False den Claude-Aufruf blockieren.",
+      "verification": "where.exe und shutil.which lösten Claude auf eine native claude.exe der VS-Code-Erweiterung auf. Preflight und vollständiger Runner wurden unter Windows mit Claude Code 2.1.220 und shell=False erfolgreich ausgeführt.",
+      "checkedEvidence": [
+        "C:/Users/tobia/.vscode/extensions/anthropic.claude-code-2.1.220-win32-x64/resources/native-binary/claude.exe",
+        ".ai/reviews/20260803T220426Z-2026-08-03-workflow-hardening/attempt-01/execution-metadata.json"
+      ],
+      "rationale": "Das Finding beschreibt ein hypothetisches Installationsszenario, das auf die tatsächlich geprüfte Umgebung nicht zutrifft. Eine shell-basierte Sonderbehandlung würde die aktuelle sichere Argumentübergabe ohne nachgewiesenen Bedarf verkomplizieren.",
+      "resultingAction": "Keine Codeänderung; der erfolgreiche reale Windows-Lauf wird als Verifikation dokumentiert.",
+      "files": [],
+      "checkCommand": "python scripts/ai/preflight.py",
+      "residualRisk": "Andere, nicht getestete Claude-Installationsarten könnten künftig eine plattformspezifische Startlogik erfordern."
+    },
+    {
+      "findingId": "CL-007",
+      "status": "ACCEPTED",
+      "statusLabel": "angenommen",
+      "reviewerStatement": "minimal_smoke_schema war ungenutzter und missverständlicher toter Code.",
+      "verification": "Die Volltextsuche bestätigte, dass nur die Definition existierte und der Preflight bewusst das vollständige transformierte Schema verwendet.",
+      "checkedEvidence": [
+        "scripts/ai/review_schema.py",
+        "scripts/ai/preflight.py",
+        "docs/ai/SCHEMA_COMPATIBILITY.md"
+      ],
+      "rationale": "Der vollständige Schematest erkennt mehr Inkompatibilitäten; die ungenutzte Minimalfunktion sollte daher entfallen.",
+      "resultingAction": "Ungenutzte Funktion entfernt und Dokumentation auf minimale Ausgabe bei vollständigem Schema präzisiert.",
+      "files": [
+        "scripts/ai/review_schema.py",
+        "docs/ai/SCHEMA_COMPATIBILITY.md"
+      ],
+      "checkCommand": "rg minimal_smoke_schema scripts tests docs",
+      "residualRisk": "Der Smoke-Test verwendet mehr Schemaumfang als ein triviales Minimalschema, bleibt aber durch leere Findings klein."
+    }
+  ]
+}

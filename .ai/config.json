@@ -1,0 +1,76 @@
+{
+  "version": "1.1",
+  "defaultBaseRef": "origin/main",
+  "thesisMain": "Abschlussarbeit.tex",
+  "build": {
+    "required": true,
+    "command": [
+      "latexmk",
+      "-pdf",
+      "-interaction=nonstopmode",
+      "-halt-on-error",
+      "Abschlussarbeit.tex"
+    ],
+    "logFile": "build/Abschlussarbeit.log"
+  },
+  "lintCommands": [
+    {
+      "name": "ChkTeX",
+      "required": false,
+      "command": [
+        "chktex",
+        "-q",
+        "Abschlussarbeit.tex"
+      ]
+    },
+    {
+      "name": "lacheck",
+      "required": false,
+      "command": [
+        "lacheck",
+        "Abschlussarbeit.tex"
+      ]
+    }
+  ],
+  "quality": {
+    "overfullThresholdPt": 0.0,
+    "lintPreviewLines": 20,
+    "lintBaseline": "docs/ai/LINT_BASELINE.json"
+  },
+  "review": {
+    "schema": "docs/ai/REVIEW_SCHEMA.json",
+    "evidenceSchema": "docs/ai/EVIDENCE_MANIFEST_SCHEMA.json",
+    "decisionSchema": "docs/ai/DECISION_SCHEMA.json",
+    "prompt": "docs/ai/CLAUDE_REVIEW_PROMPT.md",
+    "taskDirectory": ".ai/tasks",
+    "outputDirectory": ".ai/reviews",
+    "decisionDirectory": ".ai/decisions",
+    "language": "de",
+    "maximumDefaultFindings": 20,
+    "thesisPathPatterns": [
+      "*.tex",
+      "*.bib",
+      "*.sty",
+      "*.cls",
+      ".latexmkrc",
+      "inhalt/**/*.tex",
+      "lib/**/*.tex"
+    ],
+    "implementationPathPatterns": [
+      "code/**"
+    ]
+  },
+  "claude": {
+    "executable": "claude",
+    "minimumStructuredOutputVersion": "2.1.220",
+    "smokeTestTimeoutSeconds": 60
+  },
+  "preflight": {
+    "requiredExecutables": [
+      "git",
+      "latexmk",
+      "pdflatex",
+      "bibtex"
+    ]
+  }
+}
