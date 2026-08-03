@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/review-decisions-1.0.json",
+  "title": "Maschinenlesbare Codex-Entscheidungen zu Claude-Findings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "language",
+    "taskName",
+    "reviewFile",
+    "reviewPackageHash",
+    "decisions"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "language": {
+      "const": "de"
+    },
+    "taskName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewFile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewPackageHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    }
+  },
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "findingId",
+        "status",
+        "statusLabel",
+        "reviewerStatement",
+        "verification",
+        "checkedEvidence",
+        "rationale",
+        "resultingAction",
+        "files",
+        "checkCommand",
+        "residualRisk"
+      ],
+      "properties": {
+        "findingId": {
+          "type": "string",
+          "pattern": "^CL-[0-9]{3,}$"
+        },
+        "status": {
+          "enum": [
+            "ACCEPTED",
+            "REJECTED",
+            "DEFERRED"
+          ]
+        },
+        "statusLabel": {
+          "enum": [
+            "angenommen",
+            "abgelehnt",
+            "zurückgestellt"
+          ]
+        },
+        "reviewerStatement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verification": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checkedEvidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resultingAction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "checkCommand": {
+          "type": "string",
+          "minLength": 1
+        },
+        "residualRisk": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

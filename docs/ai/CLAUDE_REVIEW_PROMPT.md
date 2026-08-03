@@ -16,6 +16,8 @@ Prüfe insbesondere:
 
 Schlage keine umfassenden Kapitelneufassungen vor. Gib höchstens die im Paket konfigurierte Zahl wichtiger, konkreter und umsetzbarer Findings zurück. Wenn kein umsetzbares Problem vorliegt, verwende ein leeres `findings`-Array.
 
+Erzeuge für jedes unabhängig entscheidbare Problem genau ein Finding. Bündele verschiedene Behauptungen, Nachweise oder Maßnahmen nicht in einem Finding, sofern Codex sie getrennt annehmen, ablehnen oder zurückstellen könnte.
+
 Gib ausschließlich valides JSON zurück, das `docs/ai/REVIEW_SCHEMA.json` entspricht. Kein Markdown, keine Codeblöcke und kein Begleittext.
 
 All human-readable string values in the JSON response must be written in German.

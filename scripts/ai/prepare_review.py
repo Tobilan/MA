@@ -14,6 +14,9 @@ import subprocess
 import sys
 from pathlib import Path, PurePosixPath
 from typing import Any, Optional
+from urllib.parse import urlsplit
+
+from review_package import file_hash, package_hash
 
 
 UNSAFE_SUFFIXES = {".pem", ".key", ".p12", ".pfx"}
@@ -27,6 +30,18 @@ SECRET_PATTERNS = [
         r"(?i)\b(?:api[_-]?key|access[_-]?token|secret)\b\s*[:=]\s*['\"]?[A-Za-z0-9_./+-]{16,}"
     ),
 ]
+EVIDENCE_FIELDS = {
+    "id",
+    "repositoryUrl",
+    "commit",
+    "path",
+    "lineStart",
+    "lineEnd",
+    "description",
+    "verificationMethod",
+}
+EVIDENCE_ID = re.compile(r"^EV-[0-9]{3,}$")
+COMMIT_ID = re.compile(r"^[0-9a-fA-F]{7,40}$")
 
 
 def find_repository(start: Optional[Path] = None) -> Path:
@@ -129,11 +144,103 @@ def reject_probable_secrets(text: str, description: str) -> None:
         )
 
 
+def validate_evidence_manifest(value: Any, source: Path) -> list[dict[str, Any]]:
+    if not isinstance(value, dict):
+        raise RuntimeError(f"Externes Evidenzmanifest {source.name} muss ein JSON-Objekt sein.")
+    expected = {"schemaVersion", "language", "evidence"}
+    if set(value) != expected:
+        raise RuntimeError(
+            f"Externes Evidenzmanifest {source.name} hat fehlende oder unerwartete Top-Level-Felder."
+        )
+    if value.get("schemaVersion") != "1.0" or value.get("language") != "de":
+        raise RuntimeError(
+            f"Externes Evidenzmanifest {source.name} benötigt schemaVersion '1.0' und language 'de'."
+        )
+    items = value.get("evidence")
+    if not isinstance(items, list) or not items:
+        raise RuntimeError(f"Externes Evidenzmanifest {source.name} benötigt mindestens einen Eintrag.")
+    normalized: list[dict[str, Any]] = []
+    for index, item in enumerate(items):
+        location = f"{source.name}.evidence[{index}]"
+        if not isinstance(item, dict) or set(item) != EVIDENCE_FIELDS:
+            raise RuntimeError(f"{location} hat fehlende oder unerwartete Felder.")
+        evidence_id = item.get("id")
+        if not isinstance(evidence_id, str) or not EVIDENCE_ID.fullmatch(evidence_id):
+            raise RuntimeError(f"{location}.id muss dem Format EV-001 entsprechen.")
+        repository_url = item.get("repositoryUrl")
+        if not isinstance(repository_url, str) or any(char in repository_url for char in "<>"):
+            raise RuntimeError(f"{location}.repositoryUrl muss eine HTTPS-URL sein.")
+        parsed = urlsplit(repository_url)
+        if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+            raise RuntimeError(
+                f"{location}.repositoryUrl muss eine HTTPS-URL ohne eingebettete Zugangsdaten sein."
+            )
+        commit = item.get("commit")
+        if (
+            not isinstance(commit, str)
+            or not COMMIT_ID.fullmatch(commit)
+            or set(commit) == {"0"}
+        ):
+            raise RuntimeError(f"{location}.commit muss eine Git-Commit-ID enthalten.")
+        path = item.get("path")
+        if not isinstance(path, str) or not path or any(char in path for char in "<>"):
+            raise RuntimeError(f"{location}.path muss ein repository-relativer Pfad sein.")
+        ensure_safe_path(path, f"{location}.path")
+        if "\\" in path or path.startswith("/") or any(
+            part in {"", ".", ".."} for part in PurePosixPath(path).parts
+        ):
+            raise RuntimeError(f"{location}.path ist kein sicherer repository-relativer Pfad.")
+        start = item.get("lineStart")
+        end = item.get("lineEnd")
+        if (start is None) != (end is None):
+            raise RuntimeError(f"{location}: lineStart und lineEnd müssen gemeinsam gesetzt werden.")
+        if start is not None and (
+            type(start) is not int or type(end) is not int or start < 1 or end < start
+        ):
+            raise RuntimeError(f"{location}: ungültiger Zeilenbereich.")
+        for field in ("description", "verificationMethod"):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                raise RuntimeError(f"{location}.{field} muss eine nicht leere deutsche Beschreibung sein.")
+        normalized.append(dict(item))
+    return normalized
+
+
+def load_external_evidence(paths: list[Path]) -> list[dict[str, Any]]:
+    combined: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for path in paths:
+        resolved = path.resolve()
+        if not resolved.is_file():
+            raise RuntimeError(f"Externes Evidenzmanifest fehlt: {path}")
+        try:
+            text = resolved.read_text(encoding="utf-8")
+            reject_probable_secrets(text, f"Externes Evidenzmanifest {resolved.name}")
+            value = json.loads(text)
+        except (OSError, json.JSONDecodeError) as exc:
+            raise RuntimeError(f"Externes Evidenzmanifest {resolved.name} ist ungültig: {exc}") from exc
+        for item in validate_evidence_manifest(value, resolved):
+            if item["id"] in seen_ids:
+                raise RuntimeError(f"Doppelte externe Evidenz-ID: {item['id']}")
+            seen_ids.add(item["id"])
+            combined.append(item)
+    return combined
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Erzeugt ein task-spezifisches Review-Paket.")
     parser.add_argument("--task", required=True, type=Path, help="Konkrete Aufgabendatei")
     parser.add_argument("--base", help="Git-Basisreferenz; Standard aus .ai/config.json")
     parser.add_argument("--claim-inventory", type=Path, help="Optionales Claim-Inventar")
+    parser.add_argument(
+        "--external-evidence",
+        action="append",
+        default=[],
+        type=Path,
+        help=(
+            "Strukturiertes Evidenzmanifest für ein externes Repository; wiederholbar. "
+            "Es werden nur validierte Metadaten, keine externen Dateien aufgenommen."
+        ),
+    )
     parser.add_argument(
         "--include",
         action="append",
@@ -171,6 +278,19 @@ def main(argv: Optional[list[str]] = None) -> int:
             raise RuntimeError(f"Aufgabendatei fehlt: {task_relative}")
         task_text = task_path.read_text(encoding="utf-8")
         reject_probable_secrets(task_text, "Aufgabendatei")
+
+        schema_value = review.get("schema")
+        prompt_value = review.get("prompt")
+        if not isinstance(schema_value, str) or not isinstance(prompt_value, str):
+            raise RuntimeError("review.schema und review.prompt müssen Pfade sein.")
+        schema_path, schema_relative = repository_relative(
+            repo, Path(schema_value), "Review-Schema"
+        )
+        prompt_path, prompt_relative = repository_relative(
+            repo, Path(prompt_value), "Review-Prompt"
+        )
+        if not schema_path.is_file() or not prompt_path.is_file():
+            raise RuntimeError("Konfiguriertes Review-Schema oder Review-Prompt fehlt.")
 
         explicit_paths: list[str] = []
         for include in args.include:
@@ -246,6 +366,8 @@ def main(argv: Optional[list[str]] = None) -> int:
             )
             claim_source = (claim_path, claim_relative)
 
+        external_evidence = load_external_evidence(args.external_evidence)
+
         output_relative = review.get("outputDirectory")
         if not isinstance(output_relative, str) or not output_relative:
             raise RuntimeError("review.outputDirectory ist nicht konfiguriert.")
@@ -263,33 +385,46 @@ def main(argv: Optional[list[str]] = None) -> int:
             counter += 1
         package.mkdir(parents=True)
 
+        working_changed = set(
+            split_zero_terminated(
+                git(repo, ["diff", "--name-only", "-z", "HEAD", "--"], binary=True)
+            )
+        )
+        working_tree_included = bool(set(selected_tracked) & working_changed) or bool(
+            selected_untracked
+        )
         metadata = {
-            "packageVersion": "1.0",
+            "packageVersion": "1.2",
             "generatedAt": timestamp.isoformat().replace("+00:00", "Z"),
             "language": review.get("language"),
             "baseRef": base,
             "baseCommit": base_commit,
-            "currentCommit": current_commit,
+            "headCommit": current_commit,
+            "workingTreeIncluded": working_tree_included,
             "taskFile": task_relative,
             "changedFiles": selected,
             "includesImplementation": args.include_implementation,
             "explicitIncludes": explicit_paths,
             "claimInventory": claim_source[1] if claim_source else None,
+            "externalEvidenceCount": len(external_evidence),
             "maximumFindings": review.get("maximumDefaultFindings"),
-            "schema": review.get("schema"),
-            "prompt": review.get("prompt"),
+            "schema": schema_relative,
+            "prompt": prompt_relative,
             "buildCommand": config.get("build", {}).get("command")
             if isinstance(config.get("build"), dict)
             else None,
         }
-        (package / "metadata.json").write_text(
-            json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-        )
         (package / "changed-files.json").write_text(
             json.dumps(selected, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
         (package / "changes.diff").write_text(combined_diff, encoding="utf-8")
+        diff_hash = file_hash(package / "changes.diff")
+        metadata["diffHash"] = diff_hash
         shutil.copyfile(task_path, package / "task.md")
+        shutil.copyfile(schema_path, package / "review-schema.json")
+        shutil.copyfile(prompt_path, package / "review-prompt.md")
+        metadata["reviewSchemaHash"] = file_hash(package / "review-schema.json")
+        metadata["reviewPromptHash"] = file_hash(package / "review-prompt.md")
         package_config = {
             "reviewLanguage": review.get("language"),
             "maximumFindings": review.get("maximumDefaultFindings"),
@@ -302,11 +437,31 @@ def main(argv: Optional[list[str]] = None) -> int:
         if claim_source:
             suffix = claim_source[0].suffix or ".txt"
             shutil.copyfile(claim_source[0], package / f"claim-inventory{suffix}")
+        if external_evidence:
+            evidence_document = {
+                "schemaVersion": "1.0",
+                "language": "de",
+                "evidence": external_evidence,
+            }
+            (package / "external-evidence.json").write_text(
+                json.dumps(evidence_document, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        (package / "metadata.json").write_text(
+            json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+        metadata["packageHash"] = package_hash(package)
+        (package / "metadata.json").write_text(
+            json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
 
         relative_package = package.relative_to(repo).as_posix()
         print(f"Review-Paket erzeugt: {relative_package}")
         print(f"Basis: {base} ({base_commit})")
-        print(f"Aktueller Commit: {current_commit}")
+        print(f"HEAD-Commit: {current_commit}")
+        print(f"Arbeitsbaum enthalten: {'ja' if working_tree_included else 'nein'}")
+        print(f"Diff-Hash: {diff_hash}")
+        print(f"Paket-Hash: {metadata['packageHash']}")
         print(f"Geänderte Dateien: {len(selected)}")
         return 0
     except RuntimeError as exc:

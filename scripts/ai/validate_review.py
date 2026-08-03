@@ -16,6 +16,9 @@ TOP_LEVEL_FIELDS = {
     "reviewer",
     "language",
     "reviewedCommit",
+    "workingTreeIncluded",
+    "diffHash",
+    "packageHash",
     "baseRef",
     "verdict",
     "summary",
@@ -51,6 +54,7 @@ CATEGORIES = {
 CONFIDENCES = {"high", "medium", "low"}
 FINDING_ID = re.compile(r"^CL-[0-9]{3,}$")
 COMMIT_ID = re.compile(r"^[0-9a-fA-F]{7,40}$")
+SHA256_ID = re.compile(r"^[0-9a-fA-F]{64}$")
 WINDOWS_ABSOLUTE = re.compile(r"^[A-Za-z]:")
 
 
@@ -98,13 +102,28 @@ def validate_document(
         pass
 
     scalar_rules = (
-        ("schemaVersion", lambda v: v == "1.0", "muss exakt '1.0' sein"),
+        ("schemaVersion", lambda v: v == "1.1", "muss exakt '1.1' sein"),
         ("reviewer", lambda v: v == "claude", "muss exakt 'claude' sein"),
         ("language", lambda v: v == "de", "muss exakt 'de' sein"),
         (
             "reviewedCommit",
             lambda v: isinstance(v, str) and bool(COMMIT_ID.fullmatch(v)),
             "muss eine Git-Commit-ID mit 7 bis 40 Hexadezimalzeichen sein",
+        ),
+        (
+            "workingTreeIncluded",
+            lambda v: type(v) is bool,
+            "muss ein boolescher Wert sein",
+        ),
+        (
+            "diffHash",
+            lambda v: isinstance(v, str) and bool(SHA256_ID.fullmatch(v)),
+            "muss ein SHA-256-Hash mit 64 Hexadezimalzeichen sein",
+        ),
+        (
+            "packageHash",
+            lambda v: isinstance(v, str) and bool(SHA256_ID.fullmatch(v)),
+            "muss ein SHA-256-Hash mit 64 Hexadezimalzeichen sein",
         ),
         ("baseRef", _nonempty_string, "muss eine nicht leere Zeichenkette sein"),
         (
@@ -207,7 +226,7 @@ def check_schema_document(schema: Any) -> list[str]:
     properties = schema.get("properties")
     if not isinstance(properties, dict):
         return errors + ["Schema.properties: Erwartet wird ein Objekt."]
-    expected_constants = {"schemaVersion": "1.0", "reviewer": "claude", "language": "de"}
+    expected_constants = {"schemaVersion": "1.1", "reviewer": "claude", "language": "de"}
     for field, expected in expected_constants.items():
         if not isinstance(properties.get(field), dict) or properties[field].get("const") != expected:
             errors.append(f"Schema.properties.{field}: const muss '{expected}' sein.")

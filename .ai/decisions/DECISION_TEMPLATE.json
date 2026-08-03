@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "language": "de",
+  "taskName": "<Aufgabenname>",
+  "reviewFile": ".ai/reviews/<paket>/attempt-01/review.json",
+  "reviewPackageHash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "decisions": [
+    {
+      "findingId": "CL-001",
+      "status": "DEFERRED",
+      "statusLabel": "zurückgestellt",
+      "reviewerStatement": "<Deutsche Wiedergabe des Findings>",
+      "verification": "<Durchgeführte unabhängige Prüfung durch Codex>",
+      "checkedEvidence": [
+        "<Quelle, Repository-Pfad, Commit, Test oder ADR>"
+      ],
+      "rationale": "<Deutsche Begründung der Entscheidung>",
+      "resultingAction": "<Konkrete Änderung, Folgeaufgabe oder keine Änderung>",
+      "files": [
+        "<repository-relativer Pfad>"
+      ],
+      "checkCommand": "<reproduzierbarer Prüfbefehl>",
+      "residualRisk": "<Verbleibendes Risiko oder keines bekannt>"
+    }
+  ]
+}

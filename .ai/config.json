@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "defaultBaseRef": "origin/main",
   "thesisMain": "Abschlussarbeit.tex",
   "build": {
@@ -32,8 +32,15 @@
       ]
     }
   ],
+  "quality": {
+    "overfullThresholdPt": 0.0,
+    "lintPreviewLines": 20,
+    "lintBaseline": "docs/ai/LINT_BASELINE.json"
+  },
   "review": {
     "schema": "docs/ai/REVIEW_SCHEMA.json",
+    "evidenceSchema": "docs/ai/EVIDENCE_MANIFEST_SCHEMA.json",
+    "decisionSchema": "docs/ai/DECISION_SCHEMA.json",
     "prompt": "docs/ai/CLAUDE_REVIEW_PROMPT.md",
     "taskDirectory": ".ai/tasks",
     "outputDirectory": ".ai/reviews",
@@ -54,6 +61,16 @@
     ]
   },
   "claude": {
-    "executable": "claude"
+    "executable": "claude",
+    "minimumStructuredOutputVersion": "2.1.220",
+    "smokeTestTimeoutSeconds": 60
+  },
+  "preflight": {
+    "requiredExecutables": [
+      "git",
+      "latexmk",
+      "pdflatex",
+      "bibtex"
+    ]
   }
 }

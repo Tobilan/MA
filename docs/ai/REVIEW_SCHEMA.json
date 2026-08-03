@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.invalid/schemas/codex-claude-thesis-review-1.0.json",
+  "$id": "https://example.invalid/schemas/codex-claude-thesis-review-1.1.json",
   "title": "Strukturiertes Review einer deutschsprachigen Masterarbeit",
   "description": "Alle menschenlesbaren Stringwerte müssen auf Deutsch verfasst sein; ausgenommen sind standardisierte Bezeichner, Eigennamen und unveränderte Zitate.",
   "type": "object",
@@ -10,6 +10,9 @@
     "reviewer",
     "language",
     "reviewedCommit",
+    "workingTreeIncluded",
+    "diffHash",
+    "packageHash",
     "baseRef",
     "verdict",
     "summary",
@@ -17,7 +20,7 @@
   ],
   "properties": {
     "schemaVersion": {
-      "const": "1.0"
+      "const": "1.1"
     },
     "reviewer": {
       "const": "claude"
@@ -27,7 +30,19 @@
     },
     "reviewedCommit": {
       "type": "string",
-      "pattern": "^[0-9a-fA-F]{7,40}$"
+      "pattern": "^[0-9a-fA-F]{7,40}$",
+      "description": "HEAD-Commit beim Erzeugen des Pakets; Arbeitsbaumanteile werden zusätzlich über workingTreeIncluded, diffHash und packageHash identifiziert."
+    },
+    "workingTreeIncluded": {
+      "type": "boolean"
+    },
+    "diffHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "packageHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
     },
     "baseRef": {
       "type": "string",

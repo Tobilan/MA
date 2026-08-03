@@ -16,9 +16,14 @@
 
 - <Nicht zu bearbeitender Bereich>
 
+## Commit-Modus
+
+`commit` oder `no_commit`. Eine ausdrückliche menschliche Vorgabe hat Vorrang vor dem allgemeinen Ziel eines zusammenhängenden Commits.
+
 ## Erforderliche Nachweise
 
 - <Quelle, Standard, Test, Implementierungspfad oder ADR>
+- <Optional: externes Evidenzmanifest nach `.ai/tasks/EXTERNAL_EVIDENCE_TEMPLATE.json`>
 
 ## Besonders zu prüfende Aussagen
 
