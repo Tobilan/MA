@@ -15,18 +15,17 @@ import sys
 from pathlib import Path
 from typing import Any, Optional
 
+from claude_cli import (
+    REQUIRED_CLAUDE_FLAGS,
+    configured_model_and_effort,
+    review_arguments,
+    structured_output,
+)
 from review_package import file_hash, package_hash
 from review_schema import compact_json, load_schema, schema_hash, to_claude_cli_schema
 from validate_review import validate_document
 
 
-REQUIRED_CLAUDE_FLAGS = (
-    "--print",
-    "--permission-mode",
-    "--tools",
-    "--no-session-persistence",
-    "--json-schema",
-)
 VERSION_PATTERN = re.compile(r"(?<!\d)(\d+)\.(\d+)\.(\d+)(?!\d)")
 ATTEMPT_PATTERN = re.compile(r"^attempt-([0-9]{2,})$")
 
@@ -281,6 +280,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         resolved_executable = shutil.which(executable)
         if resolved_executable is None:
             raise RuntimeError(f"Claude CLI ist nicht verfügbar: {executable}. Zuerst preflight.py ausführen.")
+        model, effort = configured_model_and_effort(claude_config)
 
         version_result = run_text([resolved_executable, "--version"], repo)
         version_text = (version_result.stdout + version_result.stderr).strip()
@@ -318,25 +318,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         )
         command = [
             resolved_executable,
-            "--print",
-            "--permission-mode",
-            "plan",
-            "--tools",
-            "",
-            "--no-session-persistence",
-            "--json-schema",
-            compact_json(cli_schema),
+            *review_arguments(model, effort, compact_json(cli_schema)),
         ]
         recorded_command = [
             executable,
-            "--print",
-            "--permission-mode",
-            "plan",
-            "--tools",
-            "",
-            "--no-session-persistence",
-            "--json-schema",
-            "<transformiertes REVIEW_SCHEMA.json>",
+            *review_arguments(model, effort, "<transformiertes REVIEW_SCHEMA.json>"),
         ]
 
         attempt = next_attempt_directory(package)
@@ -378,13 +364,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         unchanged = status_before == status_after and not affected
         finished = dt.datetime.now(dt.timezone.utc)
         execution_metadata = {
-            "runnerVersion": "1.1",
+            "runnerVersion": "1.2",
             "attempt": attempt.name,
             "startedAt": started.isoformat().replace("+00:00", "Z"),
             "finishedAt": finished.isoformat().replace("+00:00", "Z"),
             "claudeVersion": version_text,
+            "model": model,
+            "effort": effort,
+            "outputFormat": "json",
             "command": recorded_command,
             "permissionMode": "plan",
+            "safeMode": True,
             "toolsDisabled": True,
             "sessionPersistenceDisabled": True,
             "schemaPassedToCli": True,
@@ -414,13 +404,9 @@ def main(argv: Optional[list[str]] = None) -> int:
             return 4
 
         try:
-            review_document = json.loads(raw_output)
-        except json.JSONDecodeError as exc:
-            print(
-                "FEHLER: Claude-Ausgabe ist trotz zwingendem --json-schema kein reines gültiges JSON "
-                f"(Zeile {exc.lineno}, Spalte {exc.colno}: {exc.msg}).",
-                file=sys.stderr,
-            )
+            review_document = structured_output(raw_output)
+        except RuntimeError as exc:
+            print(f"FEHLER: {exc}", file=sys.stderr)
             return 5
         maximum = metadata.get("maximumFindings")
         maximum_findings = maximum if type(maximum) is int and maximum >= 0 else None

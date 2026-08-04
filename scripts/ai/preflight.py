@@ -14,17 +14,16 @@ import sys
 from pathlib import Path
 from typing import Any, Optional
 
+from claude_cli import (
+    REQUIRED_CLAUDE_FLAGS,
+    configured_model_and_effort,
+    review_arguments,
+    structured_output,
+)
 from review_schema import compact_json, load_schema, schema_hash, to_claude_cli_schema
 from validate_review import validate_document
 
 
-REQUIRED_CLAUDE_FLAGS = (
-    "--print",
-    "--permission-mode",
-    "--tools",
-    "--no-session-persistence",
-    "--json-schema",
-)
 VERSION_PATTERN = re.compile(r"(?<!\d)(\d+)\.(\d+)\.(\d+)(?!\d)")
 
 
@@ -190,6 +189,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         claude = shutil.which(executable_name)
         if claude is None:
             raise RuntimeError(f"Claude CLI fehlt im PATH: {executable_name}")
+        model, effort = configured_model_and_effort(claude_config)
 
         version_result = run([claude, "--version"], repo)
         version_text = (version_result.stdout + version_result.stderr).strip()
@@ -214,7 +214,10 @@ def main(argv: Optional[list[str]] = None) -> int:
         if missing_flags or "plan" not in help_text.lower():
             detail = ", ".join(missing_flags) if missing_flags else "Berechtigungsmodus plan"
             raise RuntimeError(f"Claude CLI unterstützt die erforderlichen Optionen nicht: {detail}")
-        print("OK: Claude unterstützt plan, deaktivierte Werkzeuge und --json-schema")
+        print(
+            "OK: Claude unterstützt Modell- und Effort-Auswahl, plan, deaktivierte "
+            "Werkzeuge, JSON-Ausgabe und --json-schema"
+        )
 
         timeout = args.timeout
         if timeout is None:
@@ -229,17 +232,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             "ohne Findings zurück. Verwende exakt diese maschinenlesbaren Werte: "
             + json.dumps(expected, ensure_ascii=False)
         )
-        command = [
-            claude,
-            "--print",
-            "--permission-mode",
-            "plan",
-            "--tools",
-            "",
-            "--no-session-persistence",
-            "--json-schema",
-            compact_json(cli_schema),
-        ]
+        command = [claude, *review_arguments(model, effort, compact_json(cli_schema))]
         status_before = git_status(repo)
         before = repository_fingerprints(repo)
         smoke_result = run(command, repo, input_text=prompt, timeout=timeout)
@@ -259,19 +252,16 @@ def main(argv: Optional[list[str]] = None) -> int:
                 "Claude-Anmeldung oder strukturierter Schema-Smoke-Test fehlgeschlagen: "
                 + detail[:1000]
             )
-        try:
-            document = json.loads(smoke_result.stdout)
-        except json.JSONDecodeError as exc:
-            raise RuntimeError(
-                "Claude lieferte trotz --json-schema keine reine JSON-Ausgabe: "
-                f"Zeile {exc.lineno}, Spalte {exc.colno}: {exc.msg}"
-            ) from exc
+        document = structured_output(smoke_result.stdout)
         validation_errors = validate_document(document, maximum_findings=0)
         if validation_errors:
             raise RuntimeError(
                 "Claude-Smoke-Ausgabe verletzt das Review-Schema: " + "; ".join(validation_errors)
             )
-        print("OK: Claude-Anmeldung und strukturierter Read-only-Smoke-Test")
+        print(
+            f"OK: Claude-Anmeldung und strukturierter Read-only-Smoke-Test "
+            f"mit Modell {model} und Effort {effort}"
+        )
         print("Preflight erfolgreich. Die Schreib- und Review-Aufgabe kann beginnen.")
         return 0
     except RuntimeError as exc:

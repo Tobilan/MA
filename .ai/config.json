@@ -62,6 +62,8 @@
   },
   "claude": {
     "executable": "claude",
+    "model": "opus",
+    "effort": "high",
     "minimumStructuredOutputVersion": "2.1.220",
     "smokeTestTimeoutSeconds": 60
   },

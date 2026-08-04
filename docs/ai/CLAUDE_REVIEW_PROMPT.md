@@ -2,6 +2,8 @@
 
 Prüfe ausschließlich die bereitgestellte Aufgabe und das zugehörige Review-Paket. Bleibe vollständig read-only und verändere keine Datei. Priorisiere sachliche und wissenschaftliche Korrektheit gegenüber bloßen Stilpräferenzen.
 
+Verändere keine Datei, insbesondere keine .tex datei
+
 Prüfe insbesondere:
 
 - die Trennung zwischen implementierter, prototypischer, vorgesehener und vorgeschlagener Funktionalität,
@@ -23,3 +25,5 @@ Gib ausschließlich valides JSON zurück, das `docs/ai/REVIEW_SCHEMA.json` entsp
 All human-readable string values in the JSON response must be written in German.
 Do not translate standardized IFC entity names, source-code identifiers,
 publication titles, product names, or bibliography metadata.
+
+Verändere keine .tex Datei!

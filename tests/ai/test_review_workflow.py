@@ -13,6 +13,11 @@ from typing import Any
 REPOSITORY = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY / "scripts" / "ai"))
 
+from claude_cli import (  # noqa: E402
+    configured_model_and_effort,
+    review_arguments,
+    structured_output,
+)
 from review_package import package_hash  # noqa: E402
 from review_schema import (  # noqa: E402
     SchemaTransformationError,
@@ -97,6 +102,33 @@ class ReviewPackageHashTests(unittest.TestCase):
                 '{"type":"object"}\n', encoding="utf-8"
             )
             self.assertNotEqual(prompt_changed, package_hash(package))
+
+
+class ClaudeCliTests(unittest.TestCase):
+    def test_model_and_effort_are_required(self) -> None:
+        self.assertEqual(
+            configured_model_and_effort({"model": "opus", "effort": "high"}),
+            ("opus", "high"),
+        )
+        with self.assertRaises(RuntimeError):
+            configured_model_and_effort({"model": "opus"})
+
+    def test_structured_output_is_extracted_from_json_envelope(self) -> None:
+        document = {"schemaVersion": "1.1", "findings": []}
+        envelope = json.dumps({"type": "result", "structured_output": document})
+        self.assertEqual(structured_output(envelope), document)
+
+    def test_review_arguments_pin_model_effort_and_json_output(self) -> None:
+        arguments = review_arguments("opus", "high", "<schema>")
+        self.assertEqual(arguments[arguments.index("--model") + 1], "opus")
+        self.assertEqual(arguments[arguments.index("--effort") + 1], "high")
+        self.assertEqual(arguments[arguments.index("--output-format") + 1], "json")
+        self.assertIn("--safe-mode", arguments)
+        self.assertEqual(arguments[arguments.index("--permission-mode") + 1], "plan")
+
+    def test_missing_structured_output_is_rejected(self) -> None:
+        with self.assertRaises(RuntimeError):
+            structured_output(json.dumps({"type": "result", "result": "{}"}))
 
 
 if __name__ == "__main__":

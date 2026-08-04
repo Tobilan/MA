@@ -38,6 +38,10 @@ Dieses Verzeichnis bündelt die verbindlichen fachlichen, sprachlichen und techn
    python scripts/ai/run_claude_review.py --package .ai/reviews/<paket>
    ```
 
+   Modell und Effort-Level werden verbindlich unter `claude.model` und
+   `claude.effort` in `.ai/config.json` festgelegt und im Ausführungsprotokoll
+   des Attempts dokumentiert.
+
 7. Das im `successful-attempt.json` markierte Review validieren:
 
    ```powershell

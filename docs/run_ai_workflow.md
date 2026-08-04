@@ -15,10 +15,16 @@ scripts/ai/run_ai_workflow.py
 ## Kompletter Ablauf vor dem Review
 
 ```bash
-python scripts/ai/run_ai_workflow.py pre-review
+python scripts/ai/run_ai_workflow.py pre-review --task .ai/tasks/<aufgabe>.md
 ```
 
+Wenn unter `.ai/tasks/` genau eine konkrete Aufgabendatei liegt, kann `--task`
+entfallen.
+
 Dabei werden nacheinander folgende Skripte ausgeführt:
+
+Der Orchestrator leitet die Aufgabendatei sowie die dabei erzeugten Paket- und
+Review-Pfade automatisch an die Folgeschritte weiter.
 
 1. `check_thesis.py`
 2. `prepare_review.py`
@@ -54,9 +60,10 @@ python scripts/ai/run_ai_workflow.py prepare -- \
 
 ```bash
 python scripts/ai/run_ai_workflow.py pre-review \
-  --prepare-args "--base main --task .ai/tasks/kapitel-04-01.md" \
-  --review-args "--package .ai/reviews/kapitel-04-01" \
-  --validate-args ".ai/reviews/kapitel-04-01/review.json"
+  --task .ai/tasks/kapitel-04-01.md \
+  --prepare-args "--base main" \
+  --review-args "--timeout 1200" \
+  --validate-args "--maximum-findings 15"
 ```
 
 ## Protokolle

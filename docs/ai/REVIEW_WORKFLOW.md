@@ -32,13 +32,13 @@ Der Mensch prüft das Ergebnis vor dem Merge
 
 ## Verbindliche Durchführung
 
-1. Vor jeder Textarbeit `py -3 scripts/ai/preflight.py` ausführen. Der Preflight prüft Python, Git, LaTeX, Claude-Version, Anmeldung, `plan`, deaktivierte Werkzeuge und das transformierte strukturierte Schema. Bei Fehlern wird nicht geschrieben.
+1. Vor jeder Textarbeit `py -3 scripts/ai/preflight.py` ausführen. Der Preflight prüft Python, Git, LaTeX, Claude-Version, das konfigurierte Modell und Effort-Level, Anmeldung, `plan`, deaktivierte Werkzeuge und das transformierte strukturierte Schema. Bei Fehlern wird nicht geschrieben.
 2. Aus `.ai/tasks/TASK_TEMPLATE.md` eine konkrete Aufgabendatei erstellen und den Commit-Modus `commit` oder `no_commit` festlegen.
 3. Codex genau eine zusammenhängende Änderung innerhalb des erklärten Umfangs durchführen lassen.
 4. Aus dem Repository heraus die Qualitätsprüfung ausführen: `python scripts/ai/check_thesis.py`. Das Skript meldet Overfull-Boxen, differenziert Lint-Befunde gegen `LINT_BASELINE.json` und prüft geänderte LaTeX-Dateien zusätzlich mit vollständiger Ausgabe.
 5. Das Paket mit `python scripts/ai/prepare_review.py --task .ai/tasks/<aufgabe>.md` erzeugen. Eine abweichende Basis wird mit `--base <ref>` angegeben. Neue unversionierte Dateien werden nie automatisch aufgenommen und müssen mit wiederholtem `--include <pfad>` ausdrücklich benannt werden; `--include-implementation` ergänzt für versionierte Änderungen die konfigurierten Implementierungspfade.
 6. Liegt Implementierungsevidenz in einem anderen Repository, aus `.ai/tasks/EXTERNAL_EVIDENCE_TEMPLATE.json` ein Manifest erstellen und mit `--external-evidence <manifest.json>` übergeben. Aufgenommen werden nur HTTPS-Repository-URL, Commit, repository-relativer Pfad, optionaler Zeilenbereich, Beschreibung und Prüfmethode; externe Dateien werden nicht kopiert.
-7. Den ausgegebenen Paketpfad mit `python scripts/ai/run_claude_review.py --package <paketpfad>` prüfen lassen. Der Runner akzeptiert nur die konfigurierte Mindestversion mit `--json-schema`, `plan`, deaktivierten Werkzeugen und deaktivierter Sitzungspersistenz. Es gibt keinen unstrukturierten Fallback.
+7. Den ausgegebenen Paketpfad mit `python scripts/ai/run_claude_review.py --package <paketpfad>` prüfen lassen. Der Runner verwendet das in `.ai/config.json` festgelegte Modell und Effort-Level sowie `--safe-mode`, `--output-format json`, `--json-schema`, `plan`, deaktivierte Werkzeuge und deaktivierte Sitzungspersistenz. Es gibt keinen unstrukturierten Fallback.
 8. Den in `successful-attempt.json` ausgewiesenen Lauf mit `python scripts/ai/validate_review.py <paketpfad>/attempt-<nn>/review.json` validieren.
 9. Codex jedes Finding unabhängig anhand von Code, Quellen, Standards, Tests oder ADRs prüfen lassen.
 10. Aus `.ai/decisions/DECISION_TEMPLATE.json` eine versionierte Entscheidungsakte erstellen und jedes Finding als `ACCEPTED`, `REJECTED` oder `DEFERRED` entscheiden. Mit `python scripts/ai/validate_decisions.py <review.json> <entscheidungen.json>` sicherstellen, dass jedes Finding genau einmal vorkommt.
@@ -97,7 +97,7 @@ Es werden nur der Git-Diff gegen die geprüfte Basis, explizit relevante neue Da
 
 - **Claude CLI fehlt:** Der Runner beendet sich ungleich null. CLI installieren, `claude --help` prüfen und erneut ausführen; kein Review vortäuschen.
 - **Preflight fehlgeschlagen:** Keine Schreibarbeit beginnen. Fehlendes Werkzeug, Anmeldung, Mindestversion oder Schemaunterstützung anhand der deutschen Diagnose beheben.
-- **Claude-Version zu alt oder `--json-schema` fehlt:** Runner und Preflight brechen ab. Markdown-Codeblöcke oder freie Textausgabe werden nicht als Fallback akzeptiert.
+- **Claude-Version zu alt oder erforderliche CLI-Option fehlt:** Runner und Preflight brechen ab. Dies gilt insbesondere für `--model`, `--effort`, `--output-format` und `--json-schema`. Markdown-Codeblöcke oder freie Textausgabe werden nicht als Fallback akzeptiert.
 - **Kanonisches Schema nicht transformierbar:** Nicht unterstütztes Schlüsselwort bewusst im Transformationsmodul ergänzen und testen; das kanonische Schema nicht zur Umgehung abschwächen.
 - **LaTeX-Toolchain fehlt:** `check_thesis.py` nennt das fehlende erforderliche Programm und beendet sich ungleich null. TeX Live oder eine kompatible Toolchain installieren.
 - **Ungültiges JSON:** Rohantwort bleibt erhalten; Validator nennt Feld und Fehler. Inhalt nicht manuell „wohlwollend“ übernehmen, sondern Review erneut ausführen.

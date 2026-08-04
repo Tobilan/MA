@@ -26,21 +26,19 @@
 | Schwierige fachliche Fragen | Sol | High |
 | Max/Ultra | Nur in Ausnahmefällen | Nach Bedarf |
 
+## Prompt 1 ausführen (Kapitelerstellung)
+[file](1_kapitelprompt.md)
+
 ## Vollständigen Vorab-Workflow starten
 
 ```bash
-python scripts/ai/run_ai_workflow.py pre-review
+python scripts/ai/run_ai_workflow.py pre-review \
+  --task .ai/tasks/<aufgabe>.md
 ```
 
-## Claude-Findings verifizieren
+## Prompt 2 ausführen (Claude-Findings verifizieren)
+[file](2_reviewprompt.md)
 
-Codex soll jedes Finding von Claude prüfen und mit einem der folgenden Status dokumentieren:
-
-- `ACCEPTED`
-- `REJECTED`
-- `DEFERRED`
-
-Anschließend dürfen nur die als `ACCEPTED` eingestuften Änderungen durch Codex umgesetzt werden.
 
 ## Abschlussprüfung starten
 

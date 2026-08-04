@@ -33,6 +33,7 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
 import shlex
 import subprocess
 import sys
@@ -172,7 +173,7 @@ def run_step(
     repo_root: Path,
     log_dir: Path,
     dry_run: bool,
-) -> None:
+) -> str:
     """Führt einen Workflow-Schritt aus und protokolliert dessen Ausgabe."""
     command = [sys.executable, str(step.script), *step.arguments]
     printable = " ".join(shlex.quote(part) for part in command)
@@ -187,7 +188,7 @@ def run_step(
             f"DRY RUN\n{printable}\n",
             encoding="utf-8",
         )
-        return
+        return ""
 
     try:
         process = subprocess.Popen(
@@ -220,6 +221,44 @@ def run_step(
         )
 
     print(f"Erfolgreich: {step.label}")
+    return "".join(output_lines)
+
+
+def extract_reported_path(output: str, prefix: str, repo_root: Path) -> Path:
+    """Liest einen von einem Workflow-Skript ausgegebenen Repository-Pfad."""
+    match = re.search(rf"^{re.escape(prefix)}(?P<path>.+)$", output, re.MULTILINE)
+    if match is None:
+        raise WorkflowError(
+            f"Der erwartete Pfad konnte nicht aus der Ausgabe gelesen werden: {prefix.strip()}"
+        )
+    reported = Path(match.group("path").strip())
+    candidate = reported if reported.is_absolute() else repo_root / reported
+    resolved = candidate.resolve()
+    try:
+        resolved.relative_to(repo_root.resolve())
+    except ValueError as error:
+        raise WorkflowError("Ein Workflow-Schritt hat einen Pfad außerhalb des Repositorys gemeldet.") from error
+    return resolved
+
+
+def infer_task_file(repo_root: Path) -> Path:
+    """Ermittelt die einzige konkrete Aufgabendatei, wenn --task fehlt."""
+    task_directory = repo_root / ".ai" / "tasks"
+    candidates = sorted(
+        path
+        for path in task_directory.glob("*.md")
+        if path.name != "TASK_TEMPLATE.md"
+    )
+    if len(candidates) == 1:
+        return candidates[0]
+    if not candidates:
+        raise WorkflowError(
+            "Keine Aufgabendatei gefunden. Übergib für pre-review --task .ai/tasks/<aufgabe>.md."
+        )
+    raise WorkflowError(
+        "Mehrere Aufgabendateien gefunden. Übergib für pre-review ausdrücklich "
+        "--task .ai/tasks/<aufgabe>.md."
+    )
 
 
 def build_steps(
@@ -249,6 +288,13 @@ def build_steps(
     if command == "pre-review":
         keys = ["check", "prepare", "review", "validate"]
         paths = ensure_scripts_exist(repo_root, keys)
+        task = (args.task or infer_task_file(repo_root)).resolve()
+        try:
+            task_argument = str(task.relative_to(repo_root))
+        except ValueError as error:
+            raise WorkflowError("Die Aufgabendatei für pre-review liegt außerhalb des Repositorys.") from error
+        prepare_arguments = ["--task", task_argument]
+        prepare_arguments.extend(split_arguments(args.prepare_args))
         return [
             Step(
                 "check",
@@ -260,19 +306,7 @@ def build_steps(
                 "prepare",
                 "Review-Paket erzeugen",
                 paths["prepare"],
-                split_arguments(args.prepare_args),
-            ),
-            Step(
-                "review",
-                "Claude-Review ausführen",
-                paths["review"],
-                split_arguments(args.review_args),
-            ),
-            Step(
-                "validate",
-                "Review validieren",
-                paths["validate"],
-                split_arguments(args.validate_args),
+                tuple(prepare_arguments),
             ),
         ]
 
@@ -329,6 +363,14 @@ def create_parser() -> argparse.ArgumentParser:
     pre = subparsers.add_parser(
         "pre-review",
         help="Check, Review-Paket, Claude-Review und Validierung nacheinander.",
+    )
+    pre.add_argument(
+        "--task",
+        type=Path,
+        help=(
+            "Konkrete Aufgabendatei. Fehlt sie, wird die einzige Datei unter "
+            ".ai/tasks/ verwendet."
+        ),
     )
     pre.add_argument(
         "--check-args",
@@ -391,13 +433,61 @@ def main() -> int:
         print(f"Repository: {repo_root}")
         print(f"Protokolle: {log_dir.relative_to(repo_root)}")
 
-        for step in steps:
+        if args.command == "pre-review":
+            check_step, prepare_step = steps
             run_step(
-                step,
+                check_step,
                 repo_root=repo_root,
                 log_dir=log_dir,
                 dry_run=args.dry_run,
             )
+            prepare_output = run_step(
+                prepare_step,
+                repo_root=repo_root,
+                log_dir=log_dir,
+                dry_run=args.dry_run,
+            )
+            if not args.dry_run:
+                package = extract_reported_path(
+                    prepare_output, "Review-Paket erzeugt: ", repo_root
+                )
+                review_step = Step(
+                    "review",
+                    "Claude-Review ausführen",
+                    repo_root / "scripts" / "ai" / SCRIPT_NAMES["review"],
+                    ("--package", str(package.relative_to(repo_root)), *split_arguments(args.review_args)),
+                )
+                review_output = run_step(
+                    review_step,
+                    repo_root=repo_root,
+                    log_dir=log_dir,
+                    dry_run=False,
+                )
+                review_file = extract_reported_path(
+                    review_output,
+                    "Claude-Review erfolgreich, strukturiert und read-only: ",
+                    repo_root,
+                )
+                validate_step = Step(
+                    "validate",
+                    "Review validieren",
+                    repo_root / "scripts" / "ai" / SCRIPT_NAMES["validate"],
+                    (str(review_file.relative_to(repo_root)), *split_arguments(args.validate_args)),
+                )
+                run_step(
+                    validate_step,
+                    repo_root=repo_root,
+                    log_dir=log_dir,
+                    dry_run=False,
+                )
+        else:
+            for step in steps:
+                run_step(
+                    step,
+                    repo_root=repo_root,
+                    log_dir=log_dir,
+                    dry_run=args.dry_run,
+                )
 
         summary = {
             "finishedAt": dt.datetime.now(dt.timezone.utc).isoformat(),
