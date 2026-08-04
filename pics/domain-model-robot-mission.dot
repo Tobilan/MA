@@ -1,0 +1,56 @@
+digraph RobotMissionDomainModel {
+  graph [rankdir=LR, bgcolor="transparent", nodesep=0.55, ranksep=0.85,
+         fontname="Helvetica", fontsize=11];
+  node [shape=plain, fontname="Helvetica", fontsize=10];
+  edge [fontname="Helvetica", fontsize=8, color="#404040", arrowsize=0.7];
+
+  mission [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" COLOR="#202020">
+      <TR><TD BGCOLOR="#D9D9D9"><B>RobotMission</B></TD></TR>
+      <TR><TD ALIGN="LEFT">id, name, status, priority</TD></TR>
+      <TR><TD ALIGN="LEFT">createdAt, updatedAt</TD></TR>
+    </TABLE>>];
+  task [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" COLOR="#202020">
+      <TR><TD BGCOLOR="#EDEDED"><B>RobotTask</B></TD></TR>
+      <TR><TD ALIGN="LEFT">id, name, actionType</TD></TR>
+      <TR><TD ALIGN="LEFT">status, priority, Zeitstempel</TD></TR>
+    </TABLE>>];
+  sequence [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" COLOR="#202020">
+      <TR><TD BGCOLOR="#EDEDED"><B>RobotTaskSequence</B></TD></TR>
+      <TR><TD ALIGN="LEFT">id, predecessorTaskId</TD></TR>
+      <TR><TD ALIGN="LEFT">successorTaskId, sequenceType</TD></TR>
+    </TABLE>>];
+  schedule [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" COLOR="#202020">
+      <TR><TD BGCOLOR="#EDEDED"><B>RobotMissionSchedule</B></TD></TR>
+      <TR><TD ALIGN="LEFT">id, name, geplante Zeitangaben</TD></TR>
+    </TABLE>>];
+  object [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" COLOR="#202020">
+      <TR><TD BGCOLOR="#EDEDED"><B>RobotObjectReference</B></TD></TR>
+      <TR><TD ALIGN="LEFT">globalId oder modelId + expressId</TD></TR>
+      <TR><TD ALIGN="LEFT">ifcClass, name (optional)</TD></TR>
+    </TABLE>>];
+  action [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" COLOR="#202020">
+      <TR><TD BGCOLOR="#EDEDED"><B>RobotActionProperties</B></TD></TR>
+      <TR><TD ALIGN="LEFT">Zustand, Rollen, Fähigkeit</TD></TR>
+      <TR><TD ALIGN="LEFT">Vor-/Nachbedingungen, Erfolgskriterium</TD></TR>
+    </TABLE>>];
+  time [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" COLOR="#202020">
+      <TR><TD BGCOLOR="#EDEDED"><B>RobotTaskTime</B></TD></TR>
+      <TR><TD ALIGN="LEFT">geplante und tatsächliche Zeiten</TD></TR>
+      <TR><TD ALIGN="LEFT">Restdauer, completion</TD></TR>
+    </TABLE>>];
+
+  mission -> task [dir=both, arrowtail=diamond, label=" tasks 0..*", headlabel="1", labeldistance=1.5];
+  mission -> sequence [dir=both, arrowtail=diamond, label=" sequences 0..*", headlabel="1", labeldistance=1.5];
+  mission -> schedule [dir=both, arrowtail=diamond, label=" schedule 0..1", headlabel="1", labeldistance=1.5];
+  sequence -> task [style=dashed, label=" Vorgänger-/Nachfolger-ID", constraint=false];
+  task -> object [dir=both, arrowtail=diamond, label=" Objektbezüge 0..*", headlabel="1", labeldistance=1.5];
+  task -> action [dir=both, arrowtail=diamond, label=" properties 0..1", headlabel="1", labeldistance=1.5];
+  task -> time [dir=both, arrowtail=diamond, label=" time 0..1", headlabel="1", labeldistance=1.5];
+}

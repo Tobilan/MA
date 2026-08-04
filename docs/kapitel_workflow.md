@@ -32,8 +32,7 @@
 ## Vollständigen Vorab-Workflow starten
 
 ```bash
-python scripts/ai/run_ai_workflow.py pre-review \
-  --task .ai/tasks/<aufgabe>.md
+python scripts/ai/run_ai_workflow.py pre-review --task .ai/tasks/<aufgabe>.md
 ```
 
 ## Prompt 2 ausführen (Claude-Findings verifizieren)

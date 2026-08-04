@@ -1,0 +1,65 @@
+%PDF-1.4
+% domain-model-robot-mission.dot is the editable source
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 1675 >>
+stream
+0.7 G 0.8 w
+40 430 155 80 re S
+40 510 155 24 re f
+0 G BT /F2 12 Tf 76 517 Td (RobotMission) Tj /F1 9 Tf -28 -20 Td (id, name, status, priority) Tj 0 -16 Td (tasks, sequences, schedule) Tj ET
+240 430 145 80 re S
+240 510 145 24 re f
+0 G BT /F2 12 Tf 280 517 Td (RobotTask) Tj /F1 9 Tf -25 -20 Td (id, name, actionType) Tj 0 -16 Td (Objektbezuge, Zeit) Tj ET
+490 440 190 68 re S
+490 508 190 24 re f
+0 G BT /F2 12 Tf 515 515 Td (RobotTaskSequence) Tj /F1 9 Tf -10 -20 Td (Vorganger- und Nachfolger-ID) Tj ET
+490 340 190 68 re S
+490 408 190 24 re f
+0 G BT /F2 12 Tf 510 415 Td (RobotMissionSchedule) Tj /F1 9 Tf 3 -20 Td (geplante Zeitangaben) Tj ET
+240 270 145 68 re S
+240 338 145 24 re f
+0 G BT /F2 12 Tf 250 345 Td (RobotObjectReference) Tj /F1 9 Tf 7 -20 Td (globalId oder lokaler Fallback) Tj ET
+490 250 190 68 re S
+490 318 190 24 re f
+0 G BT /F2 12 Tf 505 325 Td (RobotActionProperties) Tj /F1 9 Tf 6 -20 Td (Zustand, Rollen, Bedingungen) Tj ET
+490 150 190 68 re S
+490 218 190 24 re f
+0 G BT /F2 12 Tf 525 225 Td (RobotTaskTime) Tj /F1 9 Tf -8 -20 Td (geplante und tatsachliche Zeiten) Tj ET
+0 G 195 470 m 240 470 l S 230 475 m 240 470 l 230 465 m 240 470 l S
+385 485 m 490 485 l S 480 490 m 490 485 l 480 480 m 490 485 l S
+195 445 m 490 374 l S 480 379 m 490 374 l 478 369 m 490 374 l S
+312 430 m 312 362 l S 307 372 m 312 362 l 317 372 m 312 362 l S
+385 300 m 490 284 l S 480 289 m 490 284 l 480 279 m 490 284 l S
+385 292 m 490 184 l S 480 189 m 490 184 l 478 179 m 490 184 l S
+BT /F1 8 Tf 200 478 Td (tasks 0..*) Tj 190 12 Td (sequences 0..*) Tj -95 -104 Td (schedule 0..1) Tj -188 -79 Td (Objektbezuge 0..*) Tj 182 -10 Td (properties 0..1) Tj 0 -98 Td (time 0..1) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000065 00000 n 
+0000000114 00000 n 
+0000000171 00000 n 
+0000000307 00000 n 
+0000002033 00000 n 
+0000002103 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+0000002178
+%%EOF
