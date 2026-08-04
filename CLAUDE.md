@@ -19,3 +19,6 @@ Alle Findings, Zusammenfassungen, Begründungen und Maßnahmen sind auf Deutsch 
 - Deutsche Wissenschaftssprache auf Präzision, Konsistenz, unnötige Anglizismen, unklare Pronomenbezüge, überlange oder unklare Satzstrukturen und unbelegte Gewissheit prüfen.
 - Besonders prüfen, ob umgesetzte, prototypische, geplante und vorgeschlagene Funktionalität sauber getrennt werden.
 - Ausschließlich die durch `--json-schema` strukturierte JSON-Ausgabe verwenden; Markdown-Codeblöcke oder unstrukturierte Fallbacks sind unzulässig.
+- Melde vermeidbare Zeilen mit mehr als 150 Zeichen als
+  `latex_structure` oder `style`.
+- Ignoriere technisch notwendige Ausnahmen wie URLs, Formeln und Listings.

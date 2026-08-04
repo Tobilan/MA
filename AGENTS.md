@@ -4,6 +4,10 @@ Vor jeder Arbeit an diesem Repository sind zuerst `docs/ai/THESIS_CONTRACT.md` u
 
 Codex ist der primäre Autor und alleinige Integrationsagent für die kanonischen Dateien der Masterarbeit. Dazu gehören insbesondere `.tex`- und `.bib`-Dateien, Glossare, Abkürzungsverzeichnisse sowie die LaTeX-Konfiguration. Claude ist standardmäßig ausschließlich als unabhängiger Reviewer einzusetzen.
 
+- Halte Zeilen in `.tex`-Dateien grundsätzlich unter 150 Zeichen.
+- Brich Fließtext semantisch sinnvoll um.
+- Verändere durch Zeilenumbrüche nicht die LaTeX-Semantik.
+
 ## Verbindlicher Arbeitsablauf
 
 1. Vor Änderungen Repository-Struktur, `git status`, Einstiegspunkt, Build-Konfiguration und einschlägige Projektanweisungen prüfen. Anschließend `python scripts/ai/preflight.py` ausführen; ohne erfolgreichen Preflight keine Schreibaufgabe beginnen.

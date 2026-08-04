@@ -2,6 +2,20 @@
 
 Der vorhandene Repository-Stand ist ein deutschsprachiges LaTeX-Template und enthält noch keinen ausgearbeiteten fachlichen Haupttext. Deshalb gelten zunächst gegenwärtige deutsche Standardorthografie und ein formales, präzises, unpersönliches Register. Etablierte spätere Konventionen des Haupttexts haben Vorrang, sofern sie konsistent und wissenschaftlich angemessen sind.
 
+## Zeilenlänge in LaTeX-Dateien
+
+Quelltextzeilen in `.tex`-Dateien sollen nach Möglichkeit höchstens
+150 Zeichen lang sein.
+
+Fließtext ist an sinnvollen Wort-, Satzteil- oder Satzgrenzen umzubrechen.
+Ausgenommen sind insbesondere:
+- lange URLs,
+- nicht sinnvoll trennbare LaTeX-Befehle,
+- Tabellenzeilen,
+- Formeln,
+- Code-Listings,
+- automatisch erzeugte Inhalte.
+
 ## Register und Satzbau
 
 - Aussagen präzise, überprüfbar und ohne werbende Zuspitzung formulieren.
