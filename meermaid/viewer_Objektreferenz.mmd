@@ -1,0 +1,9 @@
+
+flowchart TB
+    A["Viewer-Auswahl"] --> B["IFC-Metadaten auflösen"]
+    B --> D{"GlobalId<br/>vorhanden?"}
+    D -->|ja| G["RobotObjectReference<br/>mit GlobalId"]
+    D -->|nein| F["RobotObjectReference<br/>mit modelId + expressId"]
+    D -->|weder noch| E["Abbruch:<br/>ViewerSelectionReferenceError"]
+    G --> T["RobotTask"]
+    F --> T

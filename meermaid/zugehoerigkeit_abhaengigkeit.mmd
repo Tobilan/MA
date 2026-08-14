@@ -1,0 +1,12 @@
+flowchart LR
+  subgraph H["Missionshierarchie (RobotMission.tasks)"]
+    direction TB
+    M["RobotMission"] --- A1["Task A"]
+    M --- B1["Task B"]
+    M --- C1["Task C"]
+  end
+  subgraph S["Ausführungsabhängigkeit (RobotMission.sequences)"]
+    direction TB
+    A2["Task A"] -->|FINISH_START| B2["Task B"]
+    A2 -->|FINISH_START| C2["Task C"]
+  end

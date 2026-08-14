@@ -1,0 +1,18 @@
+flowchart TD
+    T["RobotTask"]
+
+    A["Objektbezug"]
+    B["Aktionssemantik"]
+    C["Zeitdaten"]
+
+    A1["IFC-Relationen<br/>IfcRelAssignsToProcess<br/>IfcRelAssignsToProduct"]
+    B1["Eigene Property Sets<br/>RobotAction, RobotTask<br/>via IfcRelDefinesByProperties"]
+    C1["Native IFC-Zeitstrukturen<br/>IfcTaskTime<br/>IfcWorkSchedule"]
+
+    T --> A
+    T --> B
+    T --> C
+
+    A --> A1
+    B --> B1
+    C --> C1

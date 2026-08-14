@@ -1,0 +1,34 @@
+flowchart LR
+    subgraph GEB["1 · Gebäudemodell (IFC)"]
+        OBJ["IFC-Objekt<br/>z. B. IfcDoor<br/><i>statische Ressource</i>"]
+    end
+
+    subgraph DOM["2 · Annotationsmodell – implementiert"]
+        direction TB
+        TASK["RobotTask<br/><b>actionType = OPEN</b>"]
+        PROPS["RobotActionProperties<br/>targetState · requiredCapability<br/>pre-/postconditions · successCondition"]
+        TASK --- PROPS
+    end
+
+    subgraph EXE["3 · Roboterausführung – beispielhaft, nicht implementiert"]
+        direction TB
+        E1["Objekt anfahren"] --> E2["Bedienelement erkennen"]
+        E2 --> E3["Manipulationspose bestimmen"]
+        E3 --> E4["Betätigung ausführen"]
+        E4 --> E5["Ergebnis prüfen"]
+    end
+
+    OBJ -->|"Referenz über GlobalId"| TASK
+    TASK -.->|"Interpretation durch Robotikschicht"| E1
+
+    EXT["Konzeptionelle Erweiterung<br/><b>actionType = INVESTIGATE</b><br/><i>nicht Bestandteil der Implementierung</i>"]
+    EXT -.-> EXE
+
+    classDef impl fill:#ffffff,stroke:#222222,stroke-width:1.5px,color:#111111
+    classDef konz fill:#f7f7f7,stroke:#777777,stroke-width:1px,stroke-dasharray:4 3,color:#444444
+    class OBJ,TASK,PROPS impl
+    class E1,E2,E3,E4,E5,EXT konz
+
+    style GEB fill:none,stroke:#222222
+    style DOM fill:none,stroke:#222222,stroke-width:2px
+    style EXE fill:none,stroke:#777777,stroke-dasharray:5 4

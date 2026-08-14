@@ -1,6 +1,3 @@
-% Die vorangehenden fachlichen Kapitel 2 und 3 sind im aktuellen Template noch nicht angelegt.
-% Der Zähler stellt vorläufig die vorgegebene Kapitelnummer her und ist nach der Integration der Kapitel 2 und 3 zu entfernen.
-\setcounter{section}{3}
 \section{Konzeption des IFC-basierten Annotationsmodells}\label{sec:ifc-annotationsmodell}
 \subsection{Modellierungsziele und zentrale Designentscheidungen}\label{subsec:modellierungsziele-annotationsmodell}
 Gebäudemodelle im IFC-Format beschreiben ein Bauwerk als strukturierte Menge von Objekten mit
@@ -33,7 +30,7 @@ wird in Kapitel 4.2 behandelt.
 
 Das zweite Modellierungsziel ist die explizite Verknüpfung von Aufgaben mit Elementen des
 Gebäudemodells. Eine Aufgabe wie das Öffnen einer Tür oder das Betätigen eines Schalters ist ohne
-Objektbezug nicht ausführbar; der Bezug ist damit kein optionales Zusatzattribut, sondern ein
+Objektbezug nicht ausführbar. Der Bezug ist damit kein optionales Zusatzattribut, sondern ein
 konstitutiver Bestandteil der Aufgabenbeschreibung. Daraus folgt unmittelbar die Anforderung nach
 einer möglichst stabilen Objektidentität. Der Editor stellt Gebäudemodelle nicht unmittelbar aus der
 IFC-Datei dar, sondern über eine performante Darstellungsstruktur, deren interne Kennungen an die
@@ -50,10 +47,10 @@ Verhalten bei fehlenden oder mehrdeutigen Referenzen, werden in Kapitel 4.4 beha
 
 Eng damit verbunden ist das dritte und für die fachliche Qualität des Modells zentrale Ziel: die
 Trennung zwischen dem Gebäudeobjekt und der Roboteraktion. Eine Tür ist ein Bauteil mit statischen
-Eigenschaften; dass ein Roboter sie in einer bestimmten Aufgabe öffnen soll, ist demgegenüber eine
+Eigenschaften. Dass ein Roboter sie in einer bestimmten Aufgabe öffnen soll, ist demgegenüber eine
 Aussage über diese Aufgabe und nicht über die Tür. Das Modell hinterlegt die konkrete
 Aktionssemantik daher ausschließlich an der Aufgabe und niemals am referenzierten Bauteil. Die Tür
-wird durch die Annotation nicht zu einer „OPEN-Tür“; sie bleibt eine Tür, auf die sich
+wird durch die Annotation nicht zu einer „OPEN-Tür“. Sie bleibt eine Tür, auf die sich
 unterschiedliche Aufgaben mit unterschiedlichen Aktionen beziehen können. Diese Trennung ist im
 Prototyp doppelt abgesichert: Der Typ des Objektbezugs sieht kein Feld für Aktionsdaten vor, und die
 Validierung weist eine Aufgabenreferenz, die dennoch aktionsartige Eigenschaften trägt – etwa einen
@@ -62,9 +59,9 @@ Absicherung ist Voraussetzung dafür, dass dasselbe Gebäudemodell für mehrere,
 unabhängige Missionen wiederverwendbar bleibt und dass dieselbe Tür innerhalb einer Mission zunächst
 geöffnet und später wieder geschlossen werden kann, ohne dass sich ihre Eigenschaften
 widersprüchlich verändern. Eine Vorannotation grundsätzlich möglicher Interaktionen am Gebäudeobjekt
-selbst – also die Aussage, welche Aktionen ein Objekt prinzipiell zuließe – ist im aktuellen Stand
-nicht implementiert und stellt eine mögliche Erweiterung dar; sie würde die hier beschriebene
-Trennung ergänzen, nicht aufheben.
+selbst, also die Aussage, welche Aktionen ein Objekt prinzipiell zuließe, ist im aktuellen Stand
+nicht implementiert und stellt eine mögliche Erweiterung dar. Dies wäre eine Ergänzung der hier beschriebnen 
+Trennung.
 
 Das vierte Modellierungsziel verallgemeinert diesen Gedanken zu einer Trennung von Ebenen, wie sie
 Abbildung~\ref{fig:trennung-der-ebenen} zusammenfasst.
@@ -87,7 +84,7 @@ Records ab, wenn die Mission blockierende Validierungsfehler enthält. Er verän
 lädt keine WASM-Laufzeit und enthält keine Viewer-Logik. Das daraus abgeleitete Modellierungsziel
 lautet, dass Robotermissionsdaten nicht von temporären Rendering-Strukturen oder viewer-spezifischen
 Kennungen abhängig sein dürfen. Die technische Ausgestaltung dieser Schichtung ist Gegenstand des
-Implementierungskapitels; für die Modellkonzeption ist allein maßgeblich, dass die fachliche Aussage
+Implementierungskapitels. Für die Modellkonzeption ist allein maßgeblich, dass die fachliche Aussage
 einer Annotation unabhängig von der Art ihrer Darstellung gültig bleibt.
 
 Das fünfte Ziel betrifft IFC als Träger der Annotation in beide Richtungen. Missionsinformationen
@@ -98,11 +95,11 @@ liegende IFC-Quelldatei umgesetzt, sondern auch das umgekehrte Wiedereinlesen: V
 erzeugte, projekteigene Missionsannotationen werden beim Laden einer IFC-Datei erkannt und zu
 RobotMission- und RobotTask-Aggregaten rekonstruiert. Eine importierte Mission kann im Editor
 verändert und anschließend erneut exportiert werden, wobei der zuvor erkannte Missionsgraph gezielt
-ersetzt statt bei jedem Durchlauf neu angehängt wird; nach dem Export wird die erzeugte Datei zur
+ersetzt statt bei jedem Durchlauf neu angehängt wird. Nach dem Export wird die erzeugte Datei zur
 Absicherung erneut geöffnet, die Mission erneut importiert und mit dem beabsichtigten Domänenmodell
 semantisch verglichen, bevor die neuen Bytes als Ausgangspunkt für den nächsten Zyklus übernommen
 werden. Für deterministisch wiedererkennbare Missionsentitäten bleiben bestehende IFC-GlobalIds über
-solche Zyklen hinweg erhalten; bestehende Building-GlobalIds werden dabei nicht angetastet. Dennoch
+solche Zyklen hinweg erhalten. Bestehende Building-GlobalIds werden dabei nicht angetastet. Dennoch
 ist eine Abgrenzung notwendig: Der implementierte Roundtrip bezieht sich ausschließlich auf den vom
 System erkannten, projekteigenen Missionsgraphen. Strukturelle Änderungen am Gebäudemodell selbst
 werden nicht zurückgeschrieben, Modelle ohne erhaltene IFC-Quelle sind nicht exportierbar, und nicht
@@ -114,8 +111,8 @@ die Erweiterbarkeit. Zusätzliche Aktionsarten, weitere Aufgabeneigenschaften, d
 Objektrollen, weitere zeitliche Beziehungsarten und roboterspezifische Ausleitungen sollen ergänzt
 werden können, ohne die Grundstruktur neu entwerfen zu müssen. Getragen wird dies durch mehrere im
 Code erkennbare Entscheidungen: Die Aktionssemantik liegt in einem klar abgegrenzten, überwiegend
-optional besetzten Eigenschaftsbereich der Aufgabe; Objektrollen werden über benannte Relationen und
-nicht über strukturell verschiedene Modellelemente unterschieden; und die Annotation trägt mit einer
+optional besetzten Eigenschaftsbereich der Aufgabe. Objektrollen werden über benannte Relationen und
+nicht über strukturell verschiedene Modellelemente unterschieden. Die Annotation trägt mit einer
 eigenen Konstante eine explizite Schemaversion, die in jede exportierte Mission geschrieben wird,
 sodass ältere Annotationsstände beim Einlesen erkennbar und behandelbar bleiben.
 
@@ -126,7 +123,7 @@ Entwürfe bleiben bearbeitbar, während sowohl die Abbildung in IFC-nahe Records
 tatsächliche Export nur für Missionen zugelassen werden, die vollständig gültig sind und deren
 Objektbezüge im gewählten Quellmodell eindeutig aufgelöst werden können. Fehlende Typinformationen
 des referenzierten Bauteils führen zu einer Warnung statt zu einer Zurückweisung einer ansonsten
-plausiblen Aufgabe; ein bekannter, aber unpassender Objekttyp führt dagegen zu einem blockierenden
+plausiblen Aufgabe. Ein bekannter, aber unpassender Objekttyp führt dagegen zu einem blockierenden
 Fehler.
 
 Die Frage der Interoperabilität ist demgegenüber differenziert zu beantworten. Das Modell verwendet
@@ -136,15 +133,14 @@ Die eigentliche Robotiksemantik – die Aktionswerte und die Bedeutung der eigen
 – ist hingegen projektspezifisch und nicht Bestandteil des IFC-Standards. Daraus folgt, dass die
 strukturelle Lesbarkeit durch Fremdsysteme angenommen werden kann, die inhaltliche Interpretation
 der Robotiksemantik durch Fremdsysteme jedoch nicht. Ein Nachweis der tatsächlichen Interpretation
-durch andere Werkzeuge wurde im Rahmen dieser Arbeit nicht geführt; die Grenzen dieser
-Interoperabilität werden in Abschnitt 4.12 gesondert diskutiert.
+durch andere Werkzeuge wurde im Rahmen dieser Arbeit nicht geführt.
 
 Schließlich soll das Annotationsmodell die fachliche Grundlage für eine spätere Verarbeitungskette
 bilden, die von der IFC-Annotation über das interne Missionsmodell zu einer roboterspezifischen
 Ausleitung, zu Zielposen und Navigationsdaten und letztlich zur Ausführung führt. Von dieser Kette
 ist im vorliegenden Stand der vordere, bidirektionale Teil – Export, Import und verifizierter
-Roundtrip – umgesetzt; die roboterspezifische Weiterverarbeitung ist konzeptionell vorgesehen und
-wird in Kapitel 7 behandelt. Für die Modellierung ist dieser Ausblick dennoch bedeutsam, weil er
+Roundtrip – umgesetzt. Die roboterspezifische Weiterverarbeitung ist konzeptionell vorgesehen und
+wird in Kapitel [TODO] behandelt. Für die Modellierung ist dieser Ausblick dennoch bedeutsam, weil er
 begründet, weshalb Aktionsart, Objektbezug, Objektrolle und Reihenfolge explizit und getrennt
 voneinander repräsentiert werden müssen: Erst diese Explizitheit erlaubt es, aus einer Annotation
 später eine ausführbare Anweisung abzuleiten, ohne fachliche Annahmen aus einer Darstellungsform
@@ -189,16 +185,16 @@ Abbildung~\ref{fig:grundstruktur_domaenenmodell} zeigt die Struktur des Modells 
 \textit{RobotMission} bezeichnet eine vollständige Robotermission und bildet die übergeordnete Einheit des
 Modells, also diejenige Struktur, über die alle zugehörigen Informationen erreichbar sind und deren
 Konsistenz als Ganzes geprüft werden kann. In der Architekturdokumentation des Prototyps wird sie
-als Aggregat-Root bezeichnet; fachlich entscheidend ist, dass ausführbare Schritte, deren
+als Aggregat-Root bezeichnet. Fachlich entscheidend ist, dass ausführbare Schritte, deren
 Abhängigkeiten und die optionale Zeitplanung nicht unabhängig voneinander existieren, sondern stets
 im Kontext genau einer Mission.
 
 Eine Mission trägt eine stabile anwendungsseitige Kennung (\textit{id}), einen menschenlesbaren Namen sowie
 eine optionale Beschreibung. Die Kennung ist ausdrücklich eine Anwendungs-ID und keine
-IFC-Identität; die Frage, wie beide Identitätsräume beim Export und Import aufeinander abgebildet
-werden, wird erst in Kapitel 4.4 und Kapitel 4.9 behandelt. Ergänzend führt die Mission einen
+IFC-Identität. Die Frage, wie beide Identitätsräume beim Export und Import aufeinander abgebildet
+werden, wird erst in Kapitel [TODO] und Kapitel [TODO] behandelt. Ergänzend führt die Mission einen
 aggregierenden Bearbeitungsstatus und eine Priorität. Bemerkenswert ist, dass Status und Priorität
-im Modell durch dieselben Typen beschrieben werden wie auf Task-Ebene; Mission und Task teilen damit
+im Modell durch dieselben Typen beschrieben werden wie auf Task-Ebene. Mission und Task teilen damit
 dasselbe Vokabular für Lebenszyklus und Dringlichkeit, was den Aufbau der Bearbeitungsoberfläche
 vereinheitlicht.
 
@@ -219,7 +215,7 @@ Den fachlichen Kern bildet die Aktion: Jeder Task besitzt neben Kennung, Name un
 Beschreibung genau einen \textit{actionType}, also die konkrete auszuführende Roboteraktion. Der zweite
 Bereich umfasst die Bezüge zu Gebäudeelementen. Hier unterscheidet das Modell zwischen
 \textit{targetObjects} als unmittelbar adressierten oder als Kontext genutzten Objekten und
-\textit{affectedObjects} als indirekt betroffenen Objekten; für Bewegungsaufgaben treten zusätzlich
+\textit{affectedObjects} als indirekt betroffenen Objekten. Für Bewegungsaufgaben treten zusätzlich
 \textit{startReference} und \textit{targetReference} als Ausgangs- und Zielbezug hinzu. Der dritte Bereich sind
 die Aktionsparameter (\textit{properties}), der vierte die zeitlichen Informationen (\textit{time}). Als fünfter,
 optionaler Bereich können mit \textit{viewpoint} und \textit{markerPosition} annotationsbezogene
@@ -245,12 +241,12 @@ Domänenmodell vermischt zu sein.
 im Domänenmodell keine Viewer- oder Three.js-Objekte, keine Geometrie und keine Rendering-Handles
 gespeichert werden, sondern ausschließlich eine schlanke Identitätsbeschreibung. Bevorzugt wird die
 \textit{globalId}, also die dauerhafte IFC-Objektidentität. Steht diese nicht zur Verfügung, ist ein
-modelllokaler Fallback aus \textit{modelId} und \textit{expressId} zulässig; die Typdefinition erzwingt dabei
+modelllokaler Fallback aus \textit{modelId} und \textit{expressId} zulässig. Die Typdefinition erzwingt dabei
 bereits auf Typebene, dass eine \textit{expressId} ohne \textit{globalId} nur zusammen mit der zugehörigen
 \textit{modelId} verwendet werden kann, da Express-IDs nur innerhalb einer Modellserialisierung eindeutig
 sind. Ergänzend können mit \textit{ifcClass} und \textit{name} beschreibende Angaben zum Objekt geführt werden.
 Die vollständige Referenzierungsstrategie einschließlich ihrer Konsequenzen für Modellgrenzen und
-wiederholte Serialisierungen ist Gegenstand von Kapitel 4.4.
+wiederholte Serialisierungen ist Gegenstand von Kapitel [TODO].
 
 Wesentlich für das Verständnis des Modells ist, dass die Referenz bewusst frei von Aktionssemantik
 bleibt. Sie beantwortet die Frage, welches Bauteil gemeint ist, nicht die Frage, was mit ihm
@@ -261,14 +257,14 @@ erforderliche Roboterfähigkeit sowie Vor-, Nachbedingungen und ein Erfolgskrite
 werden. Da diese Angaben am Task und nicht am Objekt hängen, kann dasselbe IFC-Objekt in
 verschiedenen Tasks mit unterschiedlichen Anforderungen verwendet werden – etwa eine Tür, die in
 einem Schritt geöffnet und in einem späteren wieder geschlossen wird. Die Bedeutung der einzelnen
-Aktionsarten wird in Kapitel 4.3 behandelt.
+Aktionsarten wird in Kapitel [TODO] behandelt.
 
 \textit{RobotTaskTime} bezeichnet die zeitliche Beschreibung eines einzelnen Tasks und umfasst geplanten
 Start, geplantes Ende und geplante Dauer, den tatsächlichen Start und das tatsächliche Ende, die
 verbleibende Dauer sowie einen Fertigstellungsgrad. Diese Angaben sind bewusst nicht Teil von
 \textit{RobotActionProperties}, obwohl beide Strukturen den Task ergänzen. Aktionsparameter beschreiben die
-fachliche Anforderung an die Ausführung und sind projektspezifisch; Zeitangaben beschreiben dagegen
-Planung und Fortschritt und entsprechen einem in IFC bereits vorhandenen Konzept, das in Kapitel 4.8
+fachliche Anforderung an die Ausführung und sind projektspezifisch. Zeitangaben beschreiben dagegen
+Planung und Fortschritt und entsprechen einem in IFC bereits vorhandenen Konzept, das in Kapitel [TODO]
 aufgegriffen wird. Die Trennung im Domänenmodell nimmt diese unterschiedliche Herkunft vorweg und
 vermeidet, dass Planungsdaten in einer projekteigenen Parameterstruktur verborgen werden.
 
@@ -289,7 +285,7 @@ welche ausführbaren Schritte zur Mission gehören, und legt zugleich deren dete
 Darstellungs- und Hierarchieordnung fest. \textit{RobotMission.sequences} beschreibt demgegenüber, welche
 zeitlichen Abhängigkeiten zwischen diesen Schritten bestehen. Beide Strukturen ließen sich nicht
 ohne Informationsverlust durch ein einziges sortiertes Task-Array ersetzen. Ein Array kann
-ausschließlich eine lineare Folge ausdrücken; ein Abhängigkeitsgraph kann darüber hinaus unabhängige
+ausschließlich eine lineare Folge ausdrücken. Ein Abhängigkeitsgraph kann darüber hinaus unabhängige
 Zweige und mehrere Vorgänger desselben Nachfolgers darstellen. Zwei Tasks, die in beliebiger
 Reihenfolge oder parallel ausgeführt werden dürfen, sind in einem Array zwangsläufig geordnet, im
 Graphen dagegen korrekt als unabhängig beschreibbar.
@@ -306,9 +302,9 @@ Graphen auf Selbstbezüge, auf Verweise auf unbekannte Tasks und auf Zyklen und 
 und Sequenzen eine ausführungsgerechte Reihenfolge ableiten, wobei die Hierarchieordnung als
 deterministisches Tie-Breaking-Kriterium für voneinander unabhängige Tasks dient. Legt eine
 Anwenderin oder ein Anwender eine rein lineare Reihenfolge fest, wird daraus eine vollständige Kette
-vom Typ \textit{FINISH\_START} erzeugt; auch dieser Fall wird jedoch als Sequenzgraph gespeichert und nicht
+vom Typ \textit{FINISH\_START} erzeugt. Auch dieser Fall wird jedoch als Sequenzgraph gespeichert und nicht
 auf die Array-Reihenfolge reduziert. Die inhaltliche Semantik der Sequenztypen sowie die
-Zyklusbehandlung im Detail sind Gegenstand von Kapitel 4.5.
+Zyklusbehandlung im Detail sind Gegenstand von Kapitel [TODO].
 
 \subsubsection{Domänenoperationen und Invarianten}
 Damit das Modell nicht nur beschreibend, sondern auch verlässlich ist, werden Domänenobjekte nicht
@@ -320,7 +316,7 @@ Bewegungsaufgabe, ersetzen die Aktionsparameter oder die Zeitangaben eines Tasks
 Vier Eigenschaften dieser Operationen prägen das Modell. Erstens werden Eingaben normalisiert:
 Pflichttexte wie Kennungen und Namen werden bereinigt, und eine leere Angabe führt unmittelbar zu
 einem Domänenfehler statt zu einem strukturell gültigen, fachlich aber unbrauchbaren Objekt.
-Zweitens erzeugt jede Änderung eine neue Objektstruktur, statt bestehende Objekte zu verändern;
+Zweitens erzeugt jede Änderung eine neue Objektstruktur, statt bestehende Objekte zu verändern.
 Missionen und Tasks werden also als unveränderliche Werte behandelt, was Vergleiche zwischen einem
 beabsichtigten und einem rekonstruierten Zustand erst zuverlässig möglich macht. Drittens werden
 Eindeutigkeitsregeln früh durchgesetzt: Task-Kennungen müssen innerhalb einer Mission eindeutig
@@ -333,16 +329,16 @@ blockierende Fehler und nicht blockierende Warnungen als maschinen- und menschen
 dieses Kapitel ist vor allem bemerkenswert, dass die Validierung die Trennung von Objekt und Aktion
 ausdrücklich absichert: Aktionsparameter, die an einer Objektreferenz statt am Task hinterlegt
 wurden – etwa aus deserialisierten Fremddaten –, werden als Verstoß gemeldet. Die vollständigen
-Regeln werden in Kapitel 4.10 dargestellt.
+Regeln werden in Kapitel [TODO] dargestellt.
 
 \subsubsection{Frameworkunabhängigkeit und gemeinsame Repräsentation im Roundtrip}
 Die Domänenschicht des Prototyps ist frei von direkten Abhängigkeiten zu Three.js, That Open
-Components, Fragments, \textit{web-ifc}, Browser-Oberfläche und Browser-Persistenz; ihre Module verweisen
+Components, Fragments, \textit{web-ifc}, Browser-Oberfläche und Browser-Persistenz. Ihre Module verweisen
 ausschließlich aufeinander. Die Abhängigkeitsrichtung verläuft ausnahmslos von den äußeren Schichten
 zur Domäne: Anwendungsdienste, Persistenzadapter, Viewer-Adapter, IFC-Mapping sowie Import- und
 Exportmodule beziehen ihre Typen und Operationen aus der Domäne, während umgekehrt keine dieser
 Technologien in die Domäne gelangt. Der Viewer-Adapter etwa übersetzt eine Auswahl im
-dreidimensionalen Modell in eine \textit{RobotObjectReference}; die Domäne kennt anschließend nur noch
+dreidimensionalen Modell in eine \textit{RobotObjectReference}. Die Domäne kennt anschließend nur noch
 diese Referenz und nicht mehr das Auswahlobjekt, aus dem sie entstanden ist. Fachlich bedeutet dies,
 dass die Frage, wie eine Mission beschrieben wird, unabhängig davon beantwortet wird, wie sie
 dargestellt, gespeichert oder serialisiert wird:
@@ -354,7 +350,7 @@ dargestellt, gespeichert oder serialisiert wird:
     \label{fig:Pipeline}
 \end{figure}
 
-Die technische Umsetzung dieser Schichtung ist Gegenstand von Kapitel 5.1; für das Datenmodell
+Die technische Umsetzung dieser Schichtung ist Gegenstand von Kapitel [TODO]. Für das Datenmodell
 selbst ist entscheidend, dass Auswahlmechanismen, Renderingstrukturen und Dateiformate keinen
 Eingang in die fachliche Beschreibung finden.
 
@@ -368,5 +364,737 @@ Strukturen prüfen das Ergebnis gegen die fachlichen Invarianten des Domänenmod
 gilt damit: IFC-Import und IFC-Export treffen sich im selben internen Domänenmodell. Dass
 dieselbe Struktur beide Richtungen bedient, ist auch der Grund dafür, dass Hierarchie und Sequenzen
 getrennt geführt werden – nur so bleiben beide Informationen beim Rücklesen unterscheidbar. Die
-Implementierung von Import, Replacement-Export und semantischem Vergleich wird in Kapitel 5.9
+Implementierung von Import, Replacement-Export und semantischem Vergleich wird in Kapitel [TODO]
 beziehungsweise in der Evaluation behandelt.
+
+\subsection{Modellierung der Roboteraktionen}\label{subsec:Modellierung_Roboteraktionen}
+\subsubsection{Aktionsart als Pflichtangabe des Tasks}
+Jeder ausführbare Schritt einer Mission wird durch einen \textit{RobotTask} repräsentiert, der die
+beabsichtigte Roboteraktion über das Pflichtfeld \textit{actionType} trägt. Der zulässige Wertebereich ist in
+\textit{src/domain/robot-tasks/types.ts} als unveränderliches Tupel \textit{ROBOT\_ACTION\_TYPES} mit den Werten \textit{OPEN},
+\textit{CLOSE}, \textit{SWITCH\_ON}, \textit{SWITCH\_OFF}, \textit{MOVE}, \textit{PASS\_THROUGH} und \textit{NAVIGATE\_TO} definiert. Aus derselben Konstante
+leitet sich der Union-Typ \textit{RobotActionType} ab, so dass Compile-Zeit-Typisierung und Laufzeitprüfung
+auf eine einzige Quelle zurückgeführt werden. Diese doppelte Absicherung ist notwendig, weil
+Missionen auch aus deserialisierten JSON- oder IFC-Daten entstehen, die die statische Typprüfung
+umgehen. \textit{src/domain/robot-tasks/validation.ts} meldet unbekannte oder fehlende Werte deshalb als
+eigene Befunde. Die Aktionswerte sind projektspezifische Bezeichner und keine native
+IFC-Enumeration.
+\subsubsection{Abstraktionsgrad der Aktionsbezeichner}
+Die implementierten Aktionsarten sind bewusst als prototypische semantische Bezeichner zu verstehen.
+Sie benennen den fachlich beabsichtigten Zielzustand oder Vorgang, nicht den technischen Ablauf auf
+Roboterebene. Der Bezeichner OPEN beschreibt, dass ein Bedienobjekt anschließend als geöffnet gelten
+soll. Er legt weder eine Anfahrstrategie noch eine Greif- oder Betätigungsstrategie fest. Auf
+Robotikseite kann derselbe Task auf eine deutlich längere Handlungskette abgebildet werden, etwa:
+Objekt anfahren, Bedienelement erkennen, Manipulationspose bestimmen, Betätigung ausführen und das
+Ergebnis überprüfen. Der IFC-basierte Task beschreibt somit primär, was erreicht werden soll,
+während die spätere roboterspezifische Ausführung festlegt, wie dieses Ziel erreicht wird. Diese
+Zurückhaltung ist eine Modellierungsentscheidung: Eine Annotation, die bereits Bewegungsprimitive
+oder Skill-Parameter enthielte, wäre an eine konkrete Roboterplattform gebunden und im Gebäudemodell
+nicht mehr allgemein interpretierbar.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/Abstraktionsebenen_Aktionsmodellierung.pdf}
+    \caption{Abstraktionsebenen der Aktionsmodellierung.}
+    \label{fig:Abstraktionsebenen-Aktionsmodellierung}
+\end{figure}
+
+TODO: Mögliche Bildbeschreibung bzw. referenz im Kapitel: Die linke Spalte zeigt die im Editor implementierte semantische Beschreibung am RobotTask, die 
+rechte Spalte lediglich beispielhafte roboterspezifische Ausführungsketten. 
+Der untere Block kennzeichnet mit INVESTIGATE eine konzeptionelle Erweiterung, die nicht Bestandteil der 
+Implementierung ist.
+
+
+\subsubsection{Erweiterbarkeit der Aktionssemantik}
+Der vorliegende Wertebereich ist kein abschließender Aktionskatalog, sondern der Umfang, der für den
+Proof of Concept benötigt wurde. Da die Aktionswerte an einer einzigen Stelle definiert sind, wirkt
+eine Ergänzung unmittelbar auf Typisierung, Validierung und Editor. Als konzeptionelles Beispiel
+lässt sich eine Aktion INVESTIGATE denken, die einen definierten Bereich untersuchen, dort
+hinterlegte Handlungsanweisungen erfassen, eine Informationsquelle wie einen QR-Code erkennen, deren
+Inhalt interpretieren und daraus weitere roboterspezifische Aktionen ableiten würde. Weder
+INVESTIGATE noch eine QR-Code-Verarbeitung sind Bestandteil der aktuellen Implementierung. Das
+Beispiel dient ausschließlich dazu, die angestrebte Abstraktionsebene zu verdeutlichen. Es zeigt
+zugleich, dass auch eine im Ablauf sehr komplexe Aktion auf Modellebene ein einzelner semantischer
+Bezeichner bleiben kann, sofern die Interpretation der Ausführungsschicht überlassen wird.
+\subsubsection{Ergänzende Aktionssemantik über \textit{RobotActionProperties}}
+Der reine \textit{actionType} ist häufig zu grob, um eine Aufgabe eindeutig zu beschreiben. \textit{RobotTask}
+besitzt deshalb das optionale Feld \textit{properties} vom Typ \textit{RobotActionProperties}, dessen sämtliche
+Felder ihrerseits optional sind: \textit{targetState} benennt den erwarteten Zustand nach der Ausführung,
+\textit{targetObjectRole} und \textit{affectedObjectRole} präzisieren die semantische Rolle der referenzierten
+Objekte, \textit{requiredCapability} benennt die erforderliche Roboterfähigkeit, \textit{preconditions} und
+\textit{postconditions} halten Bedingungen vor und nach der Ausführung fest, und \textit{successCondition}
+beschreibt das beobachtbare Erfolgskriterium. Ein Task mit \textit{actionType = OPEN} kann damit um einen
+gewünschten Zielzustand, eine benötigte Fähigkeit, Vor- und Nachbedingungen sowie ein
+Erfolgskriterium ergänzt werden, ohne dass die Aktionsart selbst weiter ausdifferenziert werden
+muss. Die Werte sind als Freitext modelliert. Kontrollierte Vokabulare sind im Prototyp bewusst
+nicht vorgegeben. Zugewiesen wird das gesamte Property-Objekt über \textit{assignRobotActionProperties} in
+\textit{src/domain/robot-tasks/builders.ts}, das eine unveränderte Kopie des Tasks mit neuem
+Änderungszeitstempel liefert.
+\subsubsection{Trennung von Aktion und IFC-Objekt}
+Die konkrete Aktionssemantik gehört ausschließlich zum \textit{RobotTask} und nicht zur Objektreferenz.
+\textit{RobotObjectReference} trägt nur Identitäts- und Beschreibungsdaten wie \textit{globalId}, \textit{modelId},
+\textit{expressId}, \textit{ifcClass} und \textit{name}. Der Quellcode hält ausdrücklich fest, dass hier keine
+angeforderte Roboteraktion abgelegt wird. Diese Regel wird nicht nur typisiert, sondern auch zur
+Laufzeit geprüft: Enthält eine deserialisierte Objektreferenz ein Property-Objekt mit Feldern aus
+\textit{RobotActionProperties}, meldet die Validierung dies als eigenen Fehlerfall. Fachlich bedeutet das,
+dass eine \textit{IfcDoor} ein Gebäudeelement bleibt und keine Missionsabsicht trägt. Mehrere Tasks können
+dieselbe Tür referenzieren, um sie zu öffnen, zu schließen, sie anzufahren oder sie zu passieren.
+Ebenso können mehrere Missionen unabhängig voneinander auf dasselbe Gebäudemodell verweisen. Die
+Aktionsart wirkt lediglich als Interpretationsrahmen für die Referenzen: Für \textit{MOVE} sind Start- und
+Zielreferenz erforderlich, \textit{PASS\_THROUGH} verlangt mindestens eine Referenz, und bei \textit{OPEN},
+\textit{CLOSE}, \textit{SWITCH\_ON} und \textit{SWITCH\_OFF} wird die bekannte IFC-Klasse auf Plausibilität geprüft,
+während fehlende Klasseninformation nur zu einer Warnung führt. Diese Kopplung bleibt damit bewusst
+schwach.  Die Prüflogik selbst wird in Kapitel [TODO] behandelt.
+\subsubsection{Einordnung zwischen Gebäudemodell und Roboterausführung}
+Aus den beschriebenen Entscheidungen ergibt sich eine dreistufige Abstraktion: Das Gebäudeobjekt
+beschreibt die statische Ressource, der semantische \textit{RobotTask} beschreibt die beabsichtigte Wirkung
+auf diese Ressource, und die roboterspezifische Ausführung beschreibt die tatsächliche
+Handlungskette. Der Editor deckt gegenwärtig ausschließlich die mittlere Ebene ab. Aspekte wie
+Manipulationsplanung, Bildverarbeitung, Waypoint-Erzeugung oder konkrete Roboter-Skills sind nicht
+Gegenstand des Annotationsmodells und werden hier nur als mögliche Interpretationen einer abstrakten
+Aktion erwähnt. Damit bleibt das Modell gegenüber unterschiedlichen Roboterplattformen offen, und
+die Verantwortung für die Ausführbarkeit verbleibt in der nachgelagerten Robotikschicht.
+
+\subsection{Referenzierung von IFC-Objekten}\label{subsec:Referenzierung_IFC-Objekten}
+Ein \textit{RobotTask} beschreibt eine Handlung, die sich auf ein konkretes Bauteil des
+Gebäudemodells bezieht – etwa eine Tür, die geöffnet, oder einen Raum, der durchquert werden soll.
+Damit diese Zuordnung über eine einzelne Viewer-Sitzung, über einen Speichervorgang und über einen
+vollständigen IFC-Roundtrip hinweg gültig bleibt, muss das Domänenmodell die Identität des
+referenzierten Objekts unabhängig von seiner momentanen Darstellung repräsentieren. Die zentrale
+Entwurfsentscheidung dieses Abschnitts lautet deshalb: Die fachliche Referenz eines IFC-Objekts wird
+konsequent von der temporären Darstellung im Viewer getrennt.
+
+\subsubsection{\textit{RobotObjectReference} als Trägerstruktur}
+Das Domänenmodell kapselt die Objektidentität im eigenständigen Typ \textit{RobotObjectReference}.
+Ein \textit{RobotTask} verweist ausschließlich über diesen Typ auf Gebäudeelemente, und zwar in den
+Feldern \textit{targetObjects}, \textit{affectedObjects}, \textit{startReference} und
+\textit{targetReference}. Der Typ ist als Vereinigung zweier Varianten definiert: Die erste Variante
+trägt eine \textit{globalId} und optional eine \textit{expressId}. Die zweite Variante besitzt keine
+\textit{globalId}, verlangt dafür aber zwingend \textit{modelId} und \textit{expressId}. Diese
+Modellierung erzwingt bereits auf Typebene, dass jede Referenz mindestens eine auswertbare Identität
+besitzt.
+
+\subsubsection{\textit{GlobalId} als bevorzugte dauerhafte Identität}
+Die IFC-\textit{GlobalId} ist die bevorzugte dauerhafte Objektidentität. Ihre Eignung ergibt sich
+aus dem IFC-Schema selbst: Jede von \textit{IfcRoot} abgeleitete Entität – und damit jedes
+eigenständig referenzierbare Bauteil – besitzt das Attribut \textit{GlobalId} vom Typ
+\textit{IfcGloballyUniqueId}, das als global eindeutige Kennung über Softwaregrenzen hinweg
+vorgesehen und im Schema durch eine Eindeutigkeitsregel abgesichert ist [buildingSMART, IFC 4.3,
+\textit{IfcRoot}].
+
+\subsubsection{\textit{modelId} und \textit{expressId} als modelllokaler Fallback}
+Die \textit{expressId} ist demgegenüber eine Entity-Nummer innerhalb einer konkreten
+IFC-Repräsentation. Sie ist an die jeweilige Serialisierung gebunden. Die Arbeit trifft daher
+bewusst keine Aussage darüber, dass eine \textit{expressId} über unterschiedliche Serialisierungen
+desselben Modells hinweg erhalten bliebe. Als alleinige dauerhafte Referenz ist sie deshalb
+ungeeignet.
+
+Verwendet wird sie ausschließlich in Verbindung mit \textit{modelId}, also mit der Kennung des
+geladenen Quellmodells, das die Nummer überhaupt erst interpretierbar macht. Die Validierung
+erzwingt diese Kopplung explizit: Eine Referenz ohne \textit{globalId} wird zurückgewiesen, wenn
+keine nichtleere \textit{modelId} vorhanden ist. Der Vergleichsschlüssel lautet in diesem Fall
+\textit{express:<modelId>:<expressId>}. Damit ergibt sich die folgende Abstufung:
+
+Bemerkenswert ist zudem, dass die \textit{expressId} im Viewer nicht angenommen, sondern bestätigt
+werden muss. Eine eigene Registratur der Modellherkunft gibt eine \textit{expressId} nur für solche
+Modelle zurück, die über den direkten IFC-Importpfad geladen wurden. Für beliebige Fragments-Dateien
+liefert sie bewusst kein Ergebnis.
+
+\subsubsection{Identität und beschreibende Metadaten}
+Neben den identifizierenden Feldern kann eine \textit{RobotObjectReference} beschreibende Metadaten
+aufnehmen, insbesondere die IFC-Klasse (\textit{ifcClass}), den Objektnamen (\textit{name}) sowie –
+im Fall der \textit{GlobalId}-Variante – ergänzend \textit{modelId} und \textit{expressId} für den
+effizienten modelllokalen Zugriff. Diese Angaben dienen der Anzeige im Editor und der
+Plausibilitätsprüfung von Aktionen, etwa ob eine \textit{OPEN}-Aktion auf eine plausible
+Objektklasse zielt. Sie sind jedoch ausdrücklich keine Identität: Weder Name noch IFC-Klasse gehen
+in die Schlüsselbildung ein, da beide weder eindeutig noch änderungsstabil sind.
+
+\subsubsection{Abgrenzung zu Rendering- und Viewer-Identifikatoren}
+Die Darstellung arbeitet mit laufzeitlokalen Strukturen: Fragments- und Mesh-Identifikatoren,
+Raycast-Treffer mit Trefferpunkt und Distanz sowie viewer-interne Elementnummern. Diese Werte
+beschreiben den Zustand einer Renderpipeline, nicht ein Bauteil des Bauwerks. Sie sind an
+Ladevorgang, Detailstufe und Sichtbarkeitszustand gebunden und eignen sich daher grundsätzlich nicht
+als fachliche Referenz.
+
+Die Implementierung zieht diese Grenze scharf. Ein Auswahlkandidat führt seine viewer-lokale Kennung
+ausdrücklich nur für Laufzeitoperationen und hält die dauerhafte Domänenreferenz in einem separaten
+Feld. Der Auswahladapter überführt eine bestätigte Auswahl in eine \textit{RobotObjectReference},
+wobei die viewer-lokale Kennung nie als \textit{expressId} umgedeutet wird. Lässt sich weder eine
+\textit{GlobalId} noch eine bestätigte \textit{expressId} ermitteln, bricht die Umwandlung mit einem
+eigenen Fehler ab, statt eine unsichere Referenz zu erzeugen. Die Objektauswahl darf
+Rendering-Strukturen also nutzen, muss ihr Ergebnis aber vor der Übergabe an die Domäne in eine
+fachliche Referenz übersetzen. Der Auswahlvorgang selbst wird in Kapitel 5 behandelt.
+
+\subsubsection{Bedeutung für den IFC-Roundtrip}
+Da Missionen aus annotierten IFC-Dateien rekonstruiert und erneut exportiert werden können, müssen
+Referenzen wieder einem Gebäudemodell zugeordnet werden. Diese Quellabgrenzung leistet
+\textit{modelId}. Beim Import wird jeder rekonstruierten Referenz die Kennung des Quellmodells
+zugewiesen. Vor dem Export lehnt der Koordinator Missionen ab, deren Referenzen auf ein anderes
+geladenes Modell als das Exportziel verweisen. Der Writer akzeptiert eine reine \textit{expressId}
+folgerichtig nur dann, wenn \textit{modelId} mit dem Quellmodell übereinstimmt, und meldet einen
+Fehler, wenn eine \textit{GlobalId} auf eine abweichende Entität oder auf keine Entität der
+Quelldatei auflöst.
+
+Aus dem implementierten RobotMission-Roundtrip folgt jedoch nicht, dass beliebige Änderungen eines
+Gebäudemodells automatisch aufgelöst werden könnten. Wird ein referenziertes Bauteil in einer
+späteren Modellrevision entfernt oder mit neuer \textit{GlobalId} neu erzeugt, ist eine automatische
+Wiederzuordnung nicht grundsätzlich gewährleistet. Die Referenz bleibt dann unauflösbar und wird als
+Fehler sichtbar.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{pics/viewer_Objektreferenz.pdf}
+    \caption{Überführung einer bestätigten Viewer-Auswahl in eine dauerhafte fachliche Objektreferenz.}
+    \label{fig:viewer-Objektreferenz}
+\end{figure}
+
+\subsection{Missionshierarchie und Task-Sequenzen}\label{subsec:Hierarchie_sequenzen}
+Eine Robotermission besteht aus mehreren ausführbaren Einzelschritten. Für deren Beschreibung sind
+zwei Fragen zu beantworten, die auf den ersten Blick zusammenfallen, semantisch jedoch verschieden
+sind: Welche Schritte gehören zu einer Mission, und in welcher Abhängigkeit stehen diese Schritte
+zueinander? Das in dieser Arbeit entworfene Domänenmodell beantwortet beide Fragen getrennt.
+\textit{RobotMission.tasks} bestimmt die Zugehörigkeit der Schritte zur Mission sowie deren
+deterministische Darstellungsordnung, \textit{RobotMission.sequences} beschreibt die
+Ausführungsabhängigkeiten zwischen diesen Schritten.
+
+\subsubsection{Missionshierarchie}
+\textit{RobotMission} bildet die übergeordnete Einheit einer zusammengehörigen Folge von
+Roboteraktivitäten und fasst mehrere \textit{RobotTask}-Objekte als ausführbare Kindelemente
+zusammen (vgl. Abschnitt 4.2). Jeder Task besitzt eine stabile, anwendungsseitig vergebene Kennung.
+Diese Kennung muss innerhalb einer Mission eindeutig sein, da sie als Bezugspunkt aller weiteren
+Beziehungen dient: Das Hinzufügen eines Tasks wird bei bereits vergebener Kennung mit einem
+Domänenfehler abgewiesen, und die Missionsvalidierung meldet doppelte Task-IDs als blockierenden
+Fehler. Die Eindeutigkeit ist damit keine Konvention, sondern eine geprüfte Invariante des Modells.
+
+Das Feld \textit{tasks} repräsentiert ausschließlich die enthaltenen Schritte. Es trägt zwar eine
+Reihenfolge, weil es als Liste realisiert ist, doch diese Reihenfolge besitzt keine eigenständige
+Ausführungssemantik. Sie dient der reproduzierbaren Darstellung und als stabiles Ordnungskriterium
+dort, wo die Abhängigkeitsbeziehungen keine eindeutige Aussage treffen.
+
+
+\subsubsection{Task-Sequenzen}
+Eine \textit{RobotTaskSequence} beschreibt eine gerichtete Beziehung zwischen genau zwei Tasks. Sie
+besitzt eine eigene Kennung \textit{id}, verweist über \textit{predecessorTaskId} auf den Vorgänger
+und über \textit{successorTaskId} auf den Nachfolger und trägt mit \textit{sequenceType} die Art der
+zeitlichen Abhängigkeit. Der Vorgänger ist derjenige Task, dessen Zustand die Ausführbarkeit des
+Nachfolgers einschränkt. Der Nachfolger ist der eingeschränkte Task.
+
+Entscheidend ist, dass eine Sequenz keine Zugehörigkeitsaussage trifft. Sie erklärt einen Task nicht
+zum Bestandteil einer Mission, sondern setzt zwei bereits zur Mission gehörende Tasks zueinander in
+Beziehung. Beide Endpunkte müssen deshalb auf Tasks verweisen, die in \textit{tasks} enthalten sind.
+Umgekehrt kann ein Task ohne jede Sequenzbeziehung existieren. Er ist dann Bestandteil der Mission,
+aber zeitlich ungebunden. Genau diese Asymmetrie zeigt, dass sich beide Informationen nicht durch
+die Position eines Tasks in einem einzigen Array ausdrücken lassen: Eine Arrayposition kann weder
+ausdrücken, dass zwei Schritte unabhängig voneinander ausführbar sind, noch welche Art der
+zeitlichen Kopplung zwischen zwei gekoppelten Schritten gilt.
+
+\subsubsection{Sequenztypen}
+Das Modell unterstützt die Beziehungsarten \textit{FINISH\_START}, \textit{START\_START},
+\textit{FINISH\_FINISH} und \textit{START\_FINISH}. Sie beschreiben, welche Zustandsübergänge des
+Vorgängers den Beginn oder das Ende des Nachfolgers freigeben. Im Zentrum der prototypischen
+Umsetzung steht \textit{FINISH\_START}: Der Nachfolger darf erst beginnen, nachdem der Vorgänger
+abgeschlossen wurde. Diese Beziehung ist der Standardwert bei der Erzeugung einer Sequenz und deckt
+den typischen Fall einer linearen Missionsausführung ab.
+Die übrigen drei Typen sind im Datenmodell vorhanden und werden bei der Anzeige unverändert
+übernommen. Sie belegen, dass das Domänenmodell grundsätzlich auch überlappende oder endebezogene
+Kopplungen ausdrücken kann. Eine gesonderte Auswertung dieser Semantik findet im gegenwärtigen Stand
+jedoch nicht statt.
+
+\subsubsection{Lineare Reihenfolge und allgemeiner Abhängigkeitsgraph}
+Eine einfache Bedienoberfläche kann eine Mission als lineare Folge darstellen. Der Prototyp verfährt
+genau so: Beim Verschieben eines Tasks wird der gesamte Missionsplan als vollständige Kette von
+\textit{FINISH\_START}-Beziehungen neu erzeugt, wobei zugleich die Hierarchieordnung der Tasks an
+die gewünschte Reihenfolge angeglichen wird. Das Ersetzen statt Ergänzen der Kanten verhindert, dass
+veraltete Beziehungen nach einer Umsortierung Widersprüche erzeugen.
+
+Das zugrunde liegende Modell ist jedoch allgemeiner. Sequenzen werden als gerichteter Graph geführt
+und einzeln hinzugefügt. Die Prüfung beschränkt sich auf Endpunktexistenz, Selbstbezug und
+Zyklenfreiheit. Verzweigte Strukturen – ein Vorgänger mit mehreren Nachfolgern oder ein Nachfolger
+mit mehreren Vorgängern – sind daher auf Domänenebene zulässig und werden bei der Ermittlung der
+Ausführungsreihenfolge auch berücksichtigt: Die Reihenfolge wird topologisch bestimmt, wobei die
+Hierarchieordnung aus \textit{tasks} als stabiles Kriterium zwischen unabhängigen Zweigen dient.
+Damit wird die Arbeitsteilung zwischen beiden Feldern unmittelbar sichtbar. Die Bearbeitung solcher
+verzweigter Missionsgraphen wird von der aktuellen Oberfläche allerdings nicht angeboten. Dort steht
+ausschließlich die lineare Umsortierung zur Verfügung.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{pics/zugehoerigkeit_abhaengigkeit.pdf}
+    \caption{Trennung von Zugehörigkeit und Abhängigkeit. Oben bestimmt \textit{tasks}, welche
+Schritte zur Mission gehören. Unten beschreibt \textit{sequences}, welche Abhängigkeiten zwischen
+denselben Schritten gelten.}
+    \label{fig:zugehoerigkeit-abhaengigkeit}
+\end{figure}
+
+
+\subsubsection{Strukturelle Konsistenz der Sequenzen}
+Da Sequenzen ausschließlich über Task-Kennungen definiert sind, ist ihre Gültigkeit an die
+Hierarchie gebunden und maschinell prüfbar. Geprüft werden das Vorhandensein einer nicht leeren
+Sequenz-ID, der Ausschluss von Selbstbezügen, die Auflösbarkeit beider Endpunkte auf bestehende
+Tasks sowie die Zyklenfreiheit des gesamten Graphen. Beim Hinzufügen einer Sequenz wird zusätzlich
+die Eindeutigkeit der Sequenz-ID sichergestellt. Die Bedeutung der Zyklenfreiheit lässt sich
+unmittelbar einsehen: Eine Konstellation A - B - C - A
+fordert von jedem beteiligten Task, vor sich selbst ausgeführt zu werden, und lässt daher keine
+widerspruchsfreie Ausführungsreihenfolge zu. Sie wird deshalb als Fehler zurückgewiesen. Die
+Einordnung dieser Prüfungen in die Gesamtarchitektur der Validierung erfolgt in Kapitel [TODO].
+
+
+\subsubsection{Bedeutung für die IFC-Abbildung}
+Die getrennte Führung beider Informationen im internen Modell ist keine reine Entwurfsvorliebe,
+sondern folgt der Zielrepräsentation. IFC unterscheidet dieselben beiden Aussagen durch verschiedene
+Beziehungsobjekte: Die Missionshierarchie wird konzeptionell auf \textit{IfcRelNests} abgebildet,
+die Abhängigkeit zwischen zwei Tasks auf \textit{IfcRelSequence}. Ein Domänenmodell, das
+Zugehörigkeit und Reihenfolge in einer einzigen geordneten Liste vermischte, müsste diese
+Unterscheidung beim Export erst rekonstruieren und beim Import erneut auflösen. Die vollständige
+Abbildung einschließlich der Attribute beider Relationen wird in Kapitel [TODO] behandelt.
+
+
+\subsection{Repräsentation ergänzender Taskinformationen in IFC}\label{subsec:Taskinformationen}
+Mit der in Kapitel [TODO] beschriebenen Hierarchie aus übergeordnetem Missions-Task, ausführbaren
+Teilaufgaben und deren Abhängigkeitsbeziehungen ist das Grundgerüst der Annotation festgelegt. Ein
+\textit{RobotTask} trägt jedoch über diese strukturelle Einordnung hinaus Informationen, die für
+eine spätere robotische Auswertung wesentlich sind: Er verweist auf konkrete Elemente des
+Gebäudemodells, er beschreibt eine auszuführende Aktion mitsamt ihrer Vorbedingungen und
+Erfolgskriterien, und er kann geplante sowie tatsächliche Ausführungszeiten führen. Diese drei
+Informationsarten sind fachlich verschieden. Ein Objektbezug stellt eine Beziehung zwischen zwei
+bereits existierenden Entitäten her, eine Aktionsangabe beschreibt projektspezifische
+Robotiksemantik ohne Entsprechung im IFC-Kernschema, und eine Zeitangabe entspricht einem in IFC
+bereits standardisierten Konzept. Das Annotationsmodell nutzt deshalb bewusst drei unterschiedliche
+IFC-Mechanismen, statt sämtliche Zusatzinformationen einheitlich in ein benutzerdefiniertes Property
+Set zu schreiben. Der vorliegende Abschnitt begründet diese Zuordnung. Die vollständige,
+systematische Abbildung des Domänenmodells folgt in Kapitel [TODO].
+
+\subsubsection{Objektbezüge als Relationen}
+Das Domänenmodell unterscheidet vier Felder, über die ein \textit{RobotTask} auf Gebäudeelemente
+verweist. \textit{targetObjects} bezeichnet die unmittelbar bearbeiteten oder als Handlungskontext
+genutzten Objekte, \textit{affectedObjects} die lediglich mittelbar betroffenen Objekte. Für
+Bewegungsaufgaben treten \textit{startReference} als Ausgangspunkt und \textit{targetReference} als
+Ziel hinzu. Diese Felder sind keine redundanten Varianten derselben Zuordnung, sondern kodieren
+unterschiedliche Rollen, die dasselbe Bauteil im Kontext verschiedener Aufgaben einnehmen kann: Eine
+Tür ist beim Öffnen direktes Ziel, bei einer Durchfahrt Durchgangselement und bei einer
+Bewegungsaufgabe möglicherweise nur Zwischenraumgrenze. Die Domänenvalidierung behandelt diese
+Rollen entsprechend differenziert, indem sie beispielsweise für \textit{OPEN}, \textit{CLOSE},
+\textit{SWITCH\_ON} und \textit{SWITCH\_OFF} mindestens ein Zielobjekt und für \textit{MOVE} sowohl
+Start- als auch Zielreferenz verlangt.
+
+Die Abbildung dieser Rollen erfolgt ausschließlich relational. Beim Mapping wird aus einer
+\textit{RobotObjectReference} eine externe Objektreferenz erzeugt, die neben \textit{GlobalId} und
+dem modelllokalen Rückfallpaar aus Modell- und Express-ID lediglich IFC-Klasse und Namen übernimmt.
+Es werden weder Geometrie noch Eigenschaften des Bauteils dupliziert, und es wird umgekehrt keine
+Aktionssemantik an das Gebäudeelement geschrieben. Das annotierte Modell bleibt dadurch in seinem
+bautechnischen Bestand unverändert. Die Mission wird ihm als zusätzlicher Beziehungsgraph
+beigestellt.
+
+Als Trägerbeziehung dient überwiegend \textit{IfcRelAssignsToProcess}, die einen Prozess mit den von
+ihm in Anspruch genommenen Objekten verknüpft. Die konkrete Rolle wird über das
+\textit{Name}-Attribut der Beziehung geführt und nimmt die Werte \textit{OPERATES\_ON},
+\textit{AFFECTS}, \textit{PASSES\_THROUGH}, \textit{NAVIGATES\_TO} und \textit{MOVE\_FROM} an.
+Direkte Zielobjekte erhalten dabei einen aktionsabhängigen Namen: Für \textit{PASS\_THROUGH} und
+\textit{NAVIGATE\_TO} werden die spezifischeren Rollen gewählt, in allen übrigen Fällen
+\textit{OPERATES\_ON}. Eine Ausnahme bildet das Bewegungsziel. Da es kein vom Prozess genutztes,
+sondern ein den Prozess bestimmendes Produkt darstellt, wird es über \textit{IfcRelAssignsToProduct}
+mit dem Namen \textit{MOVE\_TO} abgebildet, wobei das Zielobjekt als \textit{RelatingProduct} und
+der Task als zugeordnetes Objekt auftritt. Die Richtungsumkehr gegenüber den übrigen Zuordnungen ist
+damit nicht willkürlich, sondern folgt der Semantik der jeweiligen IFC-Beziehung. Weil sämtliche
+Rollen als eigenständige Beziehungsobjekte mit sprechendem Namen vorliegen, lässt sich der
+Objektbezug beim Reimport eindeutig in dasselbe Domänenfeld zurückführen.
+
+\subsubsection{Projektspezifische Semantik in eigenen Property Sets}
+Wo IFC bereits eine passende Semantik bereitstellt, nutzt das Annotationsmodell native Attribute:
+Die Domänen-ID eines Tasks wird nach \textit{Identification} geschrieben, der Lebenszyklusstatus
+nach \textit{Status}, die vierstufige Priorität in das ganzzahlige \textit{Priority}-Attribut, und
+die Unterscheidung zwischen Missions- und Taskebene erfolgt über \textit{ObjectType} in Verbindung
+mit einem benutzerdefinierten vordefinierten Typ. Für die eigentliche Robotiksemantik existiert eine
+solche Entsprechung jedoch nicht. Weder die unterstützten Aktionsarten noch Angaben zu geforderten
+Roboterfähigkeiten oder zu Vor- und Nachbedingungen lassen sich verlustfrei auf Attribute des
+IFC-Kernschemas abbilden. Diese Informationen werden deshalb ergänzend über eigene Property Sets
+geführt, die dem generierten \textit{IfcTask} über \textit{IfcRelDefinesByProperties} zugeordnet
+werden — und ausdrücklich nur diesem, nicht den referenzierten Bauteilen.
+
+Implementiert sind drei Property Sets. \textit{RobotAction} trägt am ausführbaren Task die
+Aktionssemantik: \textit{ActionType} ist stets vorhanden, da es das angeforderte Verhalten benennt.
+Optional treten \textit{TargetState}, \textit{TargetObjectRole}, \textit{AffectedObjectRole},
+\textit{RequiredCapability} und \textit{SuccessCondition} als Einzelwerte sowie
+\textit{Preconditions} und \textit{Postconditions} als Listenwerte hinzu. \textit{RobotTask} führt
+taskbezogene Metadaten, namentlich die Änderungszeitstempel sowie die optionalen
+Viewer-Annotationsdaten aus Kamerastellung und Markerposition. \textit{RobotMission} führt am
+übergeordneten Missions-Task die entsprechenden Zeitstempel sowie zwei für Kompatibilität und
+Wiedereinlesen wesentliche Angaben: die Version des Annotationsschemas, derzeit \textit{1.0.0}, und
+ein boolesches Kennzeichen, ob die Mission einen fachlich gesetzten Zeitplan besitzt. Der
+reservierte Präfix \textit{Pset\_} wird für diese Sets nicht verwendet. Der Writer bricht den Export
+ab, sobald ein Property-Set-Name mit diesem Präfix beginnt. Die zugrunde liegende Designentscheidung
+lässt sich damit knapp fassen: Standardisierte IFC-Strukturen werden genutzt, wo eine passende
+Semantik vorhanden ist, während projektspezifische Robotiksemantik ergänzend und klar erkennbar
+abgegrenzt in eigenen Property Sets abgelegt wird.
+
+\subsubsection{Zeitinformationen über native IFC-Strukturen}
+Zeitangaben bilden den Gegenfall zur Aktionssemantik. Die Domänenstruktur \textit{RobotTaskTime}
+führt geplanten Start, geplantes Ende, geplante Dauer, tatsächliche Start- und Endzeitpunkte, die
+verbleibende Restdauer sowie einen Fertigstellungsgrad. Für genau diese Angaben stellt IFC mit
+\textit{IfcTaskTime} eine etablierte Struktur bereit. Das Annotationsmodell schreibt
+Zeitinformationen deshalb nicht als beliebige Custom Properties, sondern erzeugt bei vorhandener
+Zeitangabe einen eigenen Zeitrecord, der über das native \textit{TaskTime}-Attribut des Tasks
+referenziert wird und ausdrücklich nicht über eine Property-Beziehung. Beim Schreiben werden die
+Werte in die typisierten IFC-Wertarten überführt. Die Ableitung des Dauertyps aus dem Vorhandensein
+einer Dauerangabe und die Behandlung des Fertigstellungsgrads als positives Verhältnismaß zeigen
+dabei, dass die Abbildung den Typrestriktionen des Schemas folgt und nicht lediglich Zeichenketten
+ablegt.
+
+Auf Missionsebene wird die optionale Struktur \textit{RobotMissionSchedule} auf
+\textit{IfcWorkSchedule} abgebildet und über \textit{IfcRelAssignsToControl} mit dem übergeordneten
+Missions-Task verbunden. Bemerkenswert ist, dass ein Zeitplan auch dann deterministisch erzeugt
+wird, wenn die Mission keinen fachlich gesetzten Plan besitzt. Die Unterscheidung zwischen technisch
+notwendiger Infrastruktur und fachlicher Planungsaussage bleibt jedoch erhalten, weil sie über die
+genannte Kennzeichnung im Property Set \textit{RobotMission} explizit festgehalten wird. Damit
+entsteht kein Informationsverlust, obwohl der IFC-Graph in beiden Fällen strukturell gleich
+aufgebaut ist.
+
+\subsubsection{Zusammenführung}
+Die drei Bereiche folgen damit einem gemeinsamen Auswahlprinzip: Nicht die Herkunft der Information
+aus dem Missionsmodell, sondern ihre Bedeutung bestimmt den IFC-Mechanismus. Beziehungen zwischen
+bestehenden Entitäten werden als Beziehungsobjekte modelliert, standardisierbare Sachverhalte über
+native Entitäten und Attribute, und ausschließlich das fachlich Neue wird als projektspezifische
+Erweiterung ergänzt. Der Umfang der eigenen Property Sets bleibt dadurch begrenzt und beschreibt
+genau jene Semantik, für die IFC keine Entsprechung anbietet.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{pics/Informationsarten_RobotTask.pdf}
+    \caption{Zuordnung der drei Informationsarten eines \textit{RobotTask} zu den jeweils verwendeten IFC-Repräsentationsmechanismen.}
+    \label{fig:Informationsarten-RobotTask}
+\end{figure}
+
+Aus dieser Aufteilung ergibt sich zugleich die Aufgabe des folgenden Abschnitts. Die hier einzeln
+begründeten Mechanismen greifen im erzeugten Modell ineinander: Derselbe \textit{IfcTask} ist
+Ausgangspunkt mehrerer Zuweisungsbeziehungen, Träger zweier Property Sets und Inhaber eines
+Zeitobjekts, während er zugleich in Hierarchie- und Abfolgebeziehungen eingebettet ist. Kapitel [TODO]
+ führt diese Einzelmechanismen deshalb zu einer geschlossenen Darstellung zusammen und zeigt
+systematisch, wie das vollständige interne Domänenmodell aus \textit{RobotMission} und
+\textit{RobotTask} auf den resultierenden IFC-Graphen abgebildet wird.
+
+
+\subsection{Abbildung des Domänenmodells auf IFC}\label{subsec:modell_ifc}
+
+\subsubsection{Grundprinzip der Abbildung}
+Die in den Abschnitten 4.2 bis 4.6 einzeln eingeführten Modellierungsentscheidungen werden hier zu
+einer geschlossenen Abbildungsvorschrift zusammengeführt. Leitfrage ist, wie eine
+\textit{RobotMission} mit ihren \textit{RobotTask}-Objekten, deren Beziehungen und deren
+Zusatzinformationen systematisch auf IFC-Entitäten und IFC-Relationen abgebildet wird.
+
+Die Abbildung erfolgt nicht in einem Schritt, sondern über eine dreistufige Trennung: internes Domänenmodell, IFC-nahe Mappingrepräsentation und IFC-Entitäten und Relationen.
+Das Domänenmodell in \textit{src/domain/robot-tasks/types.ts} ist bewusst frei von STEP-Syntax,
+\textit{web-ifc}-Konstruktoren und Express-IDs des Zielmodells. Die mittlere Stufe wird durch einen
+typisierten Recordgraphen gebildet (\textit{src/ifc/robot-tasks/records.ts}), der bereits
+IFC-Entitätsnamen als Diskriminatoren verwendet, aber weiterhin reine TypeScript-Datenstrukturen
+ohne Dateizugriff enthält. Erst die äußere Stufe erzeugt konkrete IFC-Instanzen. Diese Trennung hat
+zwei Konsequenzen: Die fachliche Mappingentscheidung ist unabhängig von der Serialisierungstechnik
+prüfbar, und die Domänenschicht bleibt frei von Infrastrukturabhängigkeiten. Die technische
+Exportpipeline selbst wird in Kapitel 5 behandelt.
+
+Die Übersetzung ist in \textit{src/ifc/robot-tasks/mapper.ts} als reine Funktion realisiert: Sie
+nimmt eine \textit{RobotMission} entgegen und liefert einen deterministischen, flachen Recordgraphen
+mit expliziten graphlokalen Referenzen. Eine Mission wird nur abgebildet, wenn die
+Domänenvalidierung keine blockierenden Fehler meldet; ungültige Missionen können damit gar nicht
+erst in eine IFC-Repräsentation überführt werden.
+
+\subsubsection{Mission und Tasks}
+Sowohl die Mission als auch die ausführbaren Einzelschritte werden auf \textit{IfcTask} abgebildet.
+Diese Entscheidung nutzt aus, dass \textit{IfcTask} in IFC nicht auf elementare Arbeitsschritte
+beschränkt ist, sondern auch als zusammenfassender Prozessknoten verwendet werden kann.
+\textit{RobotMission} bedeutet hierbei ein übergeordneter IfcTask, \textit{RobotTask} ein untergeordneter.
+
+Beide Rollen werden im Recordgraphen explizit unterschieden (\textit{role: \dq{}MISSION\dq{} |
+\dq{}EXECUTABLE\_TASK\dq{}}) und in IFC über \textit{ObjectType} markiert: Der Missionsknoten trägt
+\textit{RobotMission}, die ausführbaren Schritte tragen \textit{RobotTask}. Die stabile
+Domänenkennung wird jeweils in \textit{Identification} geschrieben, sodass die Zuordnung zwischen
+Domänenobjekt und IFC-Entität nicht von einer Express-ID abhängt. \textit{PredefinedType} wird beim
+Schreiben durchgängig auf \textit{USERDEFINED} gesetzt, weil die Robotiksemantik durch das
+Aufzählungsspektrum von \textit{IfcTaskTypeEnum} nicht abgedeckt ist. Optionale Domänenangaben
+werden auf vorhandene Attribute abgebildet: \textit{status} auf \textit{Status}, \textit{priority}
+auf die IFC-Ganzzahlskala von 1 (niedrig) bis 4 (kritisch).
+
+Die Mission bildet damit den übergeordneten fachlichen Kontext, ohne selbst ausführbar zu sein; die Robotiksemantik im engeren Sinne liegt ausschließlich an den untergeordneten Tasks.
+
+\subsubsection{Hierarchie und Sequenzen}
+
+Die in Kapitel 4.5 begründete Trennung von Enthaltensein und Ausführungsabhängigkeit wird auf IFC-Ebene durch zwei verschiedene Relationstypen abgebildet.
+
+Erstens, pro Mission wird genau eine \textit{IfcRelNests}-Relation erzeugt, deren
+\textit{RelatingObject} der Missionsknoten ist und deren \textit{RelatedObjects} die untergeordneten
+Tasks in der Reihenfolge der Missionsliste enthalten.
+Zweitens, für jede Domänensequenz wird dagegen eine eigene \textit{IfcRelSequence}-Relation mit
+Vorgänger- und Nachfolgerprozess sowie dem übernommenen Sequenztyp erzeugt. Die stabile Sequenz-ID
+der Domäne wird in \textit{Name} abgelegt.
+
+Entscheidend ist, dass beide Strukturen unabhängig voneinander sind: Die Nesting-Reihenfolge ist
+eine Darstellungs- und Zugehörigkeitsordnung, keine Ausführungsreihenfolge. Eine Mission ohne
+Sequenzen bleibt hierarchisch vollständig, besitzt aber keine zeitlichen Abhängigkeiten.
+
+\subsubsection{Objektbezüge}
+
+Die in Kapitel 4.6 eingeführten Rollen von Objektzuordnungen werden auf zwei IFC-Zuweisungsrelationen abgebildet. Maßgeblich ist dabei, in welcher Rolle ein Gebäudeobjekt am Task beteiligt ist:
+
+- Direkt adressierte Zielobjekte werden über \textit{IfcRelAssignsToProcess} an den Task gebunden.
+Der Relationsname wird aus dem Aktionstyp abgeleitet: \textit{PASS\_THROUGH} ergibt
+\textit{PASSES\_THROUGH}, \textit{NAVIGATE\_TO} ergibt \textit{NAVIGATES\_TO}, alle übrigen Aktionen
+ergeben \textit{OPERATES\_ON}.
+- Indirekt betroffene Objekte werden über eine zweite \textit{IfcRelAssignsToProcess}-Relation mit dem Namen \textit{AFFECTS} abgebildet.
+- Bei \textit{MOVE}-Aufgaben wird die Startreferenz als \textit{IfcRelAssignsToProcess} mit dem
+Namen \textit{MOVE\_FROM} abgebildet, die Zielreferenz dagegen als \textit{IfcRelAssignsToProduct}
+mit dem Namen \textit{MOVE\_TO}.
+
+Die unterschiedliche Behandlung von Start und Ziel folgt der IFC-Richtungslogik: Bei
+\textit{IfcRelAssignsToProcess} ist der Task der zuweisende Prozess und das Gebäudeobjekt das
+zugewiesene Objekt; bei \textit{IfcRelAssignsToProduct} ist das Produkt der Bezugspunkt, dem der
+Task zugeordnet wird. Das Bewegungsziel wird damit als produktbezogener Zielpunkt und nicht als vom
+Task verarbeitetes Objekt modelliert. Referenzierte Gebäudeobjekte werden im Recordgraphen
+ausdrücklich als modellexterne Referenzen geführt und nicht als erzeugte Entitäten; die zugrunde
+liegende Identifikationsstrategie wurde in Kapitel 4.4 behandelt.
+
+\subsubsection{Aktions- und Metadaten}
+
+Prozessstruktur und Beziehungen lassen sich vollständig mit regulären IFC-Entitäten ausdrücken. Die
+projektspezifische Robotiksemantik besitzt dagegen keine normative IFC-Entsprechung und wird deshalb
+über drei eigene Property Sets ergänzt, die über \textit{IfcRelDefinesByProperties} an den
+jeweiligen \textit{IfcTask} gebunden werden:
+
+- \textit{RobotAction} am ausführbaren Task trägt den Aktionstyp sowie die optionalen Aktionsparameter; mehrwertige Angaben wie Vor- und Nachbedingungen werden als Listenwerte abgelegt.
+- \textit{RobotTask} am ausführbaren Task trägt Zeitstempel der Bearbeitung sowie optionale Viewer-Annotationen.
+- \textit{RobotMission} am Missionsknoten trägt Missionszeitstempel, die Version des Annotationsschemas und einen Marker für einen explizit gepflegten Missionsplan.
+
+Die Namen der Property Sets verwenden bewusst nicht den reservierten Präfix \textit{Pset\_}; der
+Export bricht ab, wenn ein solcher Name auftreten würde. Damit gilt als zentrale Regel: **Die
+regulären IFC-Entitäten bilden Prozessstruktur und Beziehungen ab; projektspezifische
+Robotiksemantik wird ergänzend über eigene Property Sets gespeichert.**
+
+\subsubsection{Zeitinformationen und Missionsplan}
+
+Zeitliche Angaben werden nicht über eigene Property Sets, sondern über die dafür vorgesehenen
+IFC-Strukturen abgebildet. \textit{RobotTaskTime} wird auf \textit{IfcTaskTime} abgebildet und
+direkt als Attribut des zugehörigen \textit{IfcTask} referenziert; die Relation entsteht also nicht
+über eine Eigenschaftszuweisung. Der Missionsplan wird auf \textit{IfcWorkSchedule} abgebildet und
+über \textit{IfcRelAssignsToControl} mit dem Missionsknoten verbunden.
+
+Diese Infrastruktur wird für jede Mission erzeugt, auch wenn das Domänenmodell keinen expliziten
+\textit{RobotMissionSchedule} besitzt; in diesem Fall werden Kennung, Name und Startzeit
+deterministisch aus der Mission abgeleitet. Die Unterscheidung zwischen fachlich gepflegtem und
+technisch erzeugtem Plan bleibt dennoch erhalten, weil sie im \textit{RobotMission}-Property-Set
+explizit markiert wird.
+
+\subsubsection{Gesamtübersicht des Mappings}
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabularx}{\textwidth}{@{}|>{\raggedright\arraybackslash}p{0.33\textwidth}|X|@{}}
+    \hline
+    \textbf{Domänenkonzept} & \textbf{IFC-Abbildung} \\
+    \hline
+    \texttt{RobotMission}
+      & übergeordneter \texttt{IfcTask}, \texttt{ObjectType = RobotMission} \\
+    \hline
+    \texttt{RobotTask}
+      & untergeordneter \texttt{IfcTask}, \texttt{ObjectType = RobotTask} \\
+    \hline
+    Missionshierarchie
+      & \texttt{IfcRelNests} \\
+    \hline
+    Task-Abhängigkeit (\texttt{RobotTaskSequence})
+      & \texttt{IfcRelSequence}, Domänen-ID in \texttt{Name} \\
+    \hline
+    direkt adressierte Zielobjekte
+      & \texttt{IfcRelAssignsToProcess} mit \texttt{OPERATES\_ON}, \texttt{PASSES\_THROUGH} oder \texttt{NAVIGATES\_TO} \\
+    \hline
+    betroffene Objekte
+      & \texttt{IfcRelAssignsToProcess} mit \texttt{AFFECTS} \\
+    \hline
+    \texttt{MOVE}-Startreferenz
+      & \texttt{IfcRelAssignsToProcess} mit \texttt{MOVE\_FROM} \\
+    \hline
+    \texttt{MOVE}-Zielreferenz
+      & \texttt{IfcRelAssignsToProduct} mit \texttt{MOVE\_TO} \\
+    \hline
+    \texttt{RobotTaskTime}
+      & \texttt{IfcTaskTime} als direktes \texttt{IfcTask}-Attribut \\
+    \hline
+    \texttt{RobotMissionSchedule}
+      & \texttt{IfcWorkSchedule} mit \texttt{IfcRelAssignsToControl} \\
+    \hline
+    Aktionssemantik
+      & Property Set \texttt{RobotAction} \\
+    \hline
+    Task-Metadaten
+      & Property Set \texttt{RobotTask} \\
+    \hline
+    Missionsmetadaten und Schemaversion
+      & Property Set \texttt{RobotMission} \\
+    \hline
+  \end{tabularx}
+  \caption{Systematische Abbildung des internen Robotermissionsmodells auf IFC-Strukturen}
+  \label{tab:mapping-domaene-ifc}
+\end{table}
+\FloatBarrier
+
+TODO: Ordentliche Visualisierung des Mappings. (Evtl. Diagramm aus Architektur)
+
+
+\subsubsection{Anforderung an die bidirektionale Abbildung}
+Da der Missionsroundtrip Bestandteil des Prototyps ist, genügt es nicht, eine Abbildungsrichtung zu
+definieren. Die erzeugte IFC-Struktur muss zusätzlich so eindeutig interpretierbar sein, dass daraus
+wieder ein gültiges Domänenmodell von RobotMission über IFC-Missionsgraph zurück zu RobotMission
+entsteht.
+
+
+Daraus ergeben sich Anforderungen an das Mapping selbst. Jede Missionsentität muss anhand stabiler
+Marker als projekteigen erkennbar sein; das leisten die \textit{ObjectType}-Werte, der
+\textit{USERDEFINED}-Typ und die eigenen Property-Set-Namen. Jede Domänenkennung muss aus IFC
+rekonstruierbar sein, weshalb Missions-, Task- und Sequenzkennungen in Attributen und nicht nur
+implizit über die Graphstruktur abgelegt werden. Die Rollen der Objektzuordnungen müssen
+unterscheidbar bleiben, weshalb der Relationsname semantisch belegt und nicht frei gewählt ist.
+Schließlich müssen abgeleitete von fachlich gepflegten Informationen unterscheidbar sein, was den
+Marker für den expliziten Missionsplan begründet. Die technische Umsetzung von Reader,
+Replacement-Export, Roundtrip-Koordination, semantischem Vergleich und Quellverwaltung wird in
+Kapitel 5 beschrieben.
+
+\subsubsection{Version des Annotationsschemas}
+
+Das Mapping schreibt in das \textit{RobotMission}-Property-Set eine eigene Versionsangabe des
+Annotationsmodells, die als Konstante zentral gepflegt wird und aktuell den Wert \textit{1.0.0}
+besitzt. Sie erlaubt es, projekteigene Missionsannotationen eindeutig als solche zu erkennen und
+spätere Änderungen des eigenen Annotationsschemas kontrolliert zu behandeln; Annotationen ohne diese
+Angabe werden beim Lesen als Altbestand behandelt und über definierte Kompatibilitätsregeln
+interpretiert.
+
+Diese Version ist strikt von der IFC-Schemaversion zu unterscheiden. IFC4 beziehungsweise IFC4X3
+beschreiben das zugrunde liegende Datenschema, während die Annotationsversion ausschließlich die
+projektspezifische Missionsmodellierung innerhalb dieses Schemas versioniert. Für das Mapping selbst
+ist die IFC-Schemaversion nachrangig: Alle verwendeten Entitäten und Relationen existieren in beiden
+unterstützten Schemafamilien, sodass die Schemawahl lediglich die beim Schreiben verwendeten
+Konstruktoren bestimmt und die Abbildungsvorschrift unverändert lässt.
+
+\subsection{Validierungsmodell}
+\subsubsection{Motivation und Fragestellung}
+Ein Annotationsmodell besteht nicht ausschließlich aus Datenstrukturen. Eine Datenstruktur kann
+syntaktisch korrekt befüllt sein und dennoch eine fachlich sinnlose Robotermission beschreiben: ein
+Task ohne Zielobjekt, eine Bewegung ohne Startpunkt oder ein Abhängigkeitsgraph ohne
+widerspruchsfreie Ausführungsreihenfolge. Kapitel 4.8 beantwortet deshalb die Frage, welche
+fachlichen Invarianten eine Mission erfüllen muss, damit sie innerhalb des Modells als konsistent
+gilt.
+
+Die Validierung ist in der Umsetzung Bestandteil der Domänenschicht
+(\textit{src/domain/robot-tasks/validation.ts}) und nicht der Benutzeroberfläche. Sie ist damit
+unabhängig von Viewer, Persistenz und IFC-Serialisierung und wird von mehreren Aufrufern gemeinsam
+genutzt: vom Anwendungsservice als explizite Abfrage, vom IFC-Mapping vor dem Export und vom Reader
+bei der Rekonstruktion importierter Missionen. Die Prüfung sammelt Befunde, statt beim ersten
+Verstoß abzubrechen, sodass ein vollständiges Bild des Missionszustands entsteht.
+
+\subsubsection{Strukturelle Validierung}
+Die strukturelle Ebene sichert die Identität und Vollständigkeit des Aggregats. Eine
+\textit{RobotMission} benötigt eine nicht leere Kennung und einen nicht leeren Namen sowie
+mindestens einen ausführbaren Task; jeder \textit{RobotTask} benötigt ebenfalls Kennung und Name.
+Task-Kennungen müssen innerhalb einer Mission eindeutig sein, weil Hierarchie und Sequenzbeziehungen
+ausschließlich über diese Kennungen aufgelöst werden. Der Aktionstyp wird zur Laufzeit gegen die
+Menge der unterstützten Werte geprüft, da deserialisierte Daten die statische Typisierung umgehen
+können; ein fehlender und ein unbekannter Aktionswert werden dabei unterschieden.
+
+Ergänzend erzwingen die Builder in \textit{src/domain/robot-tasks/builders.ts} einen Teil dieser
+Invarianten bereits konstruktiv: leere Kennungen oder Namen sowie doppelte Task- und
+Sequenz-Kennungen führen dort unmittelbar zu einem Domänenfehler. Die deklarative Validierung bleibt
+dennoch notwendig, weil Missionen auch aus Persistenz oder IFC-Import stammen können.
+
+\subsubsection{Aktionsbezogene Validierung}
+Aktionstypen stellen unterschiedliche Anforderungen an einen Task. Direkt manipulierende Aktionen
+(\textit{OPEN}, \textit{CLOSE}, \textit{SWITCH\_ON}, \textit{SWITCH\_OFF}) verlangen mindestens ein
+Zielobjekt, \textit{PASS\_THROUGH} mindestens eine Objektreferenz, die wahlweise als Ziel- oder als
+betroffenes Objekt hinterlegt sein darf. \textit{MOVE} verlangt sowohl eine Start- als auch eine
+Zielreferenz, da eine Bewegung ohne beide Endpunkte nicht ausführbar beschrieben ist. Für
+\textit{NAVIGATE\_TO} sind keine zusätzlichen Anforderungen implementiert.
+
+Darüber hinaus wird die Aktionssemantik gegen den Objektbezug geprüft: Für türbezogene und
+schalterbezogene Aktionen wird die bekannte IFC-Klasse der Zielobjekte auf Plausibilität untersucht.
+Eine bekannte, aber unpassende Klasse gilt als Fehler; eine fehlende Klasseninformation wird
+lediglich als Warnung geführt, weil die Annotation trotzdem zutreffend sein kann. Schließlich stellt
+die Validierung sicher, dass Aktionsparameter am Task und nicht an einer Objektreferenz hängen:
+Referenzen, die aktionsspezifische Eigenschaften mitführen, werden zurückgewiesen. Damit wird die in
+Kapitel 4.3 begründete Trennung von Objektidentität und Aktionssemantik auch gegen fremde oder
+ältere Daten durchgesetzt.
+
+\subsubsection{Referenzvalidierung}
+Die Referenzvalidierung fragt nicht, wie eine Referenz technisch aufgelöst wird — dies wurde in
+Kapitel 4.4 behandelt —, sondern ob die gespeicherte Referenz im Kontext der Mission zulässig und
+verwendbar ist. Geprüft werden alle referenztragenden Felder eines Tasks gemeinsam: Ziel- und
+betroffene Objekte sowie Start- und Zielreferenz. Eine vorhandene, aber leere \textit{GlobalId} ist
+unzulässig; ein \textit{expressId}-Wert muss eine nicht negative ganze Zahl sein; und eine rein
+modelllokale Referenz ohne \textit{GlobalId} erfordert zwingend eine Modellkennung, da sie
+andernfalls außerhalb ihres Ursprungsmodells nicht mehr eindeutig ist.
+
+\subsubsection{Sequenz- und Graphvalidierung}
+Die Abhängigkeiten zwischen Tasks werden getrennt vom Hierarchiebaum geprüft
+(\textit{src/domain/robot-tasks/sequencing.ts}). Jede Sequenz benötigt eine Kennung; Vorgänger und
+Nachfolger müssen auf Tasks derselben Mission verweisen, und ein Task darf nicht sein eigener
+Vorgänger sein. Ergänzend wird der gesamte gerichtete Graph über eine Tiefensuche auf Zyklen
+untersucht.
+
+Ein solcher Zyklus (z.B. Task A -> Task B -> Task A) besitzt keine widerspruchsfreie
+Ausführungsreihenfolge und wird deshalb als Fehler gemeldet. Die Ordnungsfunktion des Modells
+verhält sich dazu konsistent: Lässt sich keine vollständige topologische Reihenfolge bilden, wird
+die Hierarchieordnung unverändert zurückgegeben, sodass keine Tasks stillschweigend verschwinden,
+während die Validierung den Widerspruch ausweist. Auch Operationen, die den Graphen verändern,
+prüfen den vollständigen resultierenden Graphen und schlagen atomar fehl, statt eine zyklische
+Zwischenlage zu erzeugen.
+
+\subsubsection{Fehler und Warnungen}
+Das Modell kennt genau zwei Schweregrade. Fehler kennzeichnen eine fachlich ungültige Mission und
+blockieren die Weiterverarbeitung; Warnungen kennzeichnen Unsicherheit, die die Gültigkeit nicht
+aufhebt. In der aktuellen Implementierung ist die fehlende IFC-Klasseninformation eines Zielobjekts
+der einzige als Warnung geführte Befund — alle übrigen Regeln sind blockierend. Jeder Befund trägt
+einen stabilen Code sowie optional Task- und Sequenzbezug, sodass Aufrufer nicht auf Meldungstexte
+angewiesen sind.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabularx}{\textwidth}{@{}|>{\raggedright\arraybackslash}p{0.14\textwidth}|X|>{\raggedright\arraybackslash}p{0.22\textwidth}|@{}}
+    \hline
+    \textbf{Validierungs-ebene} & \textbf{Beispielhafte Prüfung} & \textbf{Zweck} \\
+    \hline
+    Struktur & nicht leere und eindeutige Task-Kennungen, Pflichtnamen, mindestens ein Task & konsistentes Domänenobjekt \\
+    \hline
+    Aktion & Zielobjekt bzw. Start-/Zielreferenz je Aktionstyp, plausible IFC-Klasse & fachlich sinnvoller Task \\
+    \hline
+    Referenz & gültige \texttt{GlobalId} bzw. \texttt{modelId} + \texttt{expressId}, keine Aktionsparameter an der Referenz & gültige Verknüpfung \\
+    \hline
+    Sequenz & Sequenz-Kennung, existierende Endpunkte, keine Selbstreferenz & konsistenter Missionsgraph \\
+    \hline
+    Graph & keine Zyklen & ausführbare Abhängigkeiten \\
+    \hline
+    Zeit & Fertigstellungsgrad im Bereich 0 bis 1 & konsistentes Zeitmodell \\
+    \hline
+  \end{tabularx}
+\end{table}
+
+\subsubsection{Validierung vor dem Export}
+Eine syntaktisch erzeugbare IFC-Datei ist nicht automatisch eine fachlich gültige
+Robotermissionsannotation. Das Modell prüft daher bereits vor dem Schreiben: Die Abbildung des
+Domänenmodells auf IFC-nahe Records bricht ab, sobald blockierende Validierungsfehler vorliegen.
+Unvollständige Tasks oder zyklische Graphen können damit gar nicht erst in eine Form gebracht
+werden, die wie eine exportfertige Annotation aussieht. Die technische Exportpipeline selbst wird im
+Implementierungskapitel behandelt.
+
+\subsubsection{Validierung während des  Imports}
+Die inverse Richtung nutzt dieselben Regeln. Eine aus IFC rekonstruierte Mission durchläuft die
+vollständige Domänenvalidierung; die Befunde werden als Importbefunde mit vorangestelltem
+Domänen-Präfix übernommen. Enthält die Rekonstruktion Fehler, gilt die betroffene Mission als
+ungültig und wird verworfen. Da jeder Missionsknoten unabhängig rekonstruiert wird, bleiben andere,
+in sich gültige Missionen derselben Datei importierbar. Auf Roundtrip-Ebene wird eine IFC-Quelle,
+deren eigene Annotationen fehlerhaft sind, als unsicher markiert; ein Export in diese Quelle wird
+anschließend verweigert, um bekannt fehlerhafte Annotationen nicht zu überschreiben oder
+fortzuschreiben.
+
+\subsubsection{Abgrenzung zum semantischen Roundtrip-Vergleich}
+Die Domänenvalidierung prüft Invarianten einer einzelnen Mission: Pflichtfelder, Referenzen,
+Aktionsregeln, Sequenzgraph und Zeitwerte. Der semantische Vergleich prüft demgegenüber eine
+Relation zwischen zwei Aggregaten, nämlich ob die nach dem Export erneut importierte Mission dem
+beabsichtigten Domänenmodell entspricht. Beide Mechanismen sind in der Implementierung getrennt und
+wirken im Roundtrip komplementär; der Vergleich wird im Implementierungs- und Evaluationskapitel
+vertieft.

@@ -47,6 +47,13 @@ LATEX_SPECIAL_CHARS = [
     ("}", r"\}"),
     ("~", r"\textasciitilde{}"),
     ("^", r"\textasciicircum{}"),
+    # Content-internal literal quotes (e.g. a code span quoting a string
+    # literal like `role: "MISSION"`) hit the same babel-active-quote issue
+    # as the outer wrapping quotes did (see module docstring): a bare `"`
+    # is active in German babel and can fuse with the following letter or
+    # silently turn into a smart quote instead of a literal one. \dq{} is
+    # babel-german's own escape hatch for this - see convert_line/\\dq usage.
+    ('"', r"\dq{}"),
 ]
 
 
