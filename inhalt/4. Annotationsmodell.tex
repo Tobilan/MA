@@ -163,16 +163,16 @@ Aktionsparametern eingelöst werden, ist Gegenstand des folgenden Abschnitts 4.2
 
 \subsection{Internes Domänenmodell}\label{subsec:Internes_Domänenmodell}
 Aus den zuvor formulierten Modellierungszielen wird im Folgenden das interne Domänenmodell
-abgeleitet. Während Kapitel 4.1 begründet hat, *welche* fachlichen Sachverhalte überhaupt
-repräsentiert werden müssen, beschreibt dieses Unterkapitel, *wie* diese Sachverhalte innerhalb des
+abgeleitet. Während Kapitel 4.1 begründet hat, welche fachlichen Sachverhalte überhaupt
+repräsentiert werden müssen, beschreibt dieses Unterkapitel, wie diese Sachverhalte innerhalb des
 Editors als typisierte Datenstruktur ausgedrückt werden. Leitend ist dabei die Frage, wie
 Robotermissionen unabhängig von IFC-Serialisierung, Viewer und Benutzeroberfläche fachlich
 repräsentiert werden können.
 
 Das Domänenmodell bildet die fachliche Zwischenschicht des Systems. Es ist im Prototyp als
-eigenständige Modulgruppe unter `src/domain/robot-tasks/` umgesetzt und umfasst die Typdefinitionen
-(`types.ts`), die Erzeugungs- und Änderungsoperationen (`builders.ts`), die Sequenzlogik
-(`sequencing.ts`) sowie die Validierung (`validation.ts`). Dieser Zuschnitt ist bewusst gewählt:
+eigenständige Modulgruppe unter \textit{src/domain/robot-tasks/} umgesetzt und umfasst die Typdefinitionen
+(\textit{types.ts}), die Erzeugungs- und Änderungsoperationen (\textit{builders.ts}), die Sequenzlogik
+(\textit{sequencing.ts}) sowie die Validierung (\textit{validation.ts}). Dieser Zuschnitt ist bewusst gewählt:
 Weder die dreidimensionale Darstellung eines Gebäudemodells noch die konkrete IFC-Syntax sollen
 bestimmen, wie eine Mission fachlich beschrieben wird. Das Domänenmodell ist damit nicht ein
 technisches Zwischenformat, sondern die maßgebliche fachliche Beschreibung, aus der sowohl die
@@ -186,14 +186,14 @@ Abbildung~\ref{fig:grundstruktur_domaenenmodell} zeigt die Struktur des Modells 
     \label{fig:grundstruktur_domaenenmodell}
 \end{figure}
 \subsubsection{Die Mission als übergeordnete Einheit}\label{Mission_Einheit}
-`RobotMission` bezeichnet eine vollständige Robotermission und bildet die übergeordnete Einheit des
+\textit{RobotMission} bezeichnet eine vollständige Robotermission und bildet die übergeordnete Einheit des
 Modells, also diejenige Struktur, über die alle zugehörigen Informationen erreichbar sind und deren
 Konsistenz als Ganzes geprüft werden kann. In der Architekturdokumentation des Prototyps wird sie
 als Aggregat-Root bezeichnet; fachlich entscheidend ist, dass ausführbare Schritte, deren
 Abhängigkeiten und die optionale Zeitplanung nicht unabhängig voneinander existieren, sondern stets
 im Kontext genau einer Mission.
 
-Eine Mission trägt eine stabile anwendungsseitige Kennung (`id`), einen menschenlesbaren Namen sowie
+Eine Mission trägt eine stabile anwendungsseitige Kennung (\textit{id}), einen menschenlesbaren Namen sowie
 eine optionale Beschreibung. Die Kennung ist ausdrücklich eine Anwendungs-ID und keine
 IFC-Identität; die Frage, wie beide Identitätsräume beim Export und Import aufeinander abgebildet
 werden, wird erst in Kapitel 4.4 und Kapitel 4.9 behandelt. Ergänzend führt die Mission einen
@@ -202,27 +202,27 @@ im Modell durch dieselben Typen beschrieben werden wie auf Task-Ebene; Mission u
 dasselbe Vokabular für Lebenszyklus und Dringlichkeit, was den Aufbau der Bearbeitungsoberfläche
 vereinheitlicht.
 
-Die eigentliche fachliche Substanz liegt in drei Feldern. `tasks` enthält die ausführbaren
-Einzelschritte der Mission, `sequences` die expliziten gerichteten Abhängigkeiten zwischen diesen
-Schritten, und `schedule` optional eine Zeitplanung der Mission als Ganzes. Hinzu kommen ein
+Die eigentliche fachliche Substanz liegt in drei Feldern. \textit{tasks} enthält die ausführbaren
+Einzelschritte der Mission, \textit{sequences} die expliziten gerichteten Abhängigkeiten zwischen diesen
+Schritten, und \textit{schedule} optional eine Zeitplanung der Mission als Ganzes. Hinzu kommen ein
 Erstellungs- und ein Änderungszeitstempel, die nachvollziehbar machen, wann eine Mission zuletzt
 bearbeitet wurde. Wesentlich ist, dass die Mission selbst keine Roboteraktion beschreibt: Sie ist
 Container und Klammer, nicht ausführbare Handlung. Jede konkrete Tätigkeit wird ausschließlich durch
 die enthaltenen Tasks ausgedrückt.
 
 \subsubsection{Der Task als ausführbare Einheit}\label{Task_Einheit}
-`RobotTask` bezeichnet einen ausführbaren Einzelschritt innerhalb einer Mission. Der Task ist die
+\textit{RobotTask} bezeichnet einen ausführbaren Einzelschritt innerhalb einer Mission. Der Task ist die
 zentrale Struktur des Modells, weil er unterschiedliche Informationsbereiche zusammenführt, die im
 Modell dennoch klar getrennt bleiben.
 
 Den fachlichen Kern bildet die Aktion: Jeder Task besitzt neben Kennung, Name und optionaler
-Beschreibung genau einen `actionType`, also die konkrete auszuführende Roboteraktion. Der zweite
+Beschreibung genau einen \textit{actionType}, also die konkrete auszuführende Roboteraktion. Der zweite
 Bereich umfasst die Bezüge zu Gebäudeelementen. Hier unterscheidet das Modell zwischen
-`targetObjects` als unmittelbar adressierten oder als Kontext genutzten Objekten und
-`affectedObjects` als indirekt betroffenen Objekten; für Bewegungsaufgaben treten zusätzlich
-`startReference` und `targetReference` als Ausgangs- und Zielbezug hinzu. Der dritte Bereich sind
-die Aktionsparameter (`properties`), der vierte die zeitlichen Informationen (`time`). Als fünfter,
-optionaler Bereich können mit `viewpoint` und `markerPosition` annotationsbezogene
+\textit{targetObjects} als unmittelbar adressierten oder als Kontext genutzten Objekten und
+\textit{affectedObjects} als indirekt betroffenen Objekten; für Bewegungsaufgaben treten zusätzlich
+\textit{startReference} und \textit{targetReference} als Ausgangs- und Zielbezug hinzu. Der dritte Bereich sind
+die Aktionsparameter (\textit{properties}), der vierte die zeitlichen Informationen (\textit{time}). Als fünfter,
+optionaler Bereich können mit \textit{viewpoint} und \textit{markerPosition} annotationsbezogene
 Zusatzinformationen hinterlegt werden, die den Task im Viewer wiederauffindbar machen. Abgeschlossen
 wird die Struktur durch Status, Priorität und Zeitstempel.
 
@@ -241,20 +241,20 @@ die einzelnen Bereiche später auf unterschiedliche IFC-Konstrukte abgebildet we
 Domänenmodell vermischt zu sein.
 
 \subsubsection{Referenzen und ergänzende Wertobjekte}\label{Ref_Ojekte}
-`RobotObjectReference` bezeichnet den fachlichen Verweis auf ein IFC-Objekt. Entscheidend ist, dass
+\textit{RobotObjectReference} bezeichnet den fachlichen Verweis auf ein IFC-Objekt. Entscheidend ist, dass
 im Domänenmodell keine Viewer- oder Three.js-Objekte, keine Geometrie und keine Rendering-Handles
 gespeichert werden, sondern ausschließlich eine schlanke Identitätsbeschreibung. Bevorzugt wird die
-`globalId`, also die dauerhafte IFC-Objektidentität. Steht diese nicht zur Verfügung, ist ein
-modelllokaler Fallback aus `modelId` und `expressId` zulässig; die Typdefinition erzwingt dabei
-bereits auf Typebene, dass eine `expressId` ohne `globalId` nur zusammen mit der zugehörigen
-`modelId` verwendet werden kann, da Express-IDs nur innerhalb einer Modellserialisierung eindeutig
-sind. Ergänzend können mit `ifcClass` und `name` beschreibende Angaben zum Objekt geführt werden.
+\textit{globalId}, also die dauerhafte IFC-Objektidentität. Steht diese nicht zur Verfügung, ist ein
+modelllokaler Fallback aus \textit{modelId} und \textit{expressId} zulässig; die Typdefinition erzwingt dabei
+bereits auf Typebene, dass eine \textit{expressId} ohne \textit{globalId} nur zusammen mit der zugehörigen
+\textit{modelId} verwendet werden kann, da Express-IDs nur innerhalb einer Modellserialisierung eindeutig
+sind. Ergänzend können mit \textit{ifcClass} und \textit{name} beschreibende Angaben zum Objekt geführt werden.
 Die vollständige Referenzierungsstrategie einschließlich ihrer Konsequenzen für Modellgrenzen und
 wiederholte Serialisierungen ist Gegenstand von Kapitel 4.4.
 
 Wesentlich für das Verständnis des Modells ist, dass die Referenz bewusst frei von Aktionssemantik
-bleibt. Sie beantwortet die Frage, *welches* Bauteil gemeint ist, nicht die Frage, *was* mit ihm
-geschehen soll. Diese zweite Frage beantwortet `RobotActionProperties`, also die strukturierte
+bleibt. Sie beantwortet die Frage, welches Bauteil gemeint ist, nicht die Frage, was mit ihm
+geschehen soll. Diese zweite Frage beantwortet \textit{RobotActionProperties}, also die strukturierte
 Beschreibung der konkreten Aktionsanforderung eines Tasks. Dort können unter anderem ein
 angestrebter Zielzustand, die semantischen Rollen der adressierten und der betroffenen Objekte, eine
 erforderliche Roboterfähigkeit sowie Vor-, Nachbedingungen und ein Erfolgskriterium hinterlegt
@@ -263,30 +263,30 @@ verschiedenen Tasks mit unterschiedlichen Anforderungen verwendet werden – etw
 einem Schritt geöffnet und in einem späteren wieder geschlossen wird. Die Bedeutung der einzelnen
 Aktionsarten wird in Kapitel 4.3 behandelt.
 
-`RobotTaskTime` bezeichnet die zeitliche Beschreibung eines einzelnen Tasks und umfasst geplanten
+\textit{RobotTaskTime} bezeichnet die zeitliche Beschreibung eines einzelnen Tasks und umfasst geplanten
 Start, geplantes Ende und geplante Dauer, den tatsächlichen Start und das tatsächliche Ende, die
 verbleibende Dauer sowie einen Fertigstellungsgrad. Diese Angaben sind bewusst nicht Teil von
-`RobotActionProperties`, obwohl beide Strukturen den Task ergänzen. Aktionsparameter beschreiben die
+\textit{RobotActionProperties}, obwohl beide Strukturen den Task ergänzen. Aktionsparameter beschreiben die
 fachliche Anforderung an die Ausführung und sind projektspezifisch; Zeitangaben beschreiben dagegen
 Planung und Fortschritt und entsprechen einem in IFC bereits vorhandenen Konzept, das in Kapitel 4.8
 aufgegriffen wird. Die Trennung im Domänenmodell nimmt diese unterschiedliche Herkunft vorweg und
 vermeidet, dass Planungsdaten in einer projekteigenen Parameterstruktur verborgen werden.
 
-Auf Missionsebene existiert mit `RobotMissionSchedule` eine optionale Zeitplanung für die Mission
+Auf Missionsebene existiert mit \textit{RobotMissionSchedule} eine optionale Zeitplanung für die Mission
 als Ganzes, bestehend aus Kennung, Name sowie geplantem Start, Ende und Dauer. Sie ersetzt die
 Task-Zeiten nicht, sondern beschreibt einen übergeordneten Rahmen: Der Task-Zeitbereich betrifft die
 Ausführung eines einzelnen Schritts einschließlich des tatsächlichen Verlaufs, die Missionsplanung
 dagegen ausschließlich die geplante zeitliche Einordnung des Gesamtvorgangs.
 
 \subsubsection{Hierarchie und Ausführungsabhängigkeit als getrennte Strukturen}
-`RobotTaskSequence` bezeichnet eine eigenständige gerichtete Abhängigkeit zwischen zwei Tasks. Eine
+\textit{RobotTaskSequence} bezeichnet eine eigenständige gerichtete Abhängigkeit zwischen zwei Tasks. Eine
 Sequenz besitzt eine eigene stabile Kennung, verweist über Task-IDs auf einen Vorgänger und einen
 Nachfolger und trägt einen Sequenztyp, der die Art der zeitlichen Beziehung angibt. Sequenzen sind
 damit eigenständige Elemente der Mission und keine Eigenschaft eines Tasks.
 
-Daraus ergibt sich die für dieses Kapitel zentrale Unterscheidung: `RobotMission.tasks` beschreibt,
+Daraus ergibt sich die für dieses Kapitel zentrale Unterscheidung: \textit{RobotMission.tasks} beschreibt,
 welche ausführbaren Schritte zur Mission gehören, und legt zugleich deren deterministische
-Darstellungs- und Hierarchieordnung fest. `RobotMission.sequences` beschreibt demgegenüber, welche
+Darstellungs- und Hierarchieordnung fest. \textit{RobotMission.sequences} beschreibt demgegenüber, welche
 zeitlichen Abhängigkeiten zwischen diesen Schritten bestehen. Beide Strukturen ließen sich nicht
 ohne Informationsverlust durch ein einziges sortiertes Task-Array ersetzen. Ein Array kann
 ausschließlich eine lineare Folge ausdrücken; ein Abhängigkeitsgraph kann darüber hinaus unabhängige
@@ -306,7 +306,7 @@ Graphen auf Selbstbezüge, auf Verweise auf unbekannte Tasks und auf Zyklen und 
 und Sequenzen eine ausführungsgerechte Reihenfolge ableiten, wobei die Hierarchieordnung als
 deterministisches Tie-Breaking-Kriterium für voneinander unabhängige Tasks dient. Legt eine
 Anwenderin oder ein Anwender eine rein lineare Reihenfolge fest, wird daraus eine vollständige Kette
-vom Typ `FINISH_START` erzeugt; auch dieser Fall wird jedoch als Sequenzgraph gespeichert und nicht
+vom Typ \textit{FINISH\_START} erzeugt; auch dieser Fall wird jedoch als Sequenzgraph gespeichert und nicht
 auf die Array-Reihenfolge reduziert. Die inhaltliche Semantik der Sequenztypen sowie die
 Zyklusbehandlung im Detail sind Gegenstand von Kapitel 4.5.
 
@@ -328,7 +328,7 @@ sein, weil Sequenzen genau über diese Kennungen auflösen, und dieselbe Objekti
 Task nicht mehrfach zugewiesen. Viertens wird bei jeder Änderung der Änderungszeitpunkt
 fortgeschrieben.
 
-Ergänzend prüft eine eigene Validierung die fachlichen Invarianten des Modells und meldet
+Ergänzend prüft eine eigene Validierung die fachlichenf Invarianten des Modells und meldet
 blockierende Fehler und nicht blockierende Warnungen als maschinen- und menschenlesbare Befunde. Für
 dieses Kapitel ist vor allem bemerkenswert, dass die Validierung die Trennung von Objekt und Aktion
 ausdrücklich absichert: Aktionsparameter, die an einer Objektreferenz statt am Task hinterlegt
@@ -337,12 +337,12 @@ Regeln werden in Kapitel 4.10 dargestellt.
 
 \subsubsection{Frameworkunabhängigkeit und gemeinsame Repräsentation im Roundtrip}
 Die Domänenschicht des Prototyps ist frei von direkten Abhängigkeiten zu Three.js, That Open
-Components, Fragments, `web-ifc`, Browser-Oberfläche und Browser-Persistenz; ihre Module verweisen
+Components, Fragments, \textit{web-ifc}, Browser-Oberfläche und Browser-Persistenz; ihre Module verweisen
 ausschließlich aufeinander. Die Abhängigkeitsrichtung verläuft ausnahmslos von den äußeren Schichten
 zur Domäne: Anwendungsdienste, Persistenzadapter, Viewer-Adapter, IFC-Mapping sowie Import- und
 Exportmodule beziehen ihre Typen und Operationen aus der Domäne, während umgekehrt keine dieser
 Technologien in die Domäne gelangt. Der Viewer-Adapter etwa übersetzt eine Auswahl im
-dreidimensionalen Modell in eine `RobotObjectReference`; die Domäne kennt anschließend nur noch
+dreidimensionalen Modell in eine \textit{RobotObjectReference}; die Domäne kennt anschließend nur noch
 diese Referenz und nicht mehr das Auswahlobjekt, aus dem sie entstanden ist. Fachlich bedeutet dies,
 dass die Frage, wie eine Mission beschrieben wird, unabhängig davon beantwortet wird, wie sie
 dargestellt, gespeichert oder serialisiert wird:
