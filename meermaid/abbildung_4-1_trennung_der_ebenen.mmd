@@ -1,0 +1,21 @@
+flowchart TB
+    subgraph V["Darstellungsebene (Viewer)"]
+        F["Fragments-Modell,<br/>Laufzeit-modelId, expressId<br/>— sitzungsgebunden —"]
+    end
+    subgraph D["Fachliche Missionsebene"]
+        DM["RobotMission / RobotTask /<br/>RobotTaskSequence /<br/>RobotObjectReference"]
+    end
+    subgraph I["IFC-Persistenzebene"]
+        IFC["Annotierte IFC-Datei<br/>(IfcTask-Struktur,<br/>eigene Property Sets)"]
+    end
+    subgraph R["Roboterspezifische Verarbeitung"]
+        ROB["Ausleitung, Zielposen,<br/>Navigation, Ausführung"]
+    end
+
+    F -->|"Auswahl → GlobalId (implementiert)"| DM
+    DM -->|"Export / Ersetzen (implementiert)"| IFC
+    IFC -->|"Import erkannter Annotationen (implementiert)"| DM
+    DM -.->|"konzeptionell vorgesehen"| ROB
+
+    classDef planned fill:#fbfbfb,stroke:#999,stroke-dasharray:4 3,color:#555;
+    class R,ROB planned;

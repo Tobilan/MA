@@ -1,0 +1,72 @@
+classDiagram
+    class RobotMission {
+        +id
+        +name
+        +description?
+        +status?
+        +priority?
+        +createdAt
+        +updatedAt
+    }
+    class RobotTask {
+        +id
+        +name
+        +description?
+        +actionType
+        +status?
+        +priority?
+        +createdAt
+        +updatedAt
+    }
+    class RobotTaskSequence {
+        +id
+        +predecessorTaskId
+        +successorTaskId
+        +sequenceType
+    }
+    class RobotObjectReference {
+        +globalId?
+        +modelId?
+        +expressId?
+        +ifcClass?
+        +name?
+    }
+    class RobotActionProperties {
+        +targetState?
+        +targetObjectRole?
+        +affectedObjectRole?
+        +requiredCapability?
+        +preconditions?
+        +postconditions?
+        +successCondition?
+    }
+    class RobotTaskTime {
+        +scheduleStart?
+        +scheduleFinish?
+        +scheduleDuration?
+        +actualStart?
+        +actualFinish?
+        +remainingTime?
+        +completion?
+    }
+    class RobotMissionSchedule {
+        +id
+        +name
+        +scheduleStart?
+        +scheduleFinish?
+        +scheduleDuration?
+    }
+    class TaskViewpoint {
+        +cameraPosition
+        +cameraTarget
+    }
+
+    RobotMission "1" *-- "0..*" RobotTask : tasks
+    RobotMission "1" *-- "0..*" RobotTaskSequence : sequences
+    RobotMission "1" o-- "0..1" RobotMissionSchedule : schedule
+    RobotTask "1" o-- "0..*" RobotObjectReference : targetObjects / affectedObjects
+    RobotTask "1" o-- "0..2" RobotObjectReference : startReference / targetReference
+    RobotTask "1" o-- "0..1" RobotActionProperties : properties
+    RobotTask "1" o-- "0..1" RobotTaskTime : time
+    RobotTask "1" o-- "0..1" TaskViewpoint : viewpoint
+    RobotTaskSequence ..> RobotTask : verweist über Task-IDs

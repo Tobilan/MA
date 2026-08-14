@@ -1,0 +1,17 @@
+flowchart TD
+    M["RobotMission<br/>(fachliche Einheit)"]
+    T1["RobotTask A<br/>actionType = OPEN"]
+    T2["RobotTask B<br/>actionType = PASS_THROUGH"]
+    S["RobotTaskSequence<br/>A → B"]
+    O["IFC-Gebäudeobjekt<br/>z. B. IfcDoor<br/>(GlobalId, unverändert)"]
+
+    M -->|enthält| T1
+    M -->|enthält| T2
+    M -.->|Ausführungsabhängigkeit| S
+    S -.-> T1
+    S -.-> T2
+    T1 -->|Objektbezug über GlobalId| O
+    T2 -->|Objektbezug über GlobalId| O
+
+    classDef bldg fill:#eef2f7,stroke:#4a5568,stroke-width:1px;
+    class O bldg;

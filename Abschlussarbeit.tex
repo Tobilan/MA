@@ -12,18 +12,18 @@
 % ----------------------------------------------------------------------------------------------------------
 % Titelseite
 % ----------------------------------------------------------------------------------------------------------
-\newcommand{\studierenderName}{Max Müller}
+\newcommand{\studierenderName}{Tobias Lang}
 \student{\studierenderName}		% Studierender
-{1234567}						% Matrikelnummer
-{Wirtschaftsinformatik}			% Studiengang
+{2934187}						% Matrikelnummer
+{Weiterbildender Masterstudiengang Informationstechnologie}			% Studiengang
 
-\MyTitelseite{pics/mathcomm}	% Optionales Logo des extern betreuenden Unternehmens
-{1}								% Style der Titelseite (1 oder 2)
-{Bachelorarbeit}				% Typ der Abschlussarbeit (\in {Bachelorarbeit, Masterarbeit})
-{Thema der Arbeit}				% Thema der Arbeit						
-{Prof.\ Dr.\ Carsten Kern}		% Betreuer
+\MyTitelseite{}{2}	
+							% Style der Titelseite (1 oder 2)
+{Masterarbeit}				% Typ der Abschlussarbeit (\in {Bachelorarbeit, Masterarbeit})
+{Interaktives System zur Taskdefinition für Autonomous Driving Vehicles}				% Thema der Arbeit						
+{Prof.\ Dr.\ Jan Dünnweber}		% Betreuer 
 {Prof.\ Dr.\ Name des Zweitgutachters}	% Zweitgutachter
-{??.??.\the\year}				% Abgabedatum
+{29.08.\the\year}				% Abgabedatum
 
 \thispagestyle{empty}
 ~\pagebreak
@@ -64,7 +64,7 @@
 \pagebreak
 
 % ----------------------------------------------------------------------------------------------------------
-% Listingsverzeichnis (optional; Code nur, wenn wirklich sinnvoll und wichtig)
+% Listingsverzeichnis 
 % ----------------------------------------------------------------------------------------------------------
 %\lhead{}
 %\rhead{Quellcodeverzeichnis}
@@ -108,14 +108,6 @@
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
-% ----------------------------------------------------------------------------------
-% Kapitel: Einleitung
-% ----------------------------------------------------------------------------------
-\section{Einleitung}
-Sie können dieses \LaTeX-Template als Vorlage für Ihre Abschlussarbeit (\ac{BA}, \ac{MA}) nutzen und auf Wunsch natürlich auch selbstständig erweitern. Auf den folgenden Seiten finden Sie einige Hinweise zu \LaTeX. Sollten Sie Fragen haben, wenden Sie sich gerne an mich unter: \url{carsten.kern@oth-regensburg.de} 
-
-
-
 \pagebreak
 % ----------------------------------------------------------------------------------
 % Kapitel: ???
@@ -126,111 +118,21 @@ Sie können dieses \LaTeX-Template als Vorlage für Ihre Abschlussarbeit (\ac{BA
 
 \pagebreak
 % ----------------------------------------------------------------------------------
+% Kapitel: Konzeption des IFC-basierten Annotationsmodells
+% ----------------------------------------------------------------------------------
+\input{inhalt/4. Annotationsmodell}
+
+
+
+\pagebreak
+% ----------------------------------------------------------------------------------
 % Kapitel: Fazit und Ausblick
 % ----------------------------------------------------------------------------------
 \section{Fazit und Ausblick}
 
 
 
-\pagebreak
-% ----------------------------------------------------------------------------------
-% Kleine Einführung in LaTeX-Elemente
-% ----------------------------------------------------------------------------------
-\section{\LaTeX-Elemente}
-Dieser Abschnitt beinhaltet lediglich einige Informationen über \LaTeX-Distributionen, Editoren und \LaTeX-Elemente, die Ihnen beim Einstieg in das \LaTeX-Textsatzsystem helfen sollen.
 
-\subsection{\LaTeX-Distributionen nach Betriebssystemen}
-
-\subsubsection{\LaTeX-Distributionen}
-Folgende Haupt-\LaTeX-Distributionen stehen Ihnen zur Verfügung:
-\begin{itemize}
-  \item Windows:\quad \texttt{MiKTeX}\quad Webseite:\quad\url{http://www.miktex.org}
-  \item Linux/Unix:\quad \texttt{TeX Live}\quad Webseite:\quad\url{http://tug.org/texlive/}
-  \item Mac OS:\quad \texttt{MacTeX}\quad Webseite:\quad\url{http://www.tug.org/mactex/}
-\end{itemize}
-
-\subsubsection{\LaTeX-Editoren}
-Auf folgenden Webseiten können Sie einige hilfreiche \LaTeX-Editoren finden:
-\begin{itemize}
-  \item Windows/Linux/Mac OS: \url{http://www.xm1math.net/texmaker/}
-  \item Windiws: \url{http://www.texniccenter.org/}
-  \item Mac OS: \url{http://pages.uoregon.edu/koch/texshop/}
-\end{itemize}
-
-Falls bei den oben genannten Editoren kein passender vorhanden war, findet sich auf Wikipedia eine Zusammenstellung vieler weiterer \LaTeX-Editoren:\\[1em]
-\hspace*{3cm}\url{https://en.wikipedia.org/wiki/Comparison_of_TeX_editors}
-
-
-\subsection{Bilder}
-Zum Einfügen eines Bildes, siehe Abbildung \ref{fig:reversi01}, werden die \texttt{minipage}-Umgebung und der Befehl \texttt{$\backslash$includegraphics} genutzt, da die Bilder so gut positioniert und einfach integriert und skaliert werden können.
-
-\vspace{1em}
-\begin{minipage}{\linewidth}
-	\centering
-	\includegraphics[width=0.5\linewidth]{pics/gamefield01.png}
-	\captionof{figure}[Spielfeld 01]{Unbespieltes Spielfeld\footnotemark }
-	\label{fig:reversi01}
-\end{minipage}
-\footnotetext{Diesem Spielfeld wurden noch keine Spieler zugewiesen (daher die dunklen Spielsteine)}
-
-Nachdem das Spielt gestartet wurde und beide Spielphasen durchlaufen wurden, siegt schließlich der Spieler mit der Farbe rot.
-
-\vspace{1em}
-\begin{minipage}{\linewidth}
-	\centering
-	\includegraphics[width=0.5\linewidth]{pics/gamefield02.png}
-	\captionof{figure}[Spielfeld 02]{Finales Spielfeld\footnotemark }
-	\label{fig:reversi2}
-\end{minipage}
-\footnotetext{Das Spielfeld nach der Zug- und Bombenphase. Spieler rot gewinnt eindeutig.}
-
-\subsection{Tabellen}
-In diesem Abschnitt wird eine Tabelle (siehe Tabelle \ref{tab:beispiel}) dargestellt.
-
-\vspace{1em}
-\begin{table}[!h]
-	\centering
-	\begin{tabular}{|l|l|l|}
-		\hline
-		\textbf{Name} & \textbf{Name} & \textbf{Name}\\
-		\hline
-		1 & 2 & 3\\
-		\hline
-		4 & 5 & 6\\
-		\hline
-		7 & 8 & 9\\
-		\hline
-	\end{tabular}
-	\caption{Beispieltabelle}
-	\label{tab:beispiel}
-\end{table}
-
-
-\subsection{Auflistung}
-Für Auflistungen wird die \texttt{enumerate}- oder \texttt{itemize}-Umgebung genutzt.
-
-\begin{itemize}
-	\item Nur
-	\item ein
-	\item Beispiel.
-\end{itemize}
-
-\subsection{Listings}
-Zuletzt sehen Sie in Listing \ref{lst:maxTeilsumZweiD} ein Beispiel für das Einbinden von Quellcode mit Syntax-Highlighting.
-
-\vspace{1em}
-\lstinputlisting[caption=Brute Force-Ansatz für das MaxTeilsum2D-Problem, label=lst:maxTeilsumZweiD,basicstyle=\ttfamily\scriptsize]{code/maxTeilsum2DBruteForce.txt}
-
-\subsection{Selbstgestaltete Abbildungen}
-Mithilfe des Paketes \texttt{tikz} können sehr schöne Abbildungen (z.\,B.\ Automaten, Graphen etc.) direkt in \LaTeX generiert werden. Viele Beispiele dazu finden Sie auf folgender Webseite:\\[1em]
-\hspace*{3cm}\url{http://www.texample.net/tikz/}.
-
-\subsection{Tipps}
-Die Literaturreferenzen (Bücher, Paper und Journals) und Internetquellen (Webseiten, Blogs etc.) befinden sich in der Datei \textit{literatur.bib}. Eine Buch- und eine Online-Quelle sind beispielhaft eingefügt. [Vgl.\ \cite{buch}, \cite{mathcomm}]
-
-Literatur und Quellen werden in zwei getrennte Verzeichnisse aufgeteilt. Als Unterscheidungsmerkmal dient bei den Quellen der Zusatz: \texttt{keywords = \{online\}}.
-
-\pagebreak
 
 % ----------------------------------------------------------------------------------------------------------
 % Filter fuer Literatur und Quellen definieren

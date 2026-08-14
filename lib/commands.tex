@@ -29,7 +29,7 @@
 
 \newcommandx{\MyTitelseite}[8][]{
 \thispagestyle{empty}
-\includegraphics[scale=0.2]{pics/oth-logo.png}\hfill\includegraphics[scale=0.5]{#1}
+\includegraphics[scale=0.2]{pics/oth-logo.png}\ifthenelse{\equal{#1}{}}{}{\hfill\includegraphics[scale=0.5]{#1}}
 \begin{center}
 \ifthenelse{\equal{#2}{2}}{ % then
 	\vspace*{2cm}
@@ -41,7 +41,7 @@
 	\textbf{#3}\\[1em]
 	\large
 	Zur Erlangung des akademischen Grades des\\
-	\ifthenelse{\equal{#3}{Bachelorarbeit}}{Bachelor of Science (B.Sc.)}{Master of Science (M.Sc.)}\\
+	\ifthenelse{\equal{#3}{Bachelorarbeit}}{Bachelor of Science (B.Sc.)}{Master of Engineering (M.Eng.)}\\
 	\vspace*{1cm}
 	\Large
 	\textbf{#4}\\
@@ -61,7 +61,7 @@
 	\textbf{#3}\\[2em]
 	\large
 	zur Erlangung des akademischen Grades des\\
-	\ifthenelse{\equal{#3}{Bachelorarbeit}}{Bachelor of Science (B.Sc.)}{Master of Science (M.Sc.)}
+	\ifthenelse{\equal{#3}{Bachelorarbeit}}{Bachelor of Science (B.Sc.)}{Master of Engineering (M.Eng.)}
 	\vspace*{1cm}
 	\Large
 }

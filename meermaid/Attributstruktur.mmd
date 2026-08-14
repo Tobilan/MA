@@ -1,0 +1,15 @@
+classDiagram
+    class RobotMission {
+        Metadaten: id, name, status, priority, Zeitstempel
+        tasks[] : enthaltene Aufgaben
+        sequences[] : Ausführungsabhängigkeiten
+        schedule? : optionale Missionsplanung
+    }
+
+    class RobotTask {
+        Aktion: actionType
+        Objektbezüge: targetObjects, affectedObjects, Start-/Zielreferenz
+        Aktionsparameter: properties
+        Zeitinformationen: time
+        Viewerannotation?: viewpoint, markerPosition
+    }

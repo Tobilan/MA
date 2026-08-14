@@ -7,6 +7,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage[inkscapelatex=false]{svg}
 \usepackage{fancyhdr}
 \usepackage{tabularx}
 \usepackage{geometry}
@@ -15,7 +16,7 @@
 \usepackage[printonlyused]{acronym}
 \usepackage{subfig}
 \usepackage{floatflt}
-\usepackage[usenames,dvipsnames]{color}
+\usepackage{color}
 \usepackage{colortbl}
 \usepackage{paralist}
 \usepackage{array}
@@ -31,6 +32,13 @@
 \makeatother
 
 \geometry{a4paper, top=27mm, left=20mm, right=20mm, bottom=35mm, headsep=10mm, footskip=12mm}
+
+% Abbildungsnummerierung orientiert sich am Kapitel (\section dient hier als Kapitelebene),
+% z.B. "Abbildung 4.1" statt fortlaufend "Abbildung 1".
+\makeatletter
+\@addtoreset{figure}{section}
+\makeatother
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
 
 \definecolor{javared}{rgb}{0.6,0,0} % for strings
 \definecolor{javagreen}{rgb}{0.25,0.5,0.35} % comments

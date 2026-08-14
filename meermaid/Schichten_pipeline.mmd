@@ -1,0 +1,7 @@
+flowchart TB
+    UI["Viewer / UI"]
+    DOM["internes Domänenmodell"]
+    IFC["IFC / Persistenz"]
+
+    UI -->|Übersetzung| DOM
+    DOM -->|Übersetzung| IFC
