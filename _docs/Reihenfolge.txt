@@ -1,0 +1,15 @@
+Kapitel 4: Annotationsmodell
+        ↓
+Kapitel 5: Editor und Implementierung
+        ↓
+Kapitel 6: Evaluation
+        ↓
+Kapitel 3: Anforderungen und Methodik
+        ↓
+Kapitel 2: Grundlagen und Stand der Forschung
+        ↓
+Kapitel 7/8: IFC-to-Robot und Erweiterungen
+        ↓
+Kapitel 1: Einleitung
+        ↓
+Kapitel 9: Fazit

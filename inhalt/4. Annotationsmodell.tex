@@ -324,7 +324,7 @@ sein, weil Sequenzen genau über diese Kennungen auflösen, und dieselbe Objekti
 Task nicht mehrfach zugewiesen. Viertens wird bei jeder Änderung der Änderungszeitpunkt
 fortgeschrieben.
 
-Ergänzend prüft eine eigene Validierung die fachlichenf Invarianten des Modells und meldet
+Ergänzend prüft eine eigene Validierung die fachlichen Invarianten des Modells und meldet
 blockierende Fehler und nicht blockierende Warnungen als maschinen- und menschenlesbare Befunde. Für
 dieses Kapitel ist vor allem bemerkenswert, dass die Validierung die Trennung von Objekt und Aktion
 ausdrücklich absichert: Aktionsparameter, die an einer Objektreferenz statt am Task hinterlegt
@@ -416,8 +416,9 @@ INVESTIGATE noch eine QR-Code-Verarbeitung sind Bestandteil der aktuellen Implem
 Beispiel dient ausschließlich dazu, die angestrebte Abstraktionsebene zu verdeutlichen. Es zeigt
 zugleich, dass auch eine im Ablauf sehr komplexe Aktion auf Modellebene ein einzelner semantischer
 Bezeichner bleiben kann, sofern die Interpretation der Ausführungsschicht überlassen wird.
+
 \subsubsection{Ergänzende Aktionssemantik über \textit{RobotActionProperties}}
-Der reine \textit{actionType} ist häufig zu grob, um eine Aufgabe eindeutig zu beschreiben. \textit{RobotTask}
+Der \textit{actionType} allein ist häufig zu grob, um eine Aufgabe eindeutig zu beschreiben. \textit{RobotTask}
 besitzt deshalb das optionale Feld \textit{properties} vom Typ \textit{RobotActionProperties}, dessen sämtliche
 Felder ihrerseits optional sind: \textit{targetState} benennt den erwarteten Zustand nach der Ausführung,
 \textit{targetObjectRole} und \textit{affectedObjectRole} präzisieren die semantische Rolle der referenzierten
@@ -639,9 +640,9 @@ Einordnung dieser Prüfungen in die Gesamtarchitektur der Validierung erfolgt in
 
 
 \subsubsection{Bedeutung für die IFC-Abbildung}
-Die getrennte Führung beider Informationen im internen Modell ist keine reine Entwurfsvorliebe,
-sondern folgt der Zielrepräsentation. IFC unterscheidet dieselben beiden Aussagen durch verschiedene
-Beziehungsobjekte: Die Missionshierarchie wird konzeptionell auf \textit{IfcRelNests} abgebildet,
+Die getrennte Führung beider Informationen im internen Modell ist durch den IFC Standart bedingt: 
+IFC unterscheidet dieselben beiden Aussagen durch verschiedene Beziehungsobjekte: Die 
+Missionshierarchie wird konzeptionell auf \textit{IfcRelNests} abgebildet,
 die Abhängigkeit zwischen zwei Tasks auf \textit{IfcRelSequence}. Ein Domänenmodell, das
 Zugehörigkeit und Reihenfolge in einer einzigen geordneten Liste vermischte, müsste diese
 Unterscheidung beim Export erst rekonstruieren und beim Import erneut auflösen. Die vollständige
@@ -1034,7 +1035,7 @@ Nachfolger müssen auf Tasks derselben Mission verweisen, und ein Task darf nich
 Vorgänger sein. Ergänzend wird der gesamte gerichtete Graph über eine Tiefensuche auf Zyklen
 untersucht.
 
-Ein solcher Zyklus (z.B. Task A -> Task B -> Task A) besitzt keine widerspruchsfreie
+Ein solcher Zyklus (z.B. Task A $\rightarrow$ Task B $\rightarrow$ Task A) besitzt keine widerspruchsfreie
 Ausführungsreihenfolge und wird deshalb als Fehler gemeldet. Die Ordnungsfunktion des Modells
 verhält sich dazu konsistent: Lässt sich keine vollständige topologische Reihenfolge bilden, wird
 die Hierarchieordnung unverändert zurückgegeben, sodass keine Tasks stillschweigend verschwinden,

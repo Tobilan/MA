@@ -1,0 +1,27 @@
+flowchart TB
+    subgraph EDITOR["Browserbasierter Editor"]
+        direction TB
+        UI["Benutzeroberfläche<br/>Missions- und Aufgabenbearbeitung"]
+        VIEW["3D-Darstellung des Gebäudes<br/>Ansicht, Hervorhebung, Auswahl"]
+        SEL["Auswahlvermittlung<br/>sichtbares Bauteil → IFC-Objektreferenz"]
+        APP["Anwendungslogik<br/>Anwendungsfälle, Validierung"]
+        DOM["Missionsmodell<br/>Missionen, Aufgaben, Reihenfolgen"]
+        PERS["Editorpersistenz<br/>Sitzung / Browser"]
+        IFCI["IFC-Infrastruktur<br/>Abbildung, Rekonstruktion,<br/>Ersetzen, Verifikation"]
+    end
+
+    IFCFILE[("IFC-Quelldatei<br/>Gebäudemodell + Missionsannotation")]
+    RENDER["Darstellungsrepräsentation<br/>(performante Geometrie)"]
+
+    IFCFILE -->|Pfad A: Darstellung| RENDER
+    RENDER --> VIEW
+    VIEW -->|Auswahl| SEL
+    SEL -->|fachliche Objektreferenz| APP
+    UI --> APP
+    APP --> DOM
+    DOM --> PERS
+    DOM --> IFCI
+    IFCI <-->|Pfad B: Annotation und Roundtrip| IFCFILE
+
+    classDef store fill:#eef,stroke:#557
+    class IFCFILE,RENDER store

@@ -6,3 +6,315 @@ Dokumentation der Implementierung nicht wiederholen. Vorstellung zentraler Imple
 - Aktuelle Einschränkungen des Editors. \newline
 
 Hauptdokumentation sollen docs in Repo sein. \newline
+
+Das in Kapitel 4 entwickelte Annotationsmodell bildet die fachliche Grundlage für die Beschreibung
+von Robotermissionen, einzelnen Aufgaben, deren Reihenfolge sowie den Bezügen zu Elementen eines
+IFC-Gebäudemodells. Für die Umsetzung ist darüber hinaus eine Softwarearchitektur
+erforderlich, die diese fachlichen Strukturen mit einer interaktiven dreidimensionalen
+Gebäudedarstellung und dem Austausch über IFC verbindet. Der entwickelte browserbasierte Editor
+übernimmt diese Vermittlungsfunktion. Auf der einen Seite arbeitet der Benutzer unmittelbar mit dem
+dargestellten Gebäude, beispielsweise indem eine Tür ausgewählt und einer Roboteraufgabe zugeordnet
+wird. Auf der anderen Seite werden Missionen und Tasks in einem von der Darstellung getrennten
+fachlichen Modell bearbeitet. Die sichtbare Geometrie eines Bauteils wird somit nicht selbst
+Bestandteil der Missionsbeschreibung, sondern dient als interaktiver Zugang zu dem zugrunde
+liegenden IFC-Objekt.
+
+Die Gesamtarchitektur ist hierzu in mehrere Verantwortungsbereiche gegliedert. Auf der äußeren Ebene
+befinden sich die Benutzeroberfläche und die dreidimensionale Darstellung des Gebäudemodells.
+Darunter vermitteln Viewer- und Auswahlkomponenten zwischen der sichtbaren Geometrie und fachlich
+verwendbaren IFC-Objektreferenzen. Die Bearbeitung von Missionen erfolgt in einer davon unabhängigen
+Anwendungs- und Domänenschicht. Persistenzkomponenten stellen den Missionszustand während der
+Bearbeitung bereit, während eine gesonderte IFC-Infrastruktur für Import, Abbildung und Export der
+Missionsannotation zuständig ist. Abbildung \ref{fig:Gesamtarchitektur} kann diese Bereiche und ihre 
+wesentlichen Datenflüsse zusammenfassend darstellen. Die Trennung verhindert insbesondere, dass
+Darstellungsbibliotheken, Benutzeroberfläche und IFC-Serialisierung unmittelbar miteinander
+vermischt werden.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{pics/Gesamtarchitektur.pdf}
+    \caption{Schematische Gesamtarchitektur des browserbasierten IFC-Missionseditors und zentrale Datenflüsse zwischen Gebäudemodell, Missionsdomäne und IFC-Persistenz}
+    \label{fig:Gesamtarchitektur}
+\end{figure}
+
+Die Benutzeroberfläche stellt sowohl das dreidimensionale Gebäudemodell als auch die Werkzeuge zur
+Missionsbearbeitung bereit. Für die Gebäudedarstellung wird das geladene IFC-Modell in eine für das
+browserbasierte Rendering geeignete Fragments-Repräsentation überführt. Diese Repräsentation
+unterstützt die performante Visualisierung und die Interaktion mit den dargestellten Elementen. Der
+Viewer übernimmt damit Aufgaben wie Darstellung, Hervorhebung und räumliche Auswahl. Er ist jedoch
+nicht für die fachliche Interpretation einer Robotermission verantwortlich. Ebenso erzeugt eine
+Auswahl im 3D-Modell nicht unmittelbar eine IFC-Annotation. Sie stellt zunächst lediglich fest,
+welches dargestellte Element der Benutzer adressieren möchte.
+
+Zwischen dieser visuellen Auswahl und dem Missionsmodell liegt eine eigene Adapterebene. Ihre
+Aufgabe besteht darin, eine Auswahl aus der Rendering-Repräsentation auf die verfügbaren
+IFC-Metadaten zurückzuführen und daraus eine fachlich verwendbare Objektbeschreibung abzuleiten. Für
+ein ausgewähltes Gebäudeelement können dadurch beispielsweise dessen IFC-Klasse, Name und stabile
+Identifikation ermittelt werden. Erst diese Beschreibung wird an die Missionsbearbeitung
+weitergegeben. Der zentrale Datenfluss lautet damit vereinfacht: sichtbares Bauteil im 3D-Modell,
+Benutzerauswahl, Auflösung des zugrunde liegenden IFC-Objekts und schließlich Übernahme einer
+fachlichen Referenz in einen RobotTask. Die Rendering-Identität eines geometrischen Elements bleibt
+dadurch von der dauerhaft relevanten Referenz auf das Gebäudemodell getrennt.
+
+Die eigentliche Missionsbearbeitung erfolgt in der Anwendungs- und Domänenschicht. Dort werden
+Missionen, Tasks, Aktionen, Objektbezüge, zeitliche Angaben und Abhängigkeiten verwaltet. Diese
+Ebene ist unabhängig davon aufgebaut, ob das Gebäude mit Three.js beziehungsweise That Open
+Components dargestellt wird und wie die Missionsinformation später als IFC-STEP serialisiert wird.
+Die Anwendungslogik koordiniert Änderungen am Missionsmodell und greift über abstrahierte
+Schnittstellen auf den jeweiligen Speicher zu. Dadurch kann die fachliche Logik beispielsweise
+unabhängig von einem geöffneten 3D-Viewer validiert und getestet werden. Gleichzeitig verhindert
+diese Trennung, dass eine Benutzeroberflächenaktion unmittelbar komplexe Änderungen an IFC-Entitäten
+ausführen muss.
+
+Für die Speicherung während einer Editorsitzung stehen unterschiedliche lokale Varianten zur
+Verfügung. Missionen können ausschließlich für die aktuelle Sitzung im Arbeitsspeicher gehalten oder
+optional im Browser gespeichert werden. Eine funktionsfähige Backend-Persistenz ist im Editor
+nicht vorhanden. Diese Speicherung während der Bearbeitung ist von der Rolle der annotierten
+IFC-Datei zu unterscheiden. Der lokale Speicher stellt den aktuellen Arbeitszustand des
+Missionsmodells bereit, während die IFC-Datei den Austausch der Missionsannotation gemeinsam mit dem
+Gebäudemodell ermöglicht. Damit wird die IFC-Datei nicht zum unmittelbaren Zustandsmodell der
+Benutzeroberfläche. Änderungen werden zunächst im internen Missionsmodell durchgeführt und erst im
+Rahmen eines expliziten Exports auf die IFC-Repräsentation abgebildet.
+
+Eine wesentliche Architekturentscheidung besteht darin, das geladene IFC-Modell auf zwei miteinander
+verbundenen, aber funktional unterschiedlichen Datenpfaden zu verarbeiten. Der erste Pfad dient der
+Darstellung und Auswahl. Aus den IFC-Daten entsteht eine für das Rendering optimierte
+Fragments-Repräsentation, aus der das dreidimensionale Gebäudemodell erzeugt wird. Wählt der
+Benutzer darin ein Bauteil aus, wird dieses über die Viewer-Adapter wieder auf eine fachliche
+IFC-Objektreferenz zurückgeführt. Der zweite Pfad dient der Missionsannotation und dem Roundtrip.
+Dafür werden bei direkt geladenen IFC-Dateien die ursprünglichen IFC-Daten unabhängig von der
+Rendering-Repräsentation vorgehalten. Aus ihnen können bereits vorhandene RobotMission-Annotationen
+rekonstruiert beziehungsweise neue oder veränderte Annotationen wieder in eine IFC-Datei geschrieben
+werden. Fragments sind somit primär für Darstellung und Interaktion zuständig, während die
+IFC-Quelldaten die Grundlage für den verlässlichen Austausch der Missionsinformation bilden.
+
+Der Zusammenhang lässt sich am Beispiel eines Tasks zum Öffnen einer Tür veranschaulichen. Nach dem
+Laden eines Gebäudemodells sieht der Benutzer die Tür als Bestandteil des dreidimensionalen Gebäudes
+und wählt sie im Viewer aus. Die Auswahl wird anschließend auf das zugrunde liegende IFC-Objekt
+zurückgeführt und als fachliche Objektreferenz bestätigt. Diese Referenz kann einem Task mit der
+Aktion „Tür öffnen“ zugeordnet werden. Im Missionsmodell werden Aktion, Objektbezug und
+Ausführungsreihenfolge verwaltet, ohne dass dafür die dargestellte Türgeometrie in den Task
+übernommen werden muss. Beim späteren IFC-Export wird die fachliche Mission wieder mit der
+zugehörigen IFC-Quelldatei verbunden. Die resultierende Datei enthält damit weiterhin das Gebäude
+und zusätzlich die Missionsannotation. Ein Editor-Screenshot, der dieselbe hervorgehobene Tür und
+den zugehörigen Task unmittelbar nebeneinander zeigt, eignet sich besonders, um diesen Übergang
+zwischen Gebäudedarstellung und fachlicher Annotation sichtbar zu machen.
+
+\#TODO Abbildung 2 – Editor-Screenshot mit Gebäude-/Task-Bezug
+
+Der IFC-Austausch ist als Roundtrip der projekteigenen RobotMission-Annotationen ausgeführt. Eine
+bereits annotierte IFC-Datei kann eingelesen werden, worauf die enthaltenen Missionsstrukturen in
+das interne Domänenmodell rekonstruiert werden. Nach der Bearbeitung erfolgt erneut die Abbildung
+auf die IFC-Quelldaten. Das Exportergebnis wird anschließend wieder eingelesen und mit dem
+beabsichtigten Missionszustand abgeglichen, bevor es als Grundlage für einen weiteren
+Bearbeitungszyklus verwendet wird. Damit unterstützt die Architektur einen wiederholbaren Zyklus aus
+Import, Bearbeitung und Export. Diese Funktion ist jedoch ausdrücklich auf die vom Editor
+verwalteten Missionsannotationen beschränkt, er unterstützt keine Änderungen an Bauteilgeometrie oder 
+Gebäudestruktur.
+
+Durch die Trennung von Rendering, Auswahladaption, Anwendungslogik, Domänenmodell, Persistenz und
+IFC-Infrastruktur bleiben die jeweiligen Verantwortlichkeiten klar abgegrenzt. Technische
+Komponenten des Viewers können verändert werden, ohne das fachliche Missionsmodell grundsätzlich neu
+zu entwerfen. Umgekehrt lässt sich die Missionslogik unabhängig von der dreidimensionalen
+Darstellung prüfen. Gleichzeitig verbindet die Architektur die abstrakte Aufgabenbeschreibung mit
+konkreten Elementen des Gebäudemodells und ermöglicht deren Austausch über annotierte IFC-Dateien.
+Die folgenden Abschnitte vertiefen diese Gesamtstruktur, indem zunächst die eingesetzten
+Technologien und anschließend Modellimport, Rendering, Objektauswahl sowie die weiteren
+Implementierungsbereiche des Editors betrachtet werden.
+
+\subsection{Verwendete Technologien}\label{sec:Technologien}
+Die technische Umsetzung des Editors stellt unterschiedliche Anforderungen an die eingesetzten
+Bibliotheken. Neben der Ausführung im Browser sind eine interaktive dreidimensionale Darstellung
+umfangreicher Gebäudemodelle, der Zugriff auf die semantischen Informationen einer IFC-Datei und die
+eindeutige Adressierung einzelner Gebäudeelemente erforderlich. Darüber hinaus dient IFC nicht
+ausschließlich als Eingabeformat für die Visualisierung. Die Missionsannotation muss aus einer
+vorhandenen Datei gelesen, im Editor bearbeitet und anschließend wieder in eine IFC-Datei
+geschrieben werden können. Der aktuelle Implementierungsstand kombiniert hierfür TypeScript und Vite
+mit Three.js, That Open Components, That Open Fragments, \textit{web-ifc} und That Open UI.
+
+Die Auswahl ist weniger als Entscheidung für einzelne, jeweils isoliert optimale Bibliotheken zu
+verstehen. Wesentlicher ist ihr Zusammenspiel zu einem weitgehend aufeinander abgestimmten Web- und
+BIM-Technologiestack. Dabei übernehmen die Bibliotheken unterschiedliche Aufgaben: TypeScript und
+Vite bilden die Entwicklungsgrundlage, Three.js stellt grundlegende 3D-Funktionen bereit, Components
+und Fragments ergänzen BIM-spezifische Darstellungs- und Interaktionsfunktionen, \textit{web-ifc}
+ermöglicht den strukturellen Zugriff auf die IFC-Daten und That Open UI stellt passende Elemente für
+die Benutzeroberfläche bereit.
+
+\subsubsection{TypeScript und Vite}
+TypeScript erweitert JavaScript um ein statisches Typsystem. Der TypeScript-Compiler kann dadurch
+bestimmte Inkonsistenzen erkennen, bevor der betreffende Programmcode ausgeführt wird. Typen und
+Schnittstellen erlauben zudem die explizite Beschreibung der Struktur von Daten und ihrer erwarteten
+Verwendung.
+
+Diese Eigenschaften sind insbesondere für das fachliche Datenmodell des Editors relevant. Neben
+Informationen aus dem IFC-Modell verarbeitet die Anwendung Missionsstrukturen, Aufgaben, Sequenzen
+und unterschiedliche Arten von Objektreferenzen. Die statische Typisierung unterstützt dabei die
+Trennung dieser Konzepte und reduziert die Wahrscheinlichkeit, dass strukturell inkompatible Daten
+zwischen verschiedenen Teilen der Anwendung ausgetauscht werden. JavaScript wäre grundsätzlich
+ebenfalls für eine browserbasierte Anwendung geeignet. TypeScript ergänzt dessen dynamisches
+Typsystem jedoch um zusätzliche Prüfungen während der Entwicklung. Daraus ergibt sich kein
+grundsätzlicher Laufzeitvorteil; der Nutzen liegt primär in der Entwicklungs- und Wartbarkeit
+komplexerer Datenstrukturen.
+
+Vite ergänzt diese Sprachumgebung als Entwicklungs- und Buildwerkzeug. Die offizielle Dokumentation
+beschreibt Vite als Kombination aus Entwicklungsserver mit Hot Module Replacement und
+vorkonfiguriertem Produktions-Build. Die Entwicklungsarchitektur nutzt moderne Modulmechanismen und
+ist auf kurze Aktualisierungszyklen während der Entwicklung ausgerichtet. Im vorliegenden Repository
+sind sowohl der Entwicklungsserver als auch der Produktions-Build direkt über Vite konfiguriert.
+Alternative Werkzeuge wie webpack oder Parcel wären ebenfalls einsetzbar. Für die Anwendung bietet
+Vite jedoch einen ausreichend vollständigen Entwicklungsworkflow bei vergleichsweise geringem
+zusätzlichem Konfigurationsbedarf.
+
+\subsubsection{Three.js, That Open Components und Fragments}
+Die allgemeine 3D-Grundlage des Editors bildet Three.js. Die Bibliothek strukturiert eine
+3D-Anwendung unter anderem anhand von Szene, Kamera und Renderer und abstrahiert damit wesentliche
+Aufgaben oberhalb der unmittelbaren WebGL-Schnittstelle. Der klassische \textit{WebGLRenderer}
+verwendet dafür WebGL 2. Für die Anwendung sind außerdem Materialien, Transformationen und
+Kameraoperationen relevant.
+
+Entscheidend für die Auswahl von Three.js ist jedoch nicht ausschließlich dessen allgemeiner
+Funktionsumfang. That Open Components ist selbst auf Three.js und Fragments aufgebaut. Die
+offizielle Projektbeschreibung bezeichnet Components als modularen BIM-Werkzeugkasten und nennt
+unter anderem Modellverwaltung, Szenen- und Kamerainfrastruktur, Clipping, Raycasting und Werkzeuge
+für den Zugriff auf BIM-Informationen. Three.js bildet damit keine unabhängig parallel betriebene
+Grafikschicht, sondern eine gemeinsame technische Grundlage des BIM-Stacks.
+
+Eine direkte Implementierung auf Basis von WebGL hätte zwar eine weitergehende Kontrolle über das
+Rendering ermöglicht, gleichzeitig aber zusätzliche Entwicklung für grundlegende 3D-Funktionen
+erfordert. Auch eine eigenständige 3D-Engine wie Babylon.js wäre grundsätzlich geeignet. In
+Verbindung mit den gewählten That-Open-Komponenten würde sie jedoch eine zusätzliche beziehungsweise
+alternative 3D-Infrastruktur darstellen. Die enge technische Verbindung von Components und Three.js
+reduziert dagegen Schnittstellen zwischen der allgemeinen 3D-Darstellung und den BIM-spezifischen
+Funktionen.
+
+That Open Components ergänzt Three.js um genau solche BIM-orientierten Funktionen. Dadurch müssen
+grundlegende Mechanismen zur Modellverwaltung, Interaktion, Auswahl, Hervorhebung oder zum Clipping
+nicht vollständig innerhalb der Anwendung entwickelt werden. Für die Wahl der aktuellen
+Components-Architektur spricht zusätzlich, dass That Open das frühere \textit{web-ifc-viewer}
+inzwischen ausdrücklich als veraltet kennzeichnet und auf Components als Nachfolgearchitektur
+verweist.
+
+Für die Verarbeitung umfangreicher BIM-Modelle kommt zusätzlich That Open Fragments zum Einsatz.
+Fragments definiert ein kompaktes Binärformat auf Grundlage von FlatBuffers, das neben Geometrien
+auch Properties und Relationen abbilden kann. Die zugehörige Laufzeit trennt Aufgaben zwischen
+Hauptthread und Web Worker; modellbezogene Verarbeitung wie Abfragen und Raycasting kann dabei im
+Worker stattfinden. Darüber hinaus sind Culling und Level-of-Detail-Verfahren Bestandteil der
+Fragments-Infrastruktur. Diese Eigenschaften machen Fragments nach Angaben des Herstellers
+insbesondere für große BIM-Datenmengen geeignet. Eigene quantitative Aussagen zur Leistungsfähigkeit
+werden daraus nicht abgeleitet; diese wären gesondert zu evaluieren.
+
+Für den Editor ist vor allem die damit ermöglichte funktionale Trennung relevant. Die
+Fragments-Repräsentation dient der dreidimensionalen Gebäudedarstellung und der interaktiven Auswahl
+von Elementen. Die ursprünglichen IFC-Daten bleiben dagegen für die fachliche Interpretation sowie
+für Import und Export der Missionsannotation erhalten. Diese Trennung ist auch im aktuellen
+Repository erkennbar: Components und Fragments werden für die Viewer-Infrastruktur verwendet,
+während IFC-Quelldaten separat für die strukturelle Verarbeitung vorgehalten werden.  Optimierte
+Formate wie glTF oder XKT beziehungsweise andere BIM-Viewer-Technologien wären ebenfalls denkbar.
+Für Fragments spricht hier insbesondere die unmittelbare Integration in Components und damit in den
+bereits verwendeten Three.js-basierten Stack.
+
+\subsubsection{\textit{web-ifc} und IfcOpenShell}
+Während Fragments primär der interaktiven Repräsentation dient, übernimmt \textit{web-ifc} den
+strukturellen Zugriff auf die IFC-Dateien. Das Projekt stellt eine JavaScript-Schnittstelle zum
+Lesen und Schreiben von IFC bereit. Die zugrunde liegende C++-Implementierung wird über Emscripten
+nach WebAssembly übersetzt und steht sowohl für Browser- als auch für Node.js-Umgebungen zur
+Verfügung.
+
+Diese Eigenschaft ist für den Editor wesentlich, da der Umgang mit IFC nicht mit dem Laden der
+Gebäudedarstellung endet. Die Missionsinformationen werden aus IFC rekonstruiert und nach einer
+Bearbeitung wieder in das Modell geschrieben. Im Repository wird \textit{web-ifc} entsprechend
+sowohl zum Öffnen als auch zum erneuten Serialisieren von IFC-Daten verwendet. Der implementierte
+strukturelle Verarbeitungsweg öffnet IFC-Bytes, greift auf Entitäten zu, speichert ein verändertes
+Modell und kann das Ergebnis anschließend erneut öffnen.  Damit erfüllt die Bibliothek die für den
+bidirektionalen Missionsaustausch benötigten grundlegenden Lese- und Schreiboperationen.
+
+Als wichtigste Alternative ist IfcOpenShell zu betrachten. Dessen Funktionsumfang reicht deutlich
+über die für diese Anwendung unmittelbar benötigten Operationen hinaus. IfcOpenShell stellt einen
+C++-Kern und Python-Bindings sowie eine High-Level-API für IFC-Authoring und -Bearbeitung bereit.
+Darüber hinaus gehören umfangreiche Geometrieverarbeitung, Schemaunterstützung für IFC2X3, IFC4 und
+IFC4.3, Validierungsfunktionen sowie verschiedene Werkzeuge zur Konvertierung und Analyse zum
+Ökosystem. Der Geometrie-Iterator unterstützt beispielsweise Mehrkernverarbeitung und
+Wiederverwendung geometrischer Ergebnisse. Mit IfcConvert steht außerdem ein eigenständiges Werkzeug
+zur Umwandlung von IFC-Geometrie in zahlreiche weitere Formate zur Verfügung; Bonsai ergänzt das
+Ökosystem um eine grafische IFC-Authoring-Umgebung auf Basis von Blender.
+
+IfcOpenShell kann daher insbesondere für umfangreiche serverseitige IFC-Verarbeitung, komplexes
+Authoring, geometrische Operationen, Validierungsaufgaben oder automatisierte BIM-Pipelines die
+funktional umfassendere Wahl darstellen. Auch eine Nutzung im Browser ist grundsätzlich möglich. Die
+offizielle Dokumentation nennt WebAssembly-Pakete für Pyodide sowie eine WebAssembly-basierte
+Technologievoransicht. Letztere wird allerdings als umfangreich hinsichtlich Ladevolumen und
+Ladezeit beschrieben. Eine grundsätzliche Beschränkung von IfcOpenShell auf serverseitige
+Anwendungen besteht somit nicht.
+
+Für das vorliegende Gesamtsystem spricht dennoch mehr für \textit{web-ifc}. Die Bibliothek ist
+unmittelbar auf JavaScript sowie WebAssembly ausgerichtet und fügt sich dadurch direkt in die
+TypeScript-basierte Browseranwendung ein. Gleichzeitig gehört sie zum selben That-Open-Ökosystem wie
+Components und Fragments. Die Anwendung benötigt dadurch für die vorgesehenen IFC-Lese- und
+Schreiboperationen keine zusätzliche Python-Laufzeit oder eigenständige Verarbeitungsgrenze. Dies
+bedeutet nicht, dass IfcOpenShell zwingend einen Server erfordern würde, sondern dass
+\textit{web-ifc} innerhalb der vorhandenen Architektur eine geringere Integrationsdistanz besitzt.
+
+Der Vergleich zeigt damit unterschiedliche Stärken: IfcOpenShell bietet den breiteren Werkzeugkasten
+für umfassendes IFC-Authoring, Geometrieverarbeitung, Validierung und Konvertierung.
+\textit{web-ifc} deckt dagegen den benötigten IFC-Lese-/Schreibworkflow ab und lässt sich
+unmittelbar mit der bestehenden Browser-, TypeScript- und That-Open-Infrastruktur verbinden. Für
+eine spätere ergänzende serverseitige Verarbeitungs- oder Validierungsschicht bliebe IfcOpenShell
+daher weiterhin eine relevante Technologie.
+
+\subsubsection{That Open UI und Gesamtbewertung}
+That Open UI bildet die Benutzeroberflächenschicht des Stacks. Die Kernbibliothek stellt Web
+Components wie Buttons, Panels, Toolbars, Tabellen und Eingabeelemente bereit. Ergänzend enthält
+\textit{@thatopen/ui-obc} bereits auf That Open Components abgestimmte funktionale UI-Komponenten.
+Da Web Components auf Browserstandards basieren, sind diese Bedienelemente nicht an ein bestimmtes
+Frontend-Framework gebunden. Im Editor wird die UI-Bibliothek gemeinsam mit Components und Three.js
+initialisiert und für die Viewer-Oberfläche eingesetzt.
+
+Ein eigenständiges Framework wie React oder Vue sowie vollständig selbst entwickelte
+HTML-/CSS-Komponenten wären ebenfalls möglich gewesen. Für die vorhandene Anwendung reduziert die
+That-Open-Lösung jedoch die Zahl zusätzlicher Frameworkgrenzen und stellt bereits Bedienelemente
+bereit, die auf die verwendete BIM-Infrastruktur abgestimmt sind.
+
+Die Gesamtarchitektur lässt sich damit in zwei zentrale Datenpfade gliedern. Für die Darstellung
+werden IFC-Daten in eine Fragments-Repräsentation überführt und dort für die interaktive
+3D-Darstellung genutzt. Für die fachliche Verarbeitung verbleibt IFC dagegen als strukturierte
+Quelle, die über \textit{web-ifc} gelesen und geschrieben werden kann. Die Technologien ergänzen
+sich somit entlang ihrer jeweiligen Aufgaben, anstatt dieselben Funktionen mehrfach bereitzustellen.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabularx}{\textwidth}{@{}|p{0.13\textwidth}|p{0.19\textwidth}|X|p{0.18\textwidth}|@{}}
+    \hline
+    \textbf{Technologie} & \textbf{Aufgabe im Editor} & \textbf{Wesentlicher Vorteil im Gesamtsystem} & \textbf{Betrachtete Alternative} \\
+    \hline
+    TypeScript & Anwendungs- und Domänenlogik & statische Typprüfung strukturierter Daten & JavaScript \\
+    \hline
+    Vite & Entwicklung und Build & integrierter Entwicklungsserver und Produktions-Build & webpack, Parcel \\
+    \hline
+    Three.js & allgemeine 3D-Grundlage & zugleich technische Grundlage des That-Open-Stacks & direktes WebGL, Babylon.js \\
+    \hline
+    That Open Components & BIM-spezifische Anwendungsfunktionen & vorgefertigte BIM-Werkzeuge auf Three.js und Fragments & Eigenentwicklung \\
+    \hline
+    Fragments & 3D-Repräsentation von BIM-Daten & kompakte, workerbasierte und interaktive BIM-Infrastruktur & direkte IFC-Darstellung, glTF, XKT \\
+    \hline
+    \texttt{web-ifc} & IFC lesen und schreiben & direkte Integration in Browser, JavaScript und That Open & IfcOpenShell \\
+    \hline
+    That Open UI & Benutzeroberfläche & BIM-nahe, frameworkunabhängige Web Components & React, Vue, eigene Komponenten \\
+    \hline
+  \end{tabularx}
+  \caption{Im Editor eingesetzte Kerntechnologien und betrachtete Alternativen}
+  \label{tab:technologien-editor}
+\end{table}
+\FloatBarrier
+
+Eine verbleibende Einschränkung der gewählten Architektur ist ihre deutliche Bindung an das
+That-Open-Ökosystem. Components, Fragments, \textit{web-ifc} und die UI-Bibliotheken sind technisch
+eng aufeinander abgestimmt. Dies reduziert den gegenwärtigen Integrationsaufwand, kann den späteren
+Austausch einzelner zentraler Komponenten jedoch aufwendiger machen. Die Technologieentscheidung ist
+daher vor allem als Abwägung zugunsten eines kohärenten und unmittelbar browserintegrierten
+BIM-Stacks zu verstehen und nicht als Aussage über eine generelle Überlegenheit der einzelnen
+Bibliotheken.
+
+\#TODO Weitere Features, z.B. IFC-Exportpipeline usw.
+\#TODO Überleitung nächstes Kapitel
