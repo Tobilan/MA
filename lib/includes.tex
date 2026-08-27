@@ -1,9 +1,15 @@
 % Reihenfolge ist wichtig: inputenc und babel muessen vor biblatex geladen
 % werden, csquotes wird von biblatex zusammen mit babel erwartet.
 \usepackage[utf8]{inputenc}
+% T1 setzt Umlaute und Akzente als eigene Glyphen statt als zusammengesetzte
+% Zeichen. Erst dadurch trennt TeX deutsche Woerter mit Umlauten korrekt.
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage[ngerman]{babel}
 \usepackage{csquotes}
-\usepackage[backend=biber,style=alphabetic]{biblatex}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+% Behaelt "et al." bei; ohne diese Zeile setzt biblatex im Deutschen "u. a."
+\DefineBibliographyStrings{ngerman}{andothers={et\,al\adddot}}
 \usepackage{ifthen}
 \usepackage{xargs}
 \usepackage{amsmath}
