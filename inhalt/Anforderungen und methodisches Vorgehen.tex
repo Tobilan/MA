@@ -1,0 +1,68 @@
+\section{Anforderungen und methodisches Vorgehen}\label{sec:Anforderungen}
+
+\subsection{Anwendungsszenarien}
+
+Die Anwendungsszenarien ergeben sich aus dem Ziel, Robotermissionen unmittelbar mit einem digitalen Gebäudemodell zu verknüpfen. Ausgangspunkt ist daher stets ein IFC-Gebäudemodell, das im browserbasierten Editor geladen und räumlich betrachtet wird. Die dreidimensionale Darstellung dient dabei nicht nur der Visualisierung, sondern bildet den räumlichen Bezugspunkt für die Beschreibung der einzelnen Aufgaben einer Mission.
+
+Ein grundlegendes Szenario besteht in der Auswahl eines konkreten Gebäudeelements als Bezug einer Roboteraufgabe. Soll ein Roboter beispielsweise eine Tür öffnen, zu einem technischen Gebäudeelement navigieren oder einen Schalter bedienen, wählt der Benutzer das betreffende Element direkt in der Gebäudedarstellung aus und ordnet ihm eine entsprechende semantische Aktion zu. Der Aufgabenbezug bleibt dadurch nicht auf eine abstrakte Positionsangabe beschränkt, sondern ist mit einem eindeutig identifizierbaren Bestandteil des Gebäudemodells verbunden.
+
+Darauf aufbauend können mehrere Aufgaben zu einer geordneten Robotermission zusammengestellt werden. Ein typischer Ablauf kann beispielsweise darin bestehen, zunächst zu einer Tür zu navigieren, diese zu öffnen, den Durchgang zu passieren und die Tür anschließend wieder zu schließen. In gleicher Weise lassen sich weitere Gebäudeelemente in den Missionsablauf einbeziehen. Die einzelnen Aufgaben beschreiben dabei fachlich, **was** im Zusammenhang mit einem bestimmten Gebäudeelement erfolgen soll; die konkrete Ausführung durch einen Roboter ist davon getrennt.
+
+Ein weiteres Anwendungsszenario betrifft die Weiterbearbeitung bereits annotierter Gebäudemodelle. Wird eine zuvor bearbeitete IFC-Datei erneut geladen, können die darin enthaltenen Missionsinformationen rekonstruiert und im Editor wieder dargestellt werden. Der Benutzer kann bestehende Aufgaben ändern, ergänzen, entfernen oder neu anordnen und die überarbeitete Mission anschließend erneut als annotierte IFC-Datei exportieren. Die IFC-Datei dient damit sowohl als Gebäudemodell als auch als fachlicher Träger der zugehörigen Missionsannotation.
+
+Nicht Bestandteil dieser Anwendungsszenarien sind die physische Robotersteuerung, die automatische Wegplanung, die Berechnung von Anfahrposen oder Wegpunkten, eine Backend-Persistenz sowie die direkte Kommunikation mit ROS. Diese nachgelagerten Verarbeitungsschritte werden als weiterführende Erweiterungen betrachtet. Aus den beschriebenen Szenarien werden im Folgenden die funktionalen und nichtfunktionalen Anforderungen an den Editor abgeleitet.
+
+\subsection{Funktionale Anforderungen}
+Aus den in Kapitel 3.1 beschriebenen Anwendungsszenarien ergeben sich die funktionalen Anforderungen an den IFC-Viewer und Editor. Sie beschreiben die aus Nutzersicht erforderlichen Systemfunktionen für die Erstellung, Bearbeitung und persistente Verknüpfung von Robotermissionen mit einem Gebäudemodell. Der aktuelle Projektstand umfasst dabei insbesondere die Modellauswahl, Missionsbearbeitung, Validierung sowie den Import und Export annotierter IFC-Dateien.
+
+\textbf{Laden und Darstellen von Gebäudemodellen}\newline
+Das System muss IFC-Gebäudemodelle laden und räumlich darstellen können. Die Gebäudedarstellung bildet die Grundlage dafür, Bauteile und andere geeignete IFC-Objekte als Bezug einer Roboteraufgabe zu identifizieren und für die weitere Annotation auszuwählen.
+
+\textbf{Gezielte Auswahl von Gebäudeelementen}\newline
+Gebäudeelemente müssen zuverlässig für die Annotation auswählbar sein. Da sich in der dreidimensionalen Darstellung mehrere Elemente überlagern können, muss das System auch bei mehreren möglichen Treffern eine gezielte Auswahl des tatsächlich gewünschten Gebäudeelements ermöglichen.
+
+\textbf{Verwaltung von Robotermissionen}\newline
+Robotermissionen müssen erstellt, bearbeitet und gelöscht werden können. Eine Mission muss aus mehreren Tasks aufgebaut werden können, deren Reihenfolge festgelegt und nachträglich verändert werden kann. Dadurch lassen sich mehrstufige Abläufe innerhalb des Gebäudes als zusammenhängende Mission beschreiben.
+
+\textbf{Beschreibung semantischer Roboteraufgaben}\newline
+Für die einzelnen Tasks müssen die für ihre fachliche Bedeutung erforderlichen Informationen erfasst und bearbeitet werden können. Dazu gehört insbesondere die Zuordnung einer semantischen Roboteraktion, durch die beschrieben wird, welche Aufgabe im jeweiligen Missionsschritt ausgeführt werden soll.
+
+\textbf{Verknüpfung von Tasks mit dem Gebäudemodell}\newline
+Tasks müssen mit geeigneten IFC-Gebäudeelementen verknüpft werden können. Der Objektbezug stellt sicher, dass eine Aufgabe nicht nur abstrakt beschrieben wird, sondern eindeutig auf den betreffenden Bestandteil des Gebäudes verweist. So kann beispielsweise das Öffnen, Schließen oder Durchqueren mit einer konkreten Tür des Gebäudemodells verbunden werden.
+
+\textbf{Validierung von Missionen und Tasks}\newline
+Das System muss die erfassten Missions- und Taskinformationen auf fachliche Konsistenz prüfen können. Hierzu gehören insbesondere erforderliche Angaben, gültige Objektbezüge und eine widerspruchsfreie Anordnung beziehungsweise Abhängigkeit der einzelnen Tasks. Erkannte Probleme müssen vor einer weiteren Verarbeitung nachvollziehbar kenntlich gemacht werden.
+
+\textbf{Export als annotierte IFC-Datei}\newline
+Eine erstellte oder bearbeitete Robotermission muss einschließlich ihrer Tasks, Aktionsinformationen und Gebäudezuordnungen in einer annotierten IFC-Datei gespeichert beziehungsweise exportiert werden können. Die Missionsbeschreibung bleibt dadurch mit dem zugrunde liegenden Gebäudemodell in einer gemeinsamen Austauschdatei verbunden.
+
+\textbf{Rekonstruktion und erneute Bearbeitung annotierter Missionen}\newline
+Bereits annotierte IFC-Dateien müssen erneut geladen werden können, wobei die darin enthaltenen Robotermissionen rekonstruiert werden. Diese Missionen müssen anschließend weiterbearbeitet und erneut exportiert werden können. Wiederholte Bearbeitungs- und Exportzyklen dürfen dabei nicht zu einer unkontrollierten Vervielfachung der vom System erzeugten Missionsannotation führen. Der aktuelle Stand sieht hierfür das gezielte Ersetzen des eigenen Missionsgraphen beim erneuten Export vor.
+Der funktionale Umfang konzentriert sich damit auf die Erstellung und Bearbeitung von Robotermissionen im direkten Kontext eines IFC-Gebäudemodells. Automatische Wegplanung, die Generierung von Waypoints oder Anfahrposen, Koordinatentransformationen für Robotersysteme, direkte Robotersteuerung, Backend-Persistenz sowie die allgemeine Bearbeitung von IFC-Geometrie gehören nicht zu den funktionalen Anforderungen des Editors. Die Qualitätsanforderungen an die Umsetzung werden im folgenden Abschnitt als nichtfunktionale Anforderungen betrachtet.
+
+\subsection{Nichtfunktionale Anforderungen}
+
+Neben den funktionalen Anforderungen bestimmen qualitative Randbedingungen, unter welchen Voraussetzungen der Viewer und Editor zuverlässig und praktikabel eingesetzt werden kann. Im Vordergrund stehen dabei insbesondere die browserbasierte Nutzung, die interaktive Verarbeitung von IFC-Gebäudemodellen sowie die zuverlässige Verknüpfung zwischen Robotermission und Gebäudemodell.
+
+\textbf{Browserbasierte Nutzbarkeit  }\newline
+Der Viewer und Editor soll in einer modernen Browserumgebung ausführbar sein und keine Installation einer spezialisierten Desktop-BIM-Anwendung voraussetzen. Dadurch soll die Nutzung weitgehend unabhängig von einer spezifischen lokalen BIM-Software ermöglicht werden.
+
+\textbf{Interaktive Darstellungsperformance  }\newline
+Auch umfangreichere IFC-Gebäudemodelle sollen so verarbeitet und dargestellt werden können, dass Navigation, Objektauswahl und Annotation interaktiv nutzbar bleiben. Auf konkrete Mindestbildraten, maximale Dateigrößen oder garantierte Ladezeiten wird an dieser Stelle bewusst verzichtet, da entsprechende Grenzwerte erst durch Messungen begründet werden können.
+
+\textbf{Stabile Referenzierung  }\newline
+Die fachliche Verbindung zwischen RobotTasks und den zugehörigen Gebäudeelementen soll über Bearbeitungs-, Speicher- und Exportzyklen möglichst stabil erhalten bleiben. Flüchtige Kennungen der Darstellung oder der aktuellen Laufzeit dürfen daher nicht als alleinige Identität eines referenzierten IFC-Objekts verwendet werden.
+
+\textbf{Datenintegrität und Roundtrip-Stabilität  }\newline
+Das erneute Laden, Bearbeiten und Exportieren einer annotierten IFC-Datei darf die enthaltene Missionssemantik nicht unbeabsichtigt verändern oder Missionsinformationen durch wiederholte Exportvorgänge duplizieren. Gleichzeitig sollen Inhalte des Gebäudemodells, die nicht durch die Missionsannotation verwaltet werden, unbeeinträchtigt bleiben.
+
+\textbf{Erweiterbarkeit und Trennung der Verantwortlichkeiten  }\newline
+Die fachliche Beschreibung einer Robotermission soll ausreichend von Darstellung, Persistenz und späterer Roboterausführung getrennt sein. Dadurch sollen weitere Task-Arten sowie nachgelagerte Funktionen wie roboterspezifische Exporte, Navigationsziele oder eine serverseitige Verarbeitung ergänzt werden können, ohne die grundlegende fachliche Modellierung ersetzen zu müssen.
+
+\textbf{Nachvollziehbarkeit und Robustheit  }\newline
+Unvollständige oder widersprüchliche Missionen sollen erkennbar sein und zu nachvollziehbaren Validierungshinweisen führen. Zustände, bei denen beispielsweise erforderliche Objektbezüge oder zulässige Abhängigkeiten nicht eindeutig bestimmt werden können, sollen nicht unbemerkt in einen Export übernommen werden.
+
+\textbf{Benutzbarkeit der Gebäudezuordnung  }\newline
+Die Zuordnung einer Roboteraufgabe zu einem konkreten Gebäudeelement soll auch bei komplexer oder überlagernder IFC-Geometrie verständlich und kontrollierbar bleiben. Für den Benutzer muss insbesondere nachvollziehbar sein, welches Bauteil als fachlicher Bezug einer Annotation ausgewählt wurde.
+
+Ausgewählte Anforderungen, insbesondere die Darstellungsperformance, die Roundtrip-Stabilität und die Benutzbarkeit der Objektauswahl, können im weiteren Verlauf anhand geeigneter Tests und Messungen überprüft werden.

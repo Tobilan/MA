@@ -22,7 +22,7 @@
 {Masterarbeit}				% Typ der Abschlussarbeit (\in {Bachelorarbeit, Masterarbeit})
 {Interaktives System zur Taskdefinition für Autonomous Driving Vehicles}				% Thema der Arbeit						
 {Prof.\ Dr.\ Jan Dünnweber}		% Betreuer 
-{Prof.\ Dr.\ }	% Zweitgutachter
+{Prof.\ Dr.\ Thomas Waas }	% Zweitgutachter
 {29.08.\the\year}				% Abgabedatum
 
 \thispagestyle{empty}
@@ -112,18 +112,13 @@
 % ----------------------------------------------------------------------------------
 % Kapitel: Einleitung
 % ----------------------------------------------------------------------------------
-\input{inhalt/1. Einleitung}
-\input{inhalt/2. Grundlagen und Stand der Forschung}
-\input{inhalt/3. Anforderungen und methodisches Vorgehen}
-
-
-\pagebreak
-% ----------------------------------------------------------------------------------
-% Kapitel: Konzeption des IFC-basierten Annotationsmodells
-% ----------------------------------------------------------------------------------
-\input{inhalt/4. Annotationsmodell}
-\input{inhalt/5. Entwurf und Implementierung des browserbasierten Editors}
-\input{inhalt/6. Weiterführende Konzeption Vom IFC-Modell zur Robotermission}
+\input{inhalt/Einleitung}
+%\input{inhalt/Grundlagen und Stand der Forschung}
+\input{inhalt/Anforderungen und methodisches Vorgehen}
+%\pagebreak
+\input{inhalt/Annotationsmodell}
+\input{inhalt/Entwurf und Implementierung des browserbasierten Editors}
+\input{inhalt/Weiterführende Konzeption Vom IFC-Modell zur Robotermission}
 
 
 
@@ -138,36 +133,21 @@
 
 
 % ----------------------------------------------------------------------------------------------------------
-% Filter fuer Literatur und Quellen definieren
+% Ueberschrift fuer das Literaturverzeichnis definieren
 % ----------------------------------------------------------------------------------------------------------
 
-\defbibheading{Literatur}{\section*{Literaturverzeichnis}} 
-\defbibheading{Quellen}{\section*{Quellenverzeichnis}} 
-  
-\defbibfilter{Literatur}{\not\keyword{online}} 
-\defbibfilter{Quellen}{\keyword{online}} 
+\defbibheading{Literatur}{\section*{Literaturverzeichnis}}
 
 
 % ----------------------------------------------------------------------------------------------------------
 % Literatur
 % ----------------------------------------------------------------------------------------------------------
-\lhead{} 
-\rhead{Literaturverzeichnis} 
+\lhead{}
+\rhead{Literaturverzeichnis}
 
-\printbibliography[heading=Literatur,filter=Literatur] 
+\printbibliography[heading=Literatur]
 
 \pagebreak
-
-
-% ---------------------------------------------------------------------------------------------------------- 
-% Quellen 
-% ---------------------------------------------------------------------------------------------------------- 
-\lhead{} 
-\rhead{Quellenverzeichnis} 
-
-\printbibliography[title = {Quellenverzeichnis}, heading=Quellen,filter=Quellen] 
-
-\pagebreak 
 
 % ----------------------------------------------------------------------------------------------------------
 % Anhang

@@ -1,6 +1,9 @@
-\usepackage[backend=bibtex,style=alphabetic]{biblatex}
-\usepackage[ngerman]{babel}
+% Reihenfolge ist wichtig: inputenc und babel muessen vor biblatex geladen
+% werden, csquotes wird von biblatex zusammen mit babel erwartet.
 \usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=alphabetic]{biblatex}
 \usepackage{ifthen}
 \usepackage{xargs}
 \usepackage{amsmath}

@@ -748,6 +748,10 @@ notwendiger Infrastruktur und fachlicher Planungsaussage bleibt jedoch erhalten,
 genannte Kennzeichnung im Property Set \textit{RobotMission} explizit festgehalten wird. Damit
 entsteht kein Informationsverlust, obwohl der IFC-Graph in beiden Fällen strukturell gleich
 aufgebaut ist.
+\#TODO 
+inwieweit wird die zeitliche Steuerung durch ROS unterstützt? Wenn z.B. eine Task eine Deadline hat, muss sich das Programm darum kümmern diese einzuhalten oder kann das die Plattform sicherstellen?
+-> die Deadline einer Task ist eine Optimierungs Richtschnur für das System. Der Roboter könnte aufgrund der Gesamtdauer aller Tasks Wartezeiten verkürzen.
+Er erhält dadurch einen Erwartungshorizont.
 
 \subsubsection{Zusammenführung}
 Die drei Bereiche folgen damit einem gemeinsamen Auswahlprinzip: Nicht die Herkunft der Information
