@@ -3,50 +3,200 @@
 
 \subsection{Motivation und Problemstellung}
 
-Digitale Gebäudemodelle stellen neben der räumlichen Geometrie auch semantische Informationen über konkrete Bestandteile eines Gebäudes bereit. Für robotische Anwendungen in Gebäuden eröffnet dies die Möglichkeit, Aufgaben nicht ausschließlich über abstrakte Koordinaten oder Navigationsziele zu beschreiben, sondern unmittelbar mit dem jeweiligen Gebäudekontext zu verknüpfen. Eine Roboteraufgabe kann sich beispielsweise auf eine bestimmte Tür, einen Durchgang oder ein technisches Gebäudeelement beziehen. Dadurch bleibt nachvollziehbar, auf welches Element sich eine auszuführende Aktion fachlich bezieht.
+Digitale Gebäudemodelle stellen neben der räumlichen Geometrie auch semantische Informationen über
+konkrete Bestandteile eines Gebäudes bereit. Für robotische Anwendungen in Gebäuden eröffnet dies
+die Möglichkeit, Aufgaben nicht ausschließlich über abstrakte Koordinaten oder Navigationsziele zu
+beschreiben, sondern unmittelbar mit dem jeweiligen Gebäudekontext zu verknüpfen. Eine
+Roboteraufgabe kann sich beispielsweise auf eine bestimmte Tür, einen Durchgang oder ein anderes
+Gebäudeelement beziehen. Dadurch bleibt nachvollziehbar, auf welches Element sich eine auszuführende
+Aktion fachlich bezieht.
 
-Der Unterschied wird am Beispiel einer Tür deutlich. Ein reines Navigationsziel beschreibt zunächst lediglich eine Position, die ein Roboter erreichen soll. Für eine Mission, in der eine konkrete Tür geöffnet, durchquert und anschließend wieder geschlossen werden soll, reicht diese räumliche Beschreibung jedoch nicht aus. Zusätzlich muss festgehalten werden, welches Gebäudeelement betroffen ist, welche Aktion daran ausgeführt werden soll und in welcher Beziehung diese Aufgabe zu weiteren Schritten der Mission steht. Mehrere Aufgaben können sich dabei auf dasselbe Gebäudeelement beziehen, ohne deshalb dieselbe fachliche Bedeutung zu besitzen. Die semantische Missionsbeschreibung ist daher von den später daraus abgeleiteten Navigationszielen und roboterspezifischen Ausführungsinformationen zu unterscheiden.
+Der Unterschied wird am Beispiel einer Tür deutlich. Ein reines Navigationsziel beschreibt zunächst
+lediglich eine Position, die ein Roboter erreichen soll. Für eine Mission, in der eine konkrete Tür
+geöffnet, durchquert und anschließend wieder geschlossen werden soll, reicht diese räumliche
+Beschreibung jedoch nicht aus. Zusätzlich muss festgehalten werden, welches Gebäudeelement betroffen
+ist, welche Aktion daran ausgeführt werden soll und in welcher Beziehung diese Aufgabe zu weiteren
+Schritten der Mission steht. Mehrere Aufgaben können sich dabei auf dasselbe Gebäudeelement
+beziehen, ohne deshalb dieselbe fachliche Bedeutung zu besitzen. Die semantische
+Missionsbeschreibung ist daher von den später daraus abgeleiteten Navigationszielen und
+roboterspezifischen Ausführungsinformationen zu unterscheiden.
 
-Neben dem Objekt- und Aktionsbezug sind für eine Robotermission auch die Reihenfolge und zeitliche Einordnung ihrer Aufgaben relevant. Zeitangaben wie geplante Ausführungszeiträume oder erwartete Dauern können einer nachgelagerten Verarbeitung als Grundlage dienen, um die zeitliche Durchführbarkeit einer Mission zu beurteilen oder Ausführungsentscheidungen zu treffen. Die Missionsbeschreibung soll diese Informationen bereitstellen, ohne bereits festzulegen, wie ein bestimmter Roboter die jeweilige Aufgabe technisch ausführt. Damit bleibt die gebäudebezogene Aufgabenbeschreibung unabhängig von konkreten Navigations-, Steuerungs- oder Ausführungsverfahren.
+Neben dem Objekt- und Aktionsbezug sind für eine Robotermission auch die Reihenfolge und zeitliche
+Einordnung ihrer Aufgaben relevant. Zeitangaben wie geplante Ausführungszeiträume oder erwartete
+Dauern können einer nachgelagerten Verarbeitung als Grundlage dienen, um die zeitliche
+Durchführbarkeit einer Mission zu beurteilen oder Ausführungsentscheidungen zu treffen. Die
+Missionsbeschreibung soll diese Informationen bereitstellen, ohne bereits festzulegen, wie ein
+bestimmter Roboter die jeweilige Aufgabe technisch ausführt. Damit bleibt die gebäudebezogene
+Aufgabenbeschreibung unabhängig von konkreten Navigations-, Steuerungs- oder Ausführungsverfahren.
 
-Für eine dauerhafte Nutzung genügt es zudem nicht, die Missionsinformationen lediglich während einer einzelnen Bearbeitungssitzung vorzuhalten. Die Verknüpfung zwischen Gebäudemodell und Mission muss so gespeichert werden können, dass sie beim erneuten Laden wieder eindeutig interpretierbar und weiterbearbeitbar ist. Wiederholtes Importieren, Ändern und Exportieren darf dabei weder zu einer unbeabsichtigten Vervielfachung der Missionsinformationen noch zu einer Veränderung ihrer fachlichen Bedeutung führen. Daraus ergeben sich Anforderungen an die semantische Repräsentation, die zeitliche Beschreibung und den bidirektionalen Austausch der Missionsinformationen. Der folgende Abschnitt ordnet diese Problemstellungen in den bestehenden Forschungsstand ein.
+Für eine dauerhafte Nutzung genügt es zudem nicht, die Missionsinformationen lediglich während einer
+einzelnen Bearbeitungssitzung vorzuhalten. Die Verknüpfung zwischen Gebäudemodell und Mission muss
+so gespeichert werden können, dass sie beim erneuten Laden wieder eindeutig interpretierbar und
+weiterbearbeitbar ist. Wiederholtes Importieren, Ändern und Exportieren darf dabei weder zu einer
+unbeabsichtigten Vervielfachung der Missionsinformationen noch zu einer Veränderung ihrer fachlichen
+Bedeutung führen. Daraus ergeben sich Anforderungen an die semantische Repräsentation, die zeitliche
+Beschreibung und den bidirektionalen Austausch der Missionsinformationen. Der folgende Abschnitt
+ordnet diese Problemstellungen in den bestehenden Forschungsstand ein.
 
 \subsection{Stand der Forschung und Forschungslücke}
 
-Die Nutzung von Building Information Modeling als Informationsgrundlage für robotische Anwendungen ist bereits Gegenstand verschiedener Forschungsarbeiten. Dabei wird das Gebäudemodell nicht nur als geometrische Darstellung betrachtet, sondern als Quelle räumlicher und semantischer Informationen. \textcite{bahreini2024ontology} verbinden beispielsweise Gebäude-, Navigations-, Roboter- und Inspektionskonzepte in einer BIM-basierten Ontologie und zeigen damit, wie der Gebäudekontext für die Beschreibung robotischer Aufgaben formalisiert werden kann. Andere Arbeiten konzentrieren sich stärker auf die Transformation von IFC-Daten in Repräsentationen, die unmittelbar für Navigation oder Simulation geeignet sind. \textcite{gopee2023improving} leiten aus IFC-Geometrie und Gebäudesemantik unter anderem zweidimensionale Navigationsinformationen und Wegpunkte ab und verwenden diese als Grundlage für Simulation und reale Roboternavigation. Auch \textcite{wang2025bimtorobot} untersuchen die Überführung von IFC-Informationen in IFC-referenzierte Belegungskarten und semantische Navigationsinformationen. \textcite{zhu2023component} verfolgen einen verwandten Ansatz für robotergestützte Bauprozesse und transformieren IFC-basierte Gebäudedaten in eine für ROS und Gazebo geeignete Simulationsrepräsentation. Gemeinsam zeigen diese Ansätze, dass die Überführung von IFC-Geometrie und Gebäudesemantik in Navigationskarten, Zwischenrepräsentationen oder roboterspezifische Daten grundsätzlich bereits Stand der Forschung ist.
+Die Nutzung von Building Information Modeling als Informationsgrundlage für robotische Anwendungen
+ist bereits Gegenstand verschiedener Forschungsarbeiten. Dabei wird das Gebäudemodell nicht nur als
+geometrische Darstellung betrachtet, sondern als Quelle räumlicher und semantischer Informationen.
+\textcite{bahreini2024ontology} verbinden beispielsweise Gebäude-, Navigations-, Roboter- und
+Inspektionskonzepte in einer BIM-basierten Ontologie und zeigen damit, wie der Gebäudekontext für
+die Beschreibung robotischer Aufgaben formalisiert werden kann. Andere Arbeiten konzentrieren sich
+stärker auf die Transformation von IFC-Daten in Repräsentationen, die unmittelbar für Navigation
+oder Simulation geeignet sind. \textcite{gopee2023improving} leiten aus IFC-Geometrie und
+Gebäudesemantik unter anderem zweidimensionale Navigationsinformationen und Wegpunkte ab und
+verwenden diese als Grundlage für Simulation und reale Roboternavigation. Auch
+\textcite{wang2025bimtorobot} untersuchen die Überführung von IFC-Informationen in IFC-referenzierte
+Belegungskarten und semantische Navigationsinformationen. \textcite{zhu2023component} verfolgen
+einen verwandten Ansatz für robotergestützte Bauprozesse und transformieren IFC-basierte
+Gebäudedaten in eine für ROS und Gazebo geeignete Simulationsrepräsentation. Gemeinsam zeigen diese
+Ansätze, dass die Überführung von IFC-Geometrie und Gebäudesemantik in Navigationskarten,
+Zwischenrepräsentationen oder roboterspezifische Daten grundsätzlich bereits Stand der Forschung
+ist.
 
-Für die vorliegende Arbeit ist dabei insbesondere die Trennung zwischen Gebäudesemantik und roboterspezifischer Ausführung relevant. Ein Gebäudeelement kann zunächst unabhängig davon beschrieben und identifiziert werden, wie ein konkreter Roboter mit diesem Element interagiert. So kann eine Tür im Gebäudemodell den gemeinsamen semantischen Bezug für mehrere aufeinanderfolgende Aufgaben bilden, beispielsweise für das Anfahren, Öffnen, Durchqueren und anschließende Schließen. Die dafür später erforderlichen Navigationsziele oder Bewegungsabläufe stellen dagegen abgeleitete, roboterspezifische Informationen dar. Die untersuchten BIM-to-Robot-Ansätze bestätigen die grundsätzliche Zweckmäßigkeit einer solchen nachgelagerten Transformation, behandeln jedoch überwiegend die Ableitung robotisch nutzbarer Umgebungs- und Navigationsinformationen und nicht deren interaktive Definition als persistente, erneut bearbeitbare Robotermissionsannotation innerhalb eines bestehenden Gebäudemodells.
+Für die vorliegende Arbeit ist dabei insbesondere die Trennung zwischen Gebäudesemantik und
+roboterspezifischer Ausführung relevant. Ein Gebäudeelement kann zunächst unabhängig davon
+beschrieben und identifiziert werden, wie ein konkreter Roboter mit diesem Element interagiert. So
+kann eine Tür im Gebäudemodell den gemeinsamen semantischen Bezug für mehrere aufeinanderfolgende
+Aufgaben bilden, beispielsweise für das Anfahren, Öffnen, Durchqueren und anschließende Schließen.
+Die dafür später erforderlichen Navigationsziele oder Bewegungsabläufe stellen dagegen abgeleitete,
+roboterspezifische Informationen dar. Die untersuchten BIM-to-Robot-Ansätze bestätigen die
+grundsätzliche Zweckmäßigkeit einer solchen nachgelagerten Transformation, behandeln jedoch
+überwiegend die Ableitung robotisch nutzbarer Umgebungs- und Navigationsinformationen und nicht
+deren interaktive Definition als persistente, erneut bearbeitbare Robotermissionsannotation
+innerhalb eines bestehenden Gebäudemodells.
 
-Eine besonders nahe verwandte aktuelle Arbeit stellen \textcite{slepicka2026fim} im Kontext des robotischen Mauerns vor. Dort wird der Fertigungsprozess explizit durch \texttt{IfcTask}-Instanzen beschrieben, die einzelnen Platzierungsaktionen zugeordnet und über \texttt{IfcRelSequence} sequenziert werden. Den Tasks werden zudem \texttt{IfcTaskTime}-Instanzen mit Planungs- und Ausführungsinformationen zugeordnet. Aus den so strukturierten Prozessdaten werden anschließend Roboterzielposen, Bewegungs- und Greiferaktionen abgeleitet und über eine roboterspezifische Repräsentation an ROS~2 übertragen. Die grundsätzliche Verwendung von \texttt{IfcTask}, \texttt{IfcRelSequence} und \texttt{IfcTaskTime} für robotische Prozesse sowie die Ableitung ausführungsnaher Informationen daraus sind damit nicht als eigenständige Neuheit der vorliegenden Arbeit zu verstehen. Der Ansatz von Slepicka et al. ist jedoch auf einen spezifischen Fertigungsprozess für robotisches Mauern und dessen komponentenbezogene Planung ausgerichtet. Ein interaktiver Bearbeitungszyklus allgemeiner gebäudebezogener Robotermissionen mit Rekonstruktion aus einer annotierten IFC-Datei, erneuter Bearbeitung und Prüfung der semantischen Äquivalenz nach wiederholtem Export und Reimport steht dort nicht im Mittelpunkt.
+ \textcite{slepicka2026fim} wurde nach der Literaturrecherche für diese Arbeit veröffentlicht und
+stellt eine besonders nahe verwandte Arbeit im Kontext des robotischen Mauerns vor. Dort wird der
+Fertigungsprozess explizit durch \texttt{IfcTask}-Instanzen beschrieben, die einzelnen
+Platzierungsaktionen zugeordnet und über \texttt{IfcRelSequence} sequenziert werden. Den Tasks
+werden zudem \texttt{IfcTaskTime}-Instanzen mit Planungs- und Ausführungsinformationen zugeordnet.
+Aus den so strukturierten Prozessdaten werden anschließend Roboterzielposen, Bewegungs- und
+Greiferaktionen abgeleitet und über eine roboterspezifische Repräsentation an ROS~2 übertragen. Die
+grundsätzliche Verwendung von \texttt{IfcTask}, \texttt{IfcRelSequence} und \texttt{IfcTaskTime} für
+robotische Prozesse sowie die Ableitung ausführungsnaher Informationen daraus sind damit nicht als
+eigenständige Neuheit der vorliegenden Arbeit zu verstehen. Der Ansatz von Slepicka et al. ist
+jedoch auf einen spezifischen Fertigungsprozess für robotisches Mauern und dessen
+komponentenbezogene Planung ausgerichtet. Ein interaktiver Bearbeitungszyklus allgemeiner
+gebäudebezogener Robotermissionen mit Rekonstruktion aus einer annotierten IFC-Datei, erneuter
+Bearbeitung und Prüfung der semantischen Äquivalenz nach wiederholtem Export und Reimport steht dort
+nicht im Mittelpunkt.
 
-Neben der semantischen Zuordnung von Aufgaben zum Gebäude ist die zeitliche Beschreibung für eine spätere Missionsausführung relevant. Auch hierfür existieren bereits unterschiedliche BIM-basierte Ansätze. \textcite{hamledari2021automation} verwenden ein 4D-BIM, um abhängig vom vorgesehenen Inspektionszeitpunkt den zu diesem Zeitpunkt vorhandenen und navigierbaren Gebäuderaum zu bestimmen und daraus eine UAV-Inspektionsmission abzuleiten. \textcite{gopee2023improving} berücksichtigen ebenfalls Termin- beziehungsweise Baufortschrittsinformationen, um Navigationsinformationen an unterschiedliche Bauzustände anzupassen. In beiden Fällen beeinflussen zeitliche BIM-Informationen somit nachgelagerte Planungsentscheidungen, beziehen sich jedoch primär auf den zeitabhängigen Zustand des Gebäudes.
+Neben der semantischen Zuordnung von Aufgaben zum Gebäude ist die zeitliche Beschreibung für eine
+spätere Missionsausführung relevant. Auch hierfür existieren bereits unterschiedliche BIM-basierte
+Ansätze. \textcite{hamledari2021automation} verwenden ein 4D-BIM, um abhängig vom vorgesehenen
+Inspektionszeitpunkt den zu diesem Zeitpunkt vorhandenen und navigierbaren Gebäuderaum zu bestimmen
+und daraus eine UAV-Inspektionsmission abzuleiten. \textcite{gopee2023improving} berücksichtigen
+ebenfalls Termin- beziehungsweise Baufortschrittsinformationen, um Navigationsinformationen an
+unterschiedliche Bauzustände anzupassen. In beiden Fällen beeinflussen zeitliche BIM-Informationen
+somit nachgelagerte Planungsentscheidungen, beziehen sich jedoch primär auf den zeitabhängigen
+Zustand des Gebäudes.
 
-Für die Speicherung taskbezogener Zeitinformationen in IFC liefern \textcite{sheik2023exchanging} eine weitergehende Grundlage. Ihr Ansatz nutzt native IFC-Strukturen für eine taskbasierte Repräsentation von Bauabläufen. Geplante und tatsächliche Start- und Endzeitpunkte sowie Dauern und Fertigstellungsinformationen werden über \texttt{IfcTaskTime} mit den zugehörigen Tasks verbunden; hierarchische und sequenzielle Beziehungen werden ebenfalls innerhalb des IFC-Modells abgebildet. \textcite{slepicka2026fim} zeigen ergänzend, dass \texttt{IfcTaskTime} auch in einem robotischen Prozesskontext zur Beschreibung geplanter Ausführungsinformationen und zur Erfassung tatsächlicher Ausführungsdauern verwendet werden kann. Damit ist sowohl die grundsätzliche Abbildung taskbezogener Zeitinformationen in IFC als auch deren Verwendung in robotischen Prozessmodellen bereits belegt.
+Für die Speicherung taskbezogener Zeitinformationen in IFC liefern \textcite{sheik2023exchanging}
+eine weitergehende Grundlage. Ihr Ansatz nutzt native IFC-Strukturen für eine taskbasierte
+Repräsentation von Bauabläufen. Geplante und tatsächliche Start- und Endzeitpunkte sowie Dauern und
+Fertigstellungsinformationen werden über \texttt{IfcTaskTime} mit den zugehörigen Tasks verbunden;
+hierarchische und sequenzielle Beziehungen werden ebenfalls innerhalb des IFC-Modells abgebildet.
+\textcite{slepicka2026fim} zeigen ergänzend, dass \texttt{IfcTaskTime} auch in einem robotischen
+Prozesskontext zur Beschreibung geplanter Ausführungsinformationen und zur Erfassung tatsächlicher
+Ausführungsdauern verwendet werden kann. Damit ist sowohl die grundsätzliche Abbildung taskbezogener
+Zeitinformationen in IFC als auch deren Verwendung in robotischen Prozessmodellen bereits belegt.
 
-Davon zu unterscheiden ist die Interpretation solcher Informationen durch eine nachgelagerte Missionsplanung. In der Robotik können erwartete Ausführungsdauern und zeitliche Zielvorgaben unmittelbar in Planungsentscheidungen eingehen. \textcite{calvo2025heterogeneous} modellieren beispielsweise Aufgaben mit erwarteter Ausführungsdauer und maximalem Fertigstellungszeitpunkt und verwenden diese Angaben bei der Zuweisung, Reihenfolgeplanung und dynamischen Neuplanung von Aufgaben. Die zeitliche Information stellt dabei eine Eingabe für eine Planungs- und Ausführungskomponente dar; ihre bloße Repräsentation garantiert noch nicht die Einhaltung einer zeitlichen Vorgabe. Für eine IFC-basierte Missionsbeschreibung ergibt sich daraus die konzeptionelle Trennung zwischen der persistenten Bereitstellung der zeitlichen Semantik und ihrer späteren Interpretation durch eine roboterspezifische Scheduling- oder Ausführungskomponente.
+Davon zu unterscheiden ist die Interpretation solcher Informationen durch eine nachgelagerte
+Missionsplanung. In der Robotik können erwartete Ausführungsdauern und zeitliche Zielvorgaben
+unmittelbar in Planungsentscheidungen eingehen. \textcite{calvo2025heterogeneous} modellieren
+beispielsweise Aufgaben mit erwarteter Ausführungsdauer und maximalem Fertigstellungszeitpunkt und
+verwenden diese Angaben bei der Zuweisung, Reihenfolgeplanung und dynamischen Neuplanung von
+Aufgaben. Die zeitliche Information stellt dabei eine Eingabe für eine Planungs- und
+Ausführungskomponente dar. Ihre bloße Repräsentation garantiert jedoch noch nicht die Einhaltung
+einer zeitlichen Vorgabe. Für eine IFC-basierte Missionsbeschreibung ergibt sich daraus die
+konzeptionelle Trennung zwischen der persistenten Bereitstellung der zeitlichen Semantik und ihrer
+späteren Interpretation durch eine roboterspezifische Scheduling- oder Ausführungskomponente.
 
-Ein weiterer für die Missionsannotation relevanter Forschungsbereich betrifft die Zuverlässigkeit des IFC-basierten Datenaustauschs. \textcite{pazlar2008interoperability} zeigen anhand praktischer Austauschtests, dass die Verwendung eines standardisierten IFC-Formats nicht automatisch einen verlustfreien Informationstransfer zwischen unterschiedlichen Softwaresystemen sicherstellt. \textcite{sibenik2020assessment} kommen bei der Untersuchung des modellbasierten Austauschs zwischen Architektur und Tragwerksplanung ebenfalls zu dem Ergebnis, dass trotz IFC-basierter Übertragung relevante Inkonsistenzen auftreten können und eindeutige Interpretationsregeln für domänenspezifische Austauschprozesse erforderlich sind. Diese Arbeiten untersuchen keinen Roundtrip von Robotermissionen. Sie verdeutlichen jedoch ein allgemeines Interoperabilitätsproblem, das für eine bidirektional bearbeitbare Missionsannotation unmittelbar relevant ist: Die syntaktisch erfolgreiche Erzeugung und das erneute Öffnen einer IFC-Datei reichen nicht aus, um den Erhalt ihrer fachlichen Bedeutung nachzuweisen. Für eine Missionsannotation muss daher zusätzlich betrachtet werden, ob die aus der Datei rekonstruierte Mission semantisch dem beabsichtigten Missionszustand entspricht.
+Ein weiterer für die Missionsannotation relevanter Forschungsbereich betrifft die Zuverlässigkeit
+des IFC-basierten Datenaustauschs. \textcite{pazlar2008interoperability} zeigen anhand praktischer
+Austauschtests, dass die Verwendung eines standardisierten IFC-Formats nicht automatisch einen
+verlustfreien Informationstransfer zwischen unterschiedlichen Softwaresystemen sicherstellt.
+\textcite{sibenik2020assessment} kommen bei der Untersuchung des modellbasierten Austauschs zwischen
+Architektur und Tragwerksplanung ebenfalls zu dem Ergebnis, dass trotz IFC-basierter Übertragung
+relevante Inkonsistenzen auftreten können und eindeutige Interpretationsregeln für
+domänenspezifische Austauschprozesse erforderlich sind. Diese Arbeiten untersuchen keinen Roundtrip
+von Robotermissionen. Sie verdeutlichen jedoch ein allgemeines Interoperabilitätsproblem, das für
+eine bidirektional bearbeitbare Missionsannotation unmittelbar relevant ist: Die syntaktisch
+erfolgreiche Erzeugung und das erneute Öffnen einer IFC-Datei reichen nicht aus, um den Erhalt ihrer
+fachlichen Bedeutung nachzuweisen. Für eine Missionsannotation muss daher zusätzlich betrachtet
+werden, ob die aus der Datei rekonstruierte Mission semantisch dem beabsichtigten Missionszustand
+entspricht.
 
-Zusammenfassend decken die betrachteten Arbeiten bereits wesentliche Teilaspekte der vorliegenden Fragestellung ab. BIM- und IFC-Daten werden zur semantischen Beschreibung robotischer Umgebungen, zur Navigation und zur Ableitung roboterspezifischer Repräsentationen eingesetzt. Native IFC-Prozessstrukturen werden für taskbasierte Abläufe einschließlich Sequenzen und Zeitinformationen verwendet, und zeitliche Randbedingungen können in nachgelagerten Robotiksystemen als Grundlage für Planungsentscheidungen dienen. Gleichzeitig zeigt die Forschung zum IFC-Datenaustausch, dass der Erhalt fachlicher Informationen über Transformations- und Austauschprozesse nicht vorausgesetzt werden kann. In den betrachteten Arbeiten steht jedoch nicht gemeinsam im Mittelpunkt, wie eine mit konkreten Gebäudeelementen verknüpfte Robotermission einschließlich semantischer Aktionen und zeitlicher Informationen in einer IFC-Datei persistiert, für eine nachgelagerte roboterspezifische Verarbeitung bereitgestellt und über wiederholte Bearbeitungszyklen semantisch äquivalent zwischen IFC-Datei und internem Domänenmodell übertragen werden kann. An dieser Kombination der bislang überwiegend getrennt betrachteten Aspekte setzt die vorliegende Arbeit an.
+Zusammenfassend decken die betrachteten Arbeiten bereits wesentliche Teilaspekte der vorliegenden
+Fragestellung ab. BIM- und IFC-Daten werden zur semantischen Beschreibung robotischer Umgebungen,
+zur Navigation und zur Ableitung roboterspezifischer Repräsentationen eingesetzt. Native
+IFC-Prozessstrukturen werden für taskbasierte Abläufe einschließlich Sequenzen und Zeitinformationen
+verwendet, und zeitliche Randbedingungen können in nachgelagerten Robotiksystemen als Grundlage für
+Planungsentscheidungen dienen. Gleichzeitig zeigt die Forschung zum IFC-Datenaustausch, dass der
+Erhalt fachlicher Informationen über Transformations- und Austauschprozesse nicht vorausgesetzt
+werden kann. In den betrachteten Arbeiten steht jedoch nicht gemeinsam im Mittelpunkt, wie eine mit
+konkreten Gebäudeelementen verknüpfte Robotermission einschließlich semantischer Aktionen und
+zeitlicher Informationen in einer IFC-Datei persistiert, für eine nachgelagerte roboterspezifische
+Verarbeitung bereitgestellt und über wiederholte Bearbeitungszyklen semantisch äquivalent zwischen
+IFC-Datei und internem Domänenmodell übertragen werden kann. An dieser Kombination der bislang
+überwiegend getrennt betrachteten Aspekte setzt die vorliegende Arbeit an.
 
 \subsection{Zielsetzung und Forschungsfragen}
 
-Aus der beschriebenen Forschungslücke ergibt sich das Ziel, Robotermissionen so mit einem IFC-Gebäudemodell zu verknüpfen, dass ihre fachliche Bedeutung sowohl innerhalb der IFC-Datei erhalten als auch für nachgelagerte roboterspezifische Verarbeitungsschritte nutzbar gemacht werden kann. Im Mittelpunkt steht dabei nicht allein die räumliche Referenzierung einzelner Aufgaben, sondern eine semantische Missionsbeschreibung, die konkrete Gebäudeelemente, auszuführende Aktionen, zeitliche Informationen und Abhängigkeiten zwischen mehreren Tasks gemeinsam abbildet.
+Aus der beschriebenen Forschungslücke ergibt sich das Ziel, Robotermissionen so mit einem
+IFC-Gebäudemodell zu verknüpfen, dass ihre fachliche Bedeutung sowohl innerhalb der IFC-Datei
+erhalten als auch für nachgelagerte roboterspezifische Verarbeitungsschritte nutzbar gemacht werden
+können. Im Mittelpunkt steht dabei nicht allein die räumliche Referenzierung einzelner Aufgaben,
+sondern eine semantische Missionsbeschreibung, die konkrete Gebäudeelemente, auszuführende Aktionen,
+zeitliche Informationen und Abhängigkeiten zwischen mehreren Tasks gemeinsam abbildet.
 
-Ein weiterer Schwerpunkt liegt auf der zeitlichen Semantik der Mission. Zeitinformationen von RobotTasks sollen innerhalb der IFC-Struktur so repräsentiert werden, dass sie von nachgelagerten Komponenten interpretiert und beispielsweise zur Bewertung zeitlicher Randbedingungen oder zur Priorisierung von Aufgaben herangezogen werden können. Die zeitliche Missionsplanung selbst ist dabei von der persistenten Bereitstellung dieser Informationen zu unterscheiden.
+Ein weiterer Schwerpunkt liegt auf der zeitlichen Semantik der Mission. Zeitinformationen von
+RobotTasks sollen innerhalb der IFC-Struktur so repräsentiert werden, dass sie von nachgelagerten
+Komponenten interpretiert und beispielsweise zur Bewertung zeitlicher Randbedingungen oder zur
+Priorisierung von Aufgaben herangezogen werden können. Die zeitliche Missionsplanung selbst ist
+dabei von der persistenten Bereitstellung dieser Informationen zu unterscheiden.
 
-Darüber hinaus soll untersucht werden, wie die Missionsannotation zwischen einem internen Domänenmodell und der annotierten IFC-Datei bidirektional übertragen werden kann. Eine bereits gespeicherte Mission soll erneut aus der IFC-Datei rekonstruiert, weiterbearbeitet und wieder exportiert werden können, ohne dass sich ihre fachliche Bedeutung durch wiederholte Bearbeitungszyklen unbeabsichtigt verändert.
+Darüber hinaus soll untersucht werden, wie die Missionsannotation zwischen einem internen
+Domänenmodell und der annotierten IFC-Datei bidirektional übertragen werden kann. Eine bereits
+gespeicherte Mission soll erneut aus der IFC-Datei rekonstruiert, weiterbearbeitet und wieder
+exportiert werden können, ohne dass sich ihre fachliche Bedeutung durch wiederholte
+Bearbeitungszyklen unbeabsichtigt verändert.
 
-Aus diesen Zielsetzungen ergeben sich die folgenden Forschungsfragen:
+Dadurch ergeben sich die folgenden Forschungsfragen:
 
-\textbf{F1:} Wie können Robotermissionen semantisch mit einem IFC-Gebäudemodell verknüpft, in der IFC-Datei persistiert und für eine nachgelagerte roboterspezifische Verarbeitung bereitgestellt werden?
+\textbf{F1:} Wie können Robotermissionen semantisch mit einem IFC-Gebäudemodell verknüpft, in der
+IFC-Datei persistiert und für eine nachgelagerte roboterspezifische Verarbeitung bereitgestellt
+werden?
 
 \textbf{F2:} Wie können zeitliche Informationen von RobotTasks in IFC abgebildet und als Entscheidungsgrundlage für eine nachgelagerte zeitabhängige Missionsausführung bereitgestellt werden?
 
-\textbf{F3:} Wie kann die Missionsannotation bidirektional zwischen internem Domänenmodell und annotierter IFC-Datei übertragen werden, sodass sie über wiederholte Bearbeitungszyklen semantisch äquivalent bleibt?
+\textbf{F3:} Wie kann die Missionsannotation bidirektional zwischen internem Domänenmodell und
+annotierter IFC-Datei übertragen werden, sodass sie über wiederholte Bearbeitungszyklen semantisch
+äquivalent bleibt?
 
-Die vollständige physische Steuerung eines Roboters sowie ein vollständiges zeitabhängiges Scheduling einschließlich der eigenständigen Einhaltung von Deadlines sind nicht Gegenstand der Arbeit. Untersucht wird vielmehr die semantische Bereitstellung der hierfür relevanten Missions- und Zeitinformationen. Der bidirektionale Austausch bezieht sich auf die Missionsannotation und nicht auf einen allgemeinen verlustfreien Roundtrip beliebiger IFC-Inhalte. Die nachgelagerte Ableitung von Navigationszielen und roboterspezifischen Repräsentationen dient insbesondere dazu, die Anschlussfähigkeit des entwickelten Annotationsmodells an weitere Robotikkomponenten zu untersuchen.
+Die vollständige physische Steuerung eines Roboters sowie ein vollständiges zeitabhängiges
+Scheduling einschließlich der eigenständigen Einhaltung von Deadlines sind nicht Gegenstand der
+Arbeit. Untersucht wird vielmehr die semantische Bereitstellung der hierfür relevanten Missions- und
+Zeitinformationen. Der bidirektionale Austausch bezieht sich auf die Missionsannotation und nicht
+auf einen allgemeinen verlustfreien Roundtrip beliebiger IFC-Inhalte. Die nachgelagerte Ableitung
+von Navigationszielen und roboterspezifischen Repräsentationen dient insbesondere dazu, die
+Anschlussfähigkeit des entwickelten Annotationsmodells an weitere Robotikkomponenten zu untersuchen.
 
 \subsection{Aufbau der Arbeit}
 
-Die Arbeit ist in sieben Kapitel gegliedert. Nach der Einleitung behandelt Kapitel~2 die für die weitere Untersuchung erforderlichen Grundlagen und ordnet die verwendeten Konzepte in den fachlichen Kontext ein. Kapitel~3 leitet aus den betrachteten Anwendungsszenarien die funktionalen und nichtfunktionalen Anforderungen an den browserbasierten IFC-Viewer und Editor ab. Kapitel~4 entwickelt darauf aufbauend das IFC-basierte Annotationsmodell für Robotermissionen und beschreibt insbesondere deren semantische Verknüpfung mit Gebäudeelementen, die Abbildung zeitlicher Informationen sowie die Anforderungen an einen bidirektionalen Austausch. Kapitel~5 betrachtet die technische Umsetzung des Editors und den Bearbeitungszyklus zwischen internem Missionsmodell und annotierter IFC-Datei. Kapitel~6 erweitert diese Betrachtung um die nachgelagerte Überführung der Missionsinformationen in roboterspezifische Repräsentationen sowie die Ableitung von Navigationszielen und einer zweidimensionalen Navigationsdarstellung. Kapitel~7 fasst die wesentlichen Ergebnisse zusammen, beantwortet die Forschungsfragen und zeigt Grenzen sowie mögliche Weiterentwicklungen auf.
+Die Arbeit ist in sechs Kapitel gegliedert. Nach der Einleitung leitet Kapitel~2 aus den betrachteten
+Anwendungsszenarien die funktionalen und nichtfunktionalen Anforderungen ab und erläutert das
+methodische Vorgehen. Kapitel~3 entwickelt darauf aufbauend das IFC-basierte Annotationsmodell für
+Robotermissionen und beschreibt insbesondere deren semantische Verknüpfung mit Gebäudeelementen,
+die Abbildung zeitlicher Informationen sowie die Anforderungen an einen bidirektionalen Austausch.
+Kapitel~4 betrachtet den Entwurf und die technische Umsetzung des browserbasierten Editors sowie
+den Bearbeitungszyklus zwischen internem Missionsmodell und annotierter IFC-Datei. Kapitel~5
+behandelt die weiterführende Überführung der Missionsinformationen in roboterspezifische
+Repräsentationen sowie die Ableitung von Navigationszielen und einer zweidimensionalen
+Navigationsdarstellung. Kapitel~6 fasst die wesentlichen Ergebnisse zusammen, beantwortet die
+Forschungsfragen und zeigt Grenzen sowie mögliche Weiterentwicklungen auf.
